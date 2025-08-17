@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SuiviBuget.Mobile.Views.LigneBudgetaireManageView"
+             xmlns:viewModels="clr-namespace:SuiviBuget.Mobile.ViewModels;assembly=SuiviBuget.Mobile"
+             Title="Gestion des lignes budgetaires">
+
+
+     <!--Liaison du ViewModel à la page--> 
+    <ContentPage.BindingContext>
+        <viewModels:LigneBudgetaireManageViewModel />
+    </ContentPage.BindingContext>
+
+    <Grid RowDefinitions="Auto, *">
+        <!-- Première ligne pour la barre de recherche -->
+        <SearchBar  Placeholder="Rechercher d'une ligne..."  BackgroundColor="White"  Margin="10,20,10,0"
+     FontSize="16" TextColor="Black" HorizontalOptions="FillAndExpand"  VerticalOptions="Start" HeightRequest="50"  VerticalTextAlignment="Center"
+     Grid.Row="0"/>
+        <!-- Affecter à la première ligne (Row 0) -->
+        <CollectionView ItemsSource="{Binding LigneBudgetaireItems}" Grid.Row="1" Margin="10">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <SwipeView>
+                        <SwipeView.RightItems>
+                            <SwipeItems Mode="Reveal">
+                                <SwipeItem Text="Modifier"
+                                   BackgroundColor="LightBlue"
+                                   Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:LigneBudgetaireManageViewModel}}, Path=EditCommand}"
+                                   CommandParameter="{Binding .}" 
+                                   IconImageSource="edit_icon.png" />
+
+                                <SwipeItem Text="Supprimer"
+                                   BackgroundColor="Tomato"
+                                   Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:LigneBudgetaireManageViewModel}}, Path=DeleteCommand}"
+                                   CommandParameter="{Binding .}" 
+                                   IconImageSource="delete_icon.png" />
+                            </SwipeItems>
+                        </SwipeView.RightItems>
+
+                        <Border Stroke="LightGray" StrokeThickness="1" BackgroundColor="AliceBlue" Margin="10" Padding="12">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="10" />
+                            </Border.StrokeShape>
+
+                            <VerticalStackLayout>
+                                <Label Text="{Binding CodeLigneBudgetaire}" FontAttributes="Bold" FontSize="16" />
+                                <Label Text="{Binding LibelleLigneBudgetaire}" FontSize="16" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </SwipeView>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Bouton flottant circulaire "Ajouter" -->
+        <Button Text="+" 
+     BackgroundColor="#FF7F50" 
+     TextColor="White" 
+     FontSize="30" 
+     WidthRequest="60" 
+     HeightRequest="60" 
+     CornerRadius="30" 
+     VerticalOptions="End" 
+     HorizontalOptions="End"
+     Margin="20"
+     ZIndex="1" Grid.Row="1" 
+    Command="{Binding AddLigneBugetaireCommand}"/>
+    </Grid>
+    
+</ContentPage>

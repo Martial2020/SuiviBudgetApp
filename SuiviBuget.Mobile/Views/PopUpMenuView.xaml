@@ -1,0 +1,74 @@
+<toolkit:Popup 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="SuiviBuget.Mobile.Views.Popups.PopUpMenuView"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    Size="150,150"
+    CanBeDismissedByTappingOutsideOfPopup="True"
+    VerticalOptions="Center"
+    HorizontalOptions="Center">
+
+    <!-- Fond légèrement ombré et arrondi pour un effet de popup professionnel -->
+    <Frame BackgroundColor="White"
+           HasShadow="True"
+           WidthRequest="300"
+           Padding="0" 
+           Margin="0">
+          
+
+        <VerticalStackLayout Spacing="1">
+
+            <!-- Ligne Budgétaire - aligné à gauche avec icône et effet survol -->
+            <Button 
+                Text="Ligne Budgétaire" 
+                FontSize="16" 
+                TextColor="Black" 
+                BackgroundColor="Transparent"
+                Padding="10"
+                WidthRequest="150"
+                HorizontalOptions="Start"
+                BorderColor="#F1F1F1"
+                BorderWidth="0.5">
+            
+                <Button.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding LigneBudgetCommand}" />
+                </Button.GestureRecognizers>
+            </Button>
+
+            <!-- Paramètres - aligné à gauche -->
+            <Button 
+               Text="Paramètre" 
+                WidthRequest="150"
+                FontSize="16" 
+                TextColor="Black" 
+                BackgroundColor="Transparent"
+                Padding="10"
+                HorizontalOptions="Start"
+                BorderColor="#F1F1F1"
+                BorderWidth="0.5">
+              
+                <Button.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ParametreCommand}" />
+                </Button.GestureRecognizers>
+            </Button>
+
+            <!-- À propos - aligné à gauche -->
+            <Button 
+                Text="À propos" 
+                FontSize="16" 
+                WidthRequest="150"
+                TextColor="Black" 
+                BackgroundColor="Transparent"
+                Padding="10"
+                HorizontalOptions="Start"
+                BorderColor="#F1F1F1"
+                BorderWidth="0.5">
+          
+                <Button.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding AproposCommand}" />
+                </Button.GestureRecognizers>
+            </Button>
+
+        </VerticalStackLayout>
+    </Frame>
+</toolkit:Popup>

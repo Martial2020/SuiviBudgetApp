@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SuiviBuget.Mobile.Views.LigneBudgetaireView"
+             xmlns:viewModels="clr-namespace:SuiviBuget.Mobile.ViewModels;assembly=SuiviBuget.Mobile"
+             Title="{Binding Title}"
+             BackgroundColor="White">
+
+    <!-- Liaison du ViewModel à la page -->
+    <ContentPage.BindingContext>
+        <viewModels:LigneBudgetaireViewModel />
+    </ContentPage.BindingContext>
+
+    <VerticalStackLayout Padding="20" Spacing="5">
+
+        <Label Text="Code :" FontAttributes="Bold"/>
+        <Entry x:Name="CodeEntry" Text="{Binding DataItem.CodeLigneBudgetaire}" Placeholder="Entrez le code d'une ligne budgetaire" />
+        <Label Text="Libellé :" FontAttributes="Bold"/>
+        <Entry x:Name="LibelleEntry" Text="{Binding DataItem.LibelleLigneBudgetaire}" Placeholder="Entrez le libellé d'une ligne budgetaire" />
+
+        <Button 
+            Text="{Binding LabelButton}"
+            BackgroundColor="#FF7F50"
+            TextColor="White"
+            CornerRadius="8"  
+             Command="{Binding SubmitLigneBugetaireCommand}"/>
+    
+         
+    </VerticalStackLayout>
+</ContentPage>

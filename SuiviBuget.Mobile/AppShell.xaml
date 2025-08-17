@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="SuiviBuget.Mobile.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:SuiviBuget.Mobile.Views"
+    Shell.TabBarBackgroundColor="White" 
+    xmlns:viewmodels="clr-namespace:SuiviBuget.Mobile.ViewModels"
+    Title="SuiviBuget.Mobile">
+    <!--Shell.FlyoutBehavior="Flyout"-->
+
+    <Shell.BindingContext>
+        <viewmodels:AppShellViewModel />
+    </Shell.BindingContext>
+    
+    <!-- Header avec les 3 points -->
+    <Shell.ToolbarItems >
+        <ToolbarItem Text="Menu" IconImageSource="config.png" Command="{Binding ShowMenuCommand}" />
+    </Shell.ToolbarItems>
+
+    <!-- Barre d'onglets -->
+    <TabBar>
+        <Tab Title="Tableau de bord" Icon="dotnet_bot.png" >
+            <ShellContent ContentTemplate="{DataTemplate local:TableauBordManageView}" />
+        </Tab>
+        <Tab Title="Budget" Icon="dotnet_bot.png" >
+            <ShellContent ContentTemplate="{DataTemplate local:BudgetManageView}" />
+        </Tab>
+        <Tab Title="Execution budgetaire" Icon="dotnet_bot.png">
+            <ShellContent ContentTemplate="{DataTemplate local:ExecutionBudgetaireManageView}" />
+        </Tab>
+        <Tab Title="Statisques" Icon="dotnet_bot.png">
+            <ShellContent ContentTemplate="{DataTemplate local:StatistiqueManageView}" />
+        </Tab>
+    </TabBar>
+
+</Shell>

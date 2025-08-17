@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SuiviBuget.Mobile.Views.BudgetManageView"
+               xmlns:viewModels="clr-namespace:SuiviBuget.Mobile.ViewModels;assembly=SuiviBuget.Mobile"
+              Title="Gestiion du budget" >
+
+    <!-- Liaison du ViewModel à la page -->
+    <ContentPage.BindingContext>
+        <viewModels:BudgetManageViewModel />
+    </ContentPage.BindingContext>
+    
+        <Grid RowDefinitions="Auto, *">
+            <!-- Première ligne pour la barre de recherche -->
+        <SearchBar    Placeholder="Rechercher un budget..."  BackgroundColor="White"  Margin="10,20,10,0"
+        FontSize="16" TextColor="Black" HorizontalOptions="FillAndExpand"  VerticalOptions="Start" HeightRequest="50"  VerticalTextAlignment="Center"
+        Grid.Row="0"/>
+            <!-- Affecter à la première ligne (Row 0) -->
+            <CollectionView ItemsSource="{Binding BudgetItems}"  Grid.Row="1"   VerticalOptions="FillAndExpand" Margin="10,0,10,10">
+
+                <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border Stroke="LightGray"  StrokeThickness="1" BackgroundColor="AliceBlue" Margin="10" Padding="12">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="10" />
+                        </Border.StrokeShape>
+
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="{Binding LibelleBudget}" FontAttributes="Bold" FontSize="16" />
+                            <!-- Dates -->
+                            <HorizontalStackLayout Spacing="15">
+                                <Label Text="{Binding DateDebutBudget, StringFormat='Début : {0:dd/MM/yyyy}'}" FontSize="13" TextColor="Gray"/>
+                                <Label Text="{Binding DateFinBudget, StringFormat='Fin : {0:dd/MM/yyyy}'}" FontSize="13" TextColor="Gray"/>
+                            </HorizontalStackLayout>
+                            <!-- Montants -->
+                            <HorizontalStackLayout Spacing="15">
+                                <Label Text="{Binding MontantBudget, StringFormat='Mnt : {0:N0} FCFA'}" TextColor="#32CD32" FontSize="13"/>
+                                <Label Text="{Binding MontantBudget, StringFormat='Cons : {0:N0} FCFA'}" TextColor="#FF6347" FontSize="13"/>
+                                <Label Text="{Binding MontantBudget, StringFormat='Rest : {0:N0} FCFA'}" TextColor="#1E90FF" FontSize="13"/>
+                            </HorizontalStackLayout>
+                            <!-- Statut -->
+                            <Label Text="{Binding Statut}"
+                HorizontalOptions="Start"
+                FontSize="13"
+                FontAttributes="Italic"
+                TextColor="DarkSlateGray" />
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        <!-- Bouton flottant circulaire "Ajouter" -->
+        <Button Text="+" 
+        BackgroundColor="#FF7F50" 
+        TextColor="White" 
+        FontSize="30" 
+        WidthRequest="60" 
+        HeightRequest="60" 
+        CornerRadius="30" 
+        VerticalOptions="End" 
+        HorizontalOptions="End"
+        Margin="20"
+        ZIndex="1" Grid.Row="1" />
+    </Grid>
+</ContentPage>
