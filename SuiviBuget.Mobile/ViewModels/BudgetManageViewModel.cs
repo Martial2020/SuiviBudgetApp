@@ -4,30 +4,68 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SuiviBuget.Mobile.Models;
 
 namespace SuiviBuget.Mobile.ViewModels
 {
     public class BudgetManageViewModel
     {
-        //public ObservableCollection<BudgetEntity> BudgetItems { get; set; }
+        public ObservableCollection<BudgetManageModel> BudgetItems { get; set; }
 
-        //public BudgetManageViewModel()
-        //{
-        //    // Exemple de données
-        //    BudgetItems = new ObservableCollection<BudgetEntity>
-        //{
-        //    new BudgetEntity { CodeBudget="001",LibelleBudget = "Budget 1", MontantBudget = 200000, Statut = "Cloturé",DateDebutBudget=DateTime.Now,DateFinBudget=DateTime.Now },
-        //   new BudgetEntity { CodeBudget="002",LibelleBudget = "Budget 2", MontantBudget = 678000, Statut = "Cloturé",DateDebutBudget=DateTime.Now,DateFinBudget=DateTime.Now },
-        //        new BudgetEntity { CodeBudget="003",LibelleBudget = "Budget 3", MontantBudget = 980000, Statut = "Cloturé",DateDebutBudget=DateTime.Now,DateFinBudget=DateTime.Now },
-        //        new BudgetEntity { CodeBudget="004",LibelleBudget = "Budget 4", MontantBudget = 2046000, Statut = "Cloturé",DateDebutBudget=DateTime.Now,DateFinBudget=DateTime.Now },
-        //        new BudgetEntity { CodeBudget="005",LibelleBudget = "Budget 5", MontantBudget = 440000, Statut = "Cloturé",DateDebutBudget=DateTime.Now,DateFinBudget=DateTime.Now },
-        //        new BudgetEntity { CodeBudget="006",LibelleBudget = "Budget 6", MontantBudget = 760000, Statut = "Cloturé",DateDebutBudget=DateTime.Now,DateFinBudget=DateTime.Now },
-        //        new BudgetEntity { CodeBudget="007",LibelleBudget = "Budget 7", MontantBudget = 660000, Statut = "Cloturé",DateDebutBudget=DateTime.Now,DateFinBudget=DateTime.Now },
-        //        new BudgetEntity { CodeBudget="008",LibelleBudget = "Budget 8", MontantBudget = 110000, Statut = "En cours",DateDebutBudget=DateTime.Now,DateFinBudget=DateTime.Now },
-        //        new BudgetEntity { CodeBudget="009",LibelleBudget = "Budget 9", MontantBudget = 50000, Statut = "En Cours",DateDebutBudget=DateTime.Now,DateFinBudget=DateTime.Now },
-        //        new BudgetEntity { CodeBudget="010",LibelleBudget = "Budget 10", MontantBudget = 2000, Statut = "En cours",DateDebutBudget=DateTime.Now,DateFinBudget=DateTime.Now },
-        //        new BudgetEntity { CodeBudget="011",LibelleBudget = "Budget 11", MontantBudget = 200000, Statut = "En cours",DateDebutBudget=DateTime.Now,DateFinBudget=DateTime.Now },
-        //};
-        //}
+        public BudgetManageViewModel()
+        {
+            BudgetItems = new ObservableCollection<BudgetManageModel>
+        {
+            new BudgetManageModel
+            {
+                CodeBudget = "001",
+                LibelleBudget = "Budget Marketing",
+                DescriptionBudget = "Budget pour les campagnes marketing 2025",
+                MontantBudget = 200_000m,
+                DateCreationBudget = DateTime.Now.AddDays(-10),
+                DateDebutBudget = DateTime.Now,
+                DateFinBudget = DateTime.Now.AddMonths(1),
+                StatutBudget = true,
+                NbreLigneBudgetaire = 5
+            },
+            new BudgetManageModel
+            {
+                CodeBudget = "002",
+                LibelleBudget = "Budget IT",
+                DescriptionBudget = "Budget pour le développement et la maintenance IT",
+                MontantBudget = 678_000m,
+                DateCreationBudget = DateTime.Now.AddDays(-20),
+                DateDebutBudget = DateTime.Now,
+                DateFinBudget = DateTime.Now.AddMonths(3),
+                StatutBudget = false,
+                NbreLigneBudgetaire = 10
+            },
+            new BudgetManageModel   
+            {
+                CodeBudget = "003",
+                LibelleBudget = "Budget RH",
+                DescriptionBudget = "Budget pour les salaires et formations",
+                MontantBudget = 450_000m,
+                DateCreationBudget = DateTime.Now.AddDays(-5),
+                DateDebutBudget = DateTime.Now,
+                DateFinBudget = DateTime.Now.AddMonths(2),
+                StatutBudget = true,
+                NbreLigneBudgetaire = 7
+            },
+            new BudgetManageModel
+            {
+                CodeBudget = "004",
+                LibelleBudget = "Budget Opérations",
+                DescriptionBudget = "Budget pour les opérations quotidiennes",
+                MontantBudget = 300_000m,
+                DateCreationBudget = DateTime.Now.AddDays(-15),
+                DateDebutBudget = DateTime.Now,
+                DateFinBudget = DateTime.Now.AddMonths(1),
+                StatutBudget = false,
+                NbreLigneBudgetaire = 12
+            }
+        };
+
+        }
     }
 }

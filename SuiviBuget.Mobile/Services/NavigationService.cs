@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SuiviBudget.Core.Constants;
 using SuiviBudget.Core.Interfaces;
 using SuiviBuget.Mobile.Views;
 
@@ -10,7 +11,7 @@ namespace SuiviBuget.Mobile.Services
 {
     public class NavigationService : INavigationService
     {
-        public async Task NavigateToAsync(string pageName,string code="")
+        public async Task NavigateToAsync(string pageName,string code="", string action = GlobalConst.Add)
         {
             switch (pageName)
             {
@@ -23,7 +24,7 @@ namespace SuiviBuget.Mobile.Services
                 case "LigneBudgetaireView":
                     //await Shell.Current.GoToAsync(nameof(LigneBudgetaireView));
                     //await Shell.Current.GoToAsync($"LigneBudgetaireView?Code={code}");
-                    await Shell.Current.GoToAsync($"{nameof(LigneBudgetaireView)}?Code={code}");
+                    await Shell.Current.GoToAsync($"{nameof(LigneBudgetaireView)}?Code={code}&&Action={action}");
                     break;
                 default:
                     break;

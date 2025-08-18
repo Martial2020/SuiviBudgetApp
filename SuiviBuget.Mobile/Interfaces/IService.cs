@@ -7,10 +7,10 @@ using SuiviBuget.Mobile.Models;
 
 namespace SuiviBudget.Core.Interfaces
 {
-    public interface IAdminService
+    public interface IService
     {
         #region Ligne budgetaire
-        Task<List<LigneBudgetaireModel>> GetLigneBudgetaireItems();
+        Task<List<LigneBudgetaireModel>> GetLigneBudgetaireItems(string searchText);
         Task<LigneBudgetaireModel> GetLigneBudgetaireByCode(string code);
         Task<bool> AddLigneBudgetaireAsync(LigneBudgetaireModel ligne);
         Task<bool> UpdateLigneBudgetaireAsync(LigneBudgetaireModel ligne);

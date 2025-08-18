@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using SuiviBudget.Core.Interfaces;
 using System.Windows.Input;
-using Budget.Services.Services;
 using CommunityToolkit.Mvvm.Input;
 using MvvmHelpers;
 

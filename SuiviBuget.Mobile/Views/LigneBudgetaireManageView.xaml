@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SuiviBuget.Mobile.Views.LigneBudgetaireManageView"
              xmlns:viewModels="clr-namespace:SuiviBuget.Mobile.ViewModels;assembly=SuiviBuget.Mobile"
-             Title="Gestion des lignes budgetaires">
+             Title="Liste des lignes budgetaires">
 
 
      <!--Liaison du ViewModel à la page--> 
@@ -15,7 +15,7 @@
         <!-- Première ligne pour la barre de recherche -->
         <SearchBar  Placeholder="Rechercher d'une ligne..."  BackgroundColor="White"  Margin="10,20,10,0"
      FontSize="16" TextColor="Black" HorizontalOptions="FillAndExpand"  VerticalOptions="Start" HeightRequest="50"  VerticalTextAlignment="Center"
-     Grid.Row="0"/>
+     Grid.Row="0" Text="{Binding SearchText, Mode=TwoWay}"/>
         <!-- Affecter à la première ligne (Row 0) -->
         <CollectionView ItemsSource="{Binding LigneBudgetaireItems}" Grid.Row="1" Margin="10">
             <CollectionView.ItemTemplate>
@@ -37,14 +37,14 @@
                             </SwipeItems>
                         </SwipeView.RightItems>
 
-                        <Border Stroke="LightGray" StrokeThickness="1" BackgroundColor="AliceBlue" Margin="10" Padding="12">
+                        <Border Stroke="LightGray" StrokeThickness="1" BackgroundColor="AliceBlue" Margin="5" Padding="12">
                             <Border.StrokeShape>
                                 <RoundRectangle CornerRadius="10" />
                             </Border.StrokeShape>
 
                             <VerticalStackLayout>
-                                <Label Text="{Binding CodeLigneBudgetaire}" FontAttributes="Bold" FontSize="16" />
-                                <Label Text="{Binding LibelleLigneBudgetaire}" FontSize="16" />
+                                <Label Text="{Binding CodeLigneBudgetaire}" FontAttributes="Bold" FontSize="13" />
+                                <Label Text="{Binding LibelleLigneBudgetaire}" FontSize="13" />
                             </VerticalStackLayout>
                         </Border>
                     </SwipeView>

@@ -12,12 +12,11 @@
     </ContentPage.BindingContext>
 
     <VerticalStackLayout Padding="20" Spacing="5">
-
         <Label Text="Code :" FontAttributes="Bold"/>
-        <Entry x:Name="CodeEntry" Text="{Binding DataItem.CodeLigneBudgetaire}" Placeholder="Entrez le code d'une ligne budgetaire" />
+        <Entry x:Name="CodeEntry" Text="{Binding DataItem.CodeLigneBudgetaire, Mode=TwoWay}" 
+               IsEnabled="{Binding CodeLigneBudgetaireIsEnabled, Mode=TwoWay}" Placeholder="Entrez le code d'une ligne budgetaire" />
         <Label Text="Libellé :" FontAttributes="Bold"/>
-        <Entry x:Name="LibelleEntry" Text="{Binding DataItem.LibelleLigneBudgetaire}" Placeholder="Entrez le libellé d'une ligne budgetaire" />
-
+        <Entry x:Name="LibelleEntry" Text="{Binding DataItem.LibelleLigneBudgetaire, Mode=TwoWay}" Placeholder="Entrez le libellé d'une ligne budgetaire" />
         <Button 
             Text="{Binding LabelButton}"
             BackgroundColor="#FF7F50"

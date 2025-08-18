@@ -19,17 +19,17 @@
     </Shell.ToolbarItems>
 
     <!-- Barre d'onglets -->
-    <TabBar>
-        <Tab Title="Tableau de bord" Icon="dotnet_bot.png" >
+    <TabBar >
+        <Tab Title="Accueil" >
             <ShellContent ContentTemplate="{DataTemplate local:TableauBordManageView}" />
         </Tab>
-        <Tab Title="Budget" Icon="dotnet_bot.png" >
+        <Tab Title="Budget"  >
             <ShellContent ContentTemplate="{DataTemplate local:BudgetManageView}" />
         </Tab>
-        <Tab Title="Execution budgetaire" Icon="dotnet_bot.png">
+        <Tab Title="Execution">
             <ShellContent ContentTemplate="{DataTemplate local:ExecutionBudgetaireManageView}" />
         </Tab>
-        <Tab Title="Statisques" Icon="dotnet_bot.png">
+        <Tab Title="Rapports" >
             <ShellContent ContentTemplate="{DataTemplate local:StatistiqueManageView}" />
         </Tab>
     </TabBar>

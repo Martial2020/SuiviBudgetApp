@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace SuiviBuget.Mobile.Models
 {
-    public class LigneBudgetaireModel
+    public partial class LigneBudgetaireModel : ObservableObject
     {
-        public string? CodeLigneBudgetaire { get; set; }
-        public string? LibelleLigneBudgetaire { get; set; }
+        [ObservableProperty]
+        private string? codeLigneBudgetaire;
+
+        [ObservableProperty]
+        private string? libelleLigneBudgetaire;
     }
 }

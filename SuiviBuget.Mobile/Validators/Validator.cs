@@ -4,10 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Budget.Services.Services;
 using SuiviBudget.Core.Interfaces;
 using SuiviBuget.Mobile.Helpers;
 using SuiviBuget.Mobile.Models;
+using SuiviBuget.Mobile.Services;
 
 namespace SuiviBudge.Validators
 {
@@ -15,10 +15,10 @@ namespace SuiviBudge.Validators
     {
 
         static string dbPath = Helper.GetDatabaseFullPath();
-        static IAdminService adminService;
+        static IService adminService;
         static Validator()
         {
-            adminService = new AdminServices(dbPath);
+            adminService = new Services(dbPath);
         }
 
         #region Ligne budgetaire

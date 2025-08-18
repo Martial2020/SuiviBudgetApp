@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SuiviBuget.Mobile.Views.BudgetManageView"
                xmlns:viewModels="clr-namespace:SuiviBuget.Mobile.ViewModels;assembly=SuiviBuget.Mobile"
-              Title="Gestiion du budget" >
+              Title="Liste des budgets" >
 
     <!-- Liaison du ViewModel à la page -->
     <ContentPage.BindingContext>
@@ -26,24 +26,27 @@
                         </Border.StrokeShape>
 
                         <VerticalStackLayout Spacing="5">
-                            <Label Text="{Binding LibelleBudget}" FontAttributes="Bold" FontSize="16" />
+                            <HorizontalStackLayout Spacing="15">
+                                <Label Text="{Binding CodeBudget}" FontAttributes="Bold" />
+                                <Label Text="{Binding LibelleBudget}" FontAttributes="Bold"/>
+                            </HorizontalStackLayout>
                             <!-- Dates -->
                             <HorizontalStackLayout Spacing="15">
-                                <Label Text="{Binding DateDebutBudget, StringFormat='Début : {0:dd/MM/yyyy}'}" FontSize="13" TextColor="Gray"/>
-                                <Label Text="{Binding DateFinBudget, StringFormat='Fin : {0:dd/MM/yyyy}'}" FontSize="13" TextColor="Gray"/>
+                                <Label Text="{Binding DateDebutBudget, StringFormat='Période du : {0:dd/MM/yyyy}'}"  TextColor="Gray"/>
+                                <Label Text="{Binding DateDebutBudget, StringFormat='Au : {0:dd/MM/yyyy}'}"  TextColor="Gray"/>
                             </HorizontalStackLayout>
                             <!-- Montants -->
-                            <HorizontalStackLayout Spacing="15">
-                                <Label Text="{Binding MontantBudget, StringFormat='Mnt : {0:N0} FCFA'}" TextColor="#32CD32" FontSize="13"/>
-                                <Label Text="{Binding MontantBudget, StringFormat='Cons : {0:N0} FCFA'}" TextColor="#FF6347" FontSize="13"/>
-                                <Label Text="{Binding MontantBudget, StringFormat='Rest : {0:N0} FCFA'}" TextColor="#1E90FF" FontSize="13"/>
+                            <HorizontalStackLayout Spacing="10">
+                                <Label Text="{Binding MontantBudget, StringFormat='Mnt : {0:N0} FCFA'}" TextColor="#32CD32" />
+                                <Label Text="{Binding MontantBudget, StringFormat='Cons : {0:N0} FCFA'}" TextColor="#FF6347"/>
                             </HorizontalStackLayout>
+
                             <!-- Statut -->
-                            <Label Text="{Binding Statut}"
-                HorizontalOptions="Start"
-                FontSize="13"
-                FontAttributes="Italic"
-                TextColor="DarkSlateGray" />
+                            <HorizontalStackLayout Spacing="10">
+                                <Label Text="{Binding MontantBudget, StringFormat='Rest : {0:N0} FCFA'}" TextColor="Blue" />
+                                <Label Text="{Binding  StatutBudget}"  HorizontalOptions="Start"   FontAttributes="Italic" TextColor="Red" />
+                            </HorizontalStackLayout>
+
                         </VerticalStackLayout>
                     </Border>
                 </DataTemplate>

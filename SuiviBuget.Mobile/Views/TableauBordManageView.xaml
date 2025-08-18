@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SuiviBuget.Mobile.Views.TableauBordManageView"
-             Title="TableauBordManageView">
+             Title="Tableau de bord">
     <VerticalStackLayout>
         <Label 
             Text="Bienvenu sur le tableau de bord"
