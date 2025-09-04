@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SuiviBudget.Core.Interfaces;
+using SuiviBudget.Mobile.Interfaces;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using MvvmHelpers;

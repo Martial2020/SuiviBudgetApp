@@ -1,5 +1,5 @@
 using CommunityToolkit.Maui.Views;
-using SuiviBudget.Core.Interfaces;
+using SuiviBudget.Mobile.Interfaces;
 using SuiviBuget.Mobile.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using SuiviBuget.Mobile.Services;

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SuiviBudget.Core.Constants;
+using SuiviBudget.Mobile.Constants;
 
-namespace SuiviBudget.Core.Interfaces
+namespace SuiviBudget.Mobile.Interfaces
 {
     public interface INavigationService
     {

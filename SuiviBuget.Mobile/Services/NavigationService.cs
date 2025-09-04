@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SuiviBudget.Core.Constants;
-using SuiviBudget.Core.Interfaces;
+using SuiviBudget.Mobile.Constants;
+using SuiviBudget.Mobile.Interfaces;
+
 using SuiviBuget.Mobile.Views;
 
 namespace SuiviBuget.Mobile.Services
 {
     public class NavigationService : INavigationService
     {
-        public async Task NavigateToAsync(string pageName,string code="", string action = GlobalConst.Add)
+        public async Task NavigateToAsync(string pageName, string code = "", string action = GlobalConst.Add)
         {
             switch (pageName)
             {
@@ -26,6 +27,16 @@ namespace SuiviBuget.Mobile.Services
                     //await Shell.Current.GoToAsync($"LigneBudgetaireView?Code={code}");
                     await Shell.Current.GoToAsync($"{nameof(LigneBudgetaireView)}?Code={code}&&Action={action}");
                     break;
+                case "BudgetView":
+                    await Shell.Current.GoToAsync($"{nameof(BudgetView)}?Code={code}&&Action={action}");
+                    break;
+                case "BudgetDetailManageView":
+                    await Shell.Current.GoToAsync($"{nameof(BudgetDetailManageView)}?Code={code}&&Action={action}");
+                    break;
+                case "BudgetDetailView":
+                    await Shell.Current.GoToAsync($"{nameof(BudgetDetailView)}?Code={code}&&Action={action}");
+                    break;
+                    
                 default:
                     break;
             }
@@ -35,6 +46,6 @@ namespace SuiviBuget.Mobile.Services
             await Shell.Current.GoToAsync("..");
         }
 
-        
+
     }
 }

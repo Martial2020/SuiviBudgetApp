@@ -19,14 +19,14 @@ using static SQLite.SQLite3;
 
 namespace SuiviBuget.Mobile.ViewModels
 {
-    public partial class LigneBudgetaireViewModel : ObservableObject
+    public partial class BudgetViewModel : ObservableObject
     {
         #region Propriete
         [ObservableProperty]
-        private LigneBudgetaireModel dataItem = new();
+        private BudgetModel dataItem = new();
 
         [ObservableProperty]
-        private string title = "Ajouter une ligne budgetaire";
+        private string title = "Ajouter un budget";
 
         [ObservableProperty]
         private string labelButton = "Ajouter";
@@ -45,50 +45,38 @@ namespace SuiviBuget.Mobile.ViewModels
             }
         }
 
-        private bool _CodeLigneBudgetaireIsEnabled = true;
-        public bool CodeLigneBudgetaireIsEnabled
-        {
-            get => _CodeLigneBudgetaireIsEnabled;
-            set
-            {
-                if (_CodeLigneBudgetaireIsEnabled != value)
-                {
-                    _CodeLigneBudgetaireIsEnabled = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
         #endregion
 
         #region Interfaces
         IService adminService { get; set; }
-        public ICommand SubmitLigneBugetaireCommand { get; }
+        public ICommand SubmitCommand { get; }
         private readonly INavigationService _navigationService;
         private readonly IAlertService _alertService;
 
         #endregion
-        public LigneBudgetaireViewModel()
+        public BudgetViewModel()
         {
             string dbPath = Helper.GetDatabaseFullPath();
             adminService = new Services.Services(dbPath);
             _navigationService = new NavigationService();
             _navigationService = new NavigationService();
             _alertService = new AlertService();
-            SubmitLigneBugetaireCommand = new RelayCommand(OnSubmitLigneBugetaireCommand);
+            SubmitCommand = new RelayCommand(OnSubmitCommand);
+
         }
 
-        private async void OnSubmitLigneBugetaireCommand()
+        private async void OnSubmitCommand()
         {
             switch (Action)
             {
                 case GlobalConst.Add:
-                    CreateLigneBudgetaire();
+                    CreateBudget();
                     break;
                 case GlobalConst.Edit:
-                    UpdateLigneBudgetaire();
+                    UpdateBudget();
                     break;
                 default:
-                    await _alertService.ShowAlertAsync("Erreur", "Aucune action.");
+                    await _alertService.ShowAlertAsync("Erreur", "Aucune action définie.");
                     break;
             }
         }
@@ -98,53 +86,59 @@ namespace SuiviBuget.Mobile.ViewModels
             Action = action;
             switch (Action)
             {
-                case GlobalConst.Add:                  
-                    DataItem.CodeLigneBudgetaire = await adminService.GetNumeroForCodeEntityAsync(ParametreCompteurConst.LB);
-                    CodeLigneBudgetaireIsEnabled = false;
+                case GlobalConst.Add:
+                    DataItem.CodeBudget = await adminService.GetNumeroForCodeEntityAsync(ParametreCompteurConst.BG);
+                    DataItem.DateDebutBudget = DateTime.Today;
+                    DataItem.DateFinBudget = DateTime.Today;
                     break;
                 case GlobalConst.Edit:
-                    Title = "Modifier une ligne budgetaire";
+                    Title = "Modifier un budget";
                     LabelButton = "Modifier";
-                    var ligne = await adminService.GetLigneBudgetaireByCode(code);
-                    if (ligne == null) { return; }
-                    DataItem.CodeLigneBudgetaire = ligne.CodeLigneBudgetaire;
-                    DataItem.LibelleLigneBudgetaire = ligne.LibelleLigneBudgetaire;
-                    CodeLigneBudgetaireIsEnabled = false;
+                    var budget = await adminService.GetBudgetByCode(code);
+                    if (budget == null) { return; }
+                    DataItem.CodeBudget = budget.CodeBudget;
+                    DataItem.LibelleBudget = budget.LibelleBudget;
+                    DataItem.DateDebutBudget = budget.DateDebutBudget;
+                    DataItem.DateFinBudget = budget.DateFinBudget;
+                    DataItem.StatutBudget = budget.StatutBudget;
                     break;
                 default:
                     break;
             }
 
-            // Le titre de la page
-            if (!string.IsNullOrEmpty(code))
-            {
 
-            }
         }
 
-        private async void CreateLigneBudgetaire()
+        private async void CreateBudget()
         {
-            var dataEntity = new LigneBudgetaireModel
-            {
-                CodeLigneBudgetaire = dataItem.CodeLigneBudgetaire,
-                LibelleLigneBudgetaire = dataItem.LibelleLigneBudgetaire
-            };
             try
             {
-                var result = await Validator.ValidateLigneBugetaireCreate(dataEntity);
+                var result = await Validator.ValidateBudgetCreateAsync(DataItem);
                 if (!result.isSuccess)
                 {
                     await _alertService.ShowAlertAsync("Erreur", result.message);
                     return;
                 }
-                var isOk = await adminService.AddLigneBudgetaireAsync(dataEntity);
+                var dataEntity = new BudgetModel
+                {
+                    CodeBudget = DataItem.CodeBudget,
+                    LibelleBudget = DataItem.LibelleBudget,
+                    DateDebutBudget = DataItem.DateDebutBudget,
+                    DateFinBudget = DataItem.DateFinBudget,
+                    DateCreationBudget = DateTime.Now,
+                    //DescriptionBudget = "",
+                    MontantBudget = 0,
+                    NbreLigneBudgetaire = 0,
+                    StatutBudget = StatutBudgetConst.Ouvert
+                };
+                var isOk = await adminService.AddBudgetAsync(dataEntity);
                 if (!isOk)
                 {
                     await _alertService.ShowAlertAsync("Erreur", "Nous rencontrons une erreur lors de l'enregistrement");
                     return;
                 }
 
-                await _alertService.ShowAlertAsync("Information", $"Ligne budgetaire [{dataEntity.LibelleLigneBudgetaire}] a été créée avec succès");
+                await _alertService.ShowAlertAsync("Information", $"Le budget[{dataEntity.LibelleBudget}] a été créé avec succès");
                 WeakReferenceMessenger.Default.Send(new RefreshList());
                 await _navigationService.GoBackAsync();
             }
@@ -157,29 +151,37 @@ namespace SuiviBuget.Mobile.ViewModels
 
         }
 
-        private async void UpdateLigneBudgetaire()
+     
+        private async void UpdateBudget()
         {
-            var dataEntity = new LigneBudgetaireModel
-            {
-                CodeLigneBudgetaire = dataItem.CodeLigneBudgetaire,
-                LibelleLigneBudgetaire = dataItem.LibelleLigneBudgetaire
-            };
             try
             {
-                var result = await Validator.ValidateLigneBugetaireUpdate(dataEntity);
+                var result = Validator.ValidateBudgetUpdate(DataItem);
                 if (!result.isSuccess)
                 {
                     await _alertService.ShowAlertAsync("Erreur", result.message);
                     return;
                 }
-                var isOk = await adminService.UpdateLigneBudgetaireAsync(dataEntity);
+                var dataEntity = new BudgetModel
+                {
+                    CodeBudget = DataItem.CodeBudget,
+                    LibelleBudget = DataItem.LibelleBudget,
+                    DateDebutBudget = DataItem.DateDebutBudget,
+                    DateFinBudget = DataItem.DateFinBudget,
+                    DateCreationBudget = DataItem.DateCreationBudget,
+                    //DescriptionBudget = "",
+                    MontantBudget = DataItem.MontantBudget,
+                    NbreLigneBudgetaire = DataItem.NbreLigneBudgetaire,
+                    StatutBudget = DataItem.statutBudget
+                };
+                var isOk = await adminService.UpdateBudgetAsync(dataEntity);
                 if (!isOk)
                 {
                     await _alertService.ShowAlertAsync("Erreur", "Nous rencontrons une erreur lors de la modification");
                     return;
                 }
 
-                await _alertService.ShowAlertAsync("Information", $"Ligne budgetaire [{dataEntity.CodeLigneBudgetaire}] a été modifiée avec succès");
+                await _alertService.ShowAlertAsync("Information", $"Le budget [{dataEntity.CodeBudget}] a été modifiée avec succs");
                 WeakReferenceMessenger.Default.Send(new RefreshList());
                 await _navigationService.GoBackAsync();
             }

@@ -1,24 +1,22 @@
-using SuiviBuget.Mobile.Models;
 using SuiviBuget.Mobile.ViewModels;
 
 namespace SuiviBuget.Mobile.Views;
 
-public partial class BudgetView : ContentPage, IQueryAttributable
+public partial class BudgetDetailView : ContentPage, IQueryAttributable
 {
-	public BudgetView()
-	{
-		InitializeComponent();
-	}
+    public BudgetDetailView()
+    {
+        InitializeComponent();
+    }
+
     public async void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         if (query.TryGetValue("Code", out var code) && query.TryGetValue("Action", out var action))
         {
-            if (BindingContext is BudgetViewModel vm)
+            if (BindingContext is BudgetDetailViewModel vm)
             {
                 _ = vm.InitializePageAsync(code.ToString(), action.ToString());
             }
         }
     }
- 
-
 }

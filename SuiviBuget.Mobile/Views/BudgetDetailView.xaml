@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SuiviBuget.Mobile.Views.BudgetDetailView"
+             xmlns:viewModels="clr-namespace:SuiviBuget.Mobile.ViewModels;assembly=SuiviBuget.Mobile"
+             Title="{Binding Title}"
+             BackgroundColor="White">
+
+    <!-- Liaison du ViewModel à la page -->
+    <ContentPage.BindingContext>
+        <viewModels:BudgetDetailViewModel />
+    </ContentPage.BindingContext>
+
+    <VerticalStackLayout Padding="20" Spacing="5">
+        <!-- ComboBox (Picker dans MAUI) -->
+        <Label Text="Ligne budgetaire :" FontAttributes="Bold"/>
+        <Picker Title="Sélectionnez une ligne budgetaire"
+            ItemsSource="{Binding LigneBudgetaireItems,Mode=TwoWay}" 
+            ItemDisplayBinding="{Binding LibelleLigneBudgetaire, Mode=TwoWay}" 
+            SelectedItem="{Binding SelectedLigneBudgetaire, Mode=TwoWay}"
+            IsEnabled="{Binding CodeLigneBudgetaireIsEnabled,Mode=TwoWay}"/>
+
+        <!-- Champ Montant -->
+        <Label Text="Montant :" FontAttributes="Bold"/>
+        <Entry x:Name="MontantEntry"
+           Text="{Binding DataItem.Montant, Mode=TwoWay}" 
+           Placeholder="Entrez le montant"
+           Keyboard="Numeric" />
+
+        <Button 
+            Text="{Binding LabelButton}"
+            BackgroundColor="#FF7F50"
+            TextColor="White"
+            CornerRadius="8"  
+             Command="{Binding SubmitCommand}"/>
+
+
+    </VerticalStackLayout>
+</ContentPage>

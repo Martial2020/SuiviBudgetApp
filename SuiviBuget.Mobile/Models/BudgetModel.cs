@@ -3,19 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace SuiviBuget.Mobile.Models
 {
-    public class BudgetModel
+    public partial class BudgetModel : ObservableObject
     {
-        public string CodeBudget { get; set; }
-        public string LibelleBudget { get; set; }
-        public string DescriptionBudget { get; set; }
-        public decimal MontantBudget { get; set; }
-        public DateTime DateCreationBudget { get; set; }
-        public DateTime DateDebutBudget { get; set; }
-        public DateTime DateDebutFin { get; set; }
-        public bool StatutBudget { get; set; }
-        public int NbreLigneBudgetaire { get; set; }
+        [ObservableProperty]
+        private string? codeBudget;
+        [ObservableProperty]
+        public string libelleBudget;
+        [ObservableProperty]
+        public decimal montantBudget;
+        [ObservableProperty]
+        public DateTime dateCreationBudget;
+        [ObservableProperty]
+        public DateTime dateDebutBudget;
+        [ObservableProperty]
+        public DateTime dateFinBudget;
+        [ObservableProperty]
+        public string statutBudget;
+        [ObservableProperty]
+        public int nbreLigneBudgetaire;
+
     }
 }

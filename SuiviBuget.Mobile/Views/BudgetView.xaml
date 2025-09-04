@@ -2,11 +2,37 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SuiviBuget.Mobile.Views.BudgetView"
-             Title="BudgetView">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI! BudgetView"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
+             xmlns:viewModels="clr-namespace:SuiviBuget.Mobile.ViewModels;assembly=SuiviBuget.Mobile"
+             Title="{Binding Title}">
+    <!-- Liaison du ViewModel à la page -->
+    <ContentPage.BindingContext>
+        <viewModels:BudgetViewModel />
+    </ContentPage.BindingContext>
+
+    <VerticalStackLayout Padding="20" Spacing="5">
+        <Label Text="Code :" FontAttributes="Bold"/>
+        <Entry x:Name="CodeEntry" Text="{Binding DataItem.CodeBudget, Mode=TwoWay}" 
+               IsEnabled="False"  Placeholder="Code du budget" />
+
+
+        <Label Text="Libellé :" FontAttributes="Bold"/>
+        <Entry x:Name="LibelleEntry" Text="{Binding DataItem.LibelleBudget, Mode=TwoWay}"
+           Placeholder="Entrez le libellé du budget" />
+
+        <Label Text="Date début:" FontAttributes="Bold" />
+        <DatePicker x:Name="DatePickerDebut"  Format="dd/MM/yyyy" 
+        Date="{Binding DataItem.DateDebutBudget, Mode=TwoWay}"/>
+
+        <Label Text="Date fin:" FontAttributes="Bold" />
+        <DatePicker x:Name="DatePickerFin"  Format="dd/MM/yyyy" 
+         Date="{Binding DataItem.DateFinBudget, Mode=TwoWay}"/>
+
+        <Button 
+            Text="{Binding LabelButton}"
+            BackgroundColor="#FF7F50"
+            TextColor="White"
+            CornerRadius="8"  
+             Command="{Binding SubmitCommand}"/>
+
     </VerticalStackLayout>
 </ContentPage>

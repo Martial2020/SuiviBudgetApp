@@ -14,10 +14,12 @@ namespace SuiviBudget.Services.DataAccess
         public string LibelleBudget { get; set; }
         public string DescriptionBudget { get; set; }
         public decimal MontantBudget { get; set; }
+        public decimal MontantUtilise { get; set; }
+        public decimal MontantRestant { get; set; }
         public DateTime DateCreationBudget { get; set; }
         public DateTime DateDebutBudget { get; set; }
-        public DateTime DateDebutFin{ get; set; }
-        public bool StatutBudget{ get; set; }
+        public DateTime DateFinBudget{ get; set; }
+        public string StatutBudget{ get; set; }
         public int  NbreLigneBudgetaire{ get; set; }
     }
 }

@@ -9,60 +9,119 @@
     <ContentPage.BindingContext>
         <viewModels:BudgetManageViewModel />
     </ContentPage.BindingContext>
-    
-        <Grid RowDefinitions="Auto, *">
-            <!-- Première ligne pour la barre de recherche -->
-        <SearchBar    Placeholder="Rechercher un budget..."  BackgroundColor="White"  Margin="10,20,10,0"
-        FontSize="16" TextColor="Black" HorizontalOptions="FillAndExpand"  VerticalOptions="Start" HeightRequest="50"  VerticalTextAlignment="Center"
-        Grid.Row="0"/>
-            <!-- Affecter à la première ligne (Row 0) -->
-            <CollectionView ItemsSource="{Binding BudgetItems}"  Grid.Row="1"   VerticalOptions="FillAndExpand" Margin="10,0,10,10">
+
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- SearchBar -->
+        <SearchBar Placeholder="Rechercher un budget..."
+               BackgroundColor="White"
+               Margin="10,20,10,0"
+               FontSize="16"
+               TextColor="Black"
+               HorizontalOptions="FillAndExpand"
+               VerticalOptions="Start"
+               HeightRequest="50"
+               Grid.Row="0"
+               Text="{Binding SearchText, Mode=TwoWay}" />
+
+        <!-- Contenu -->
+        <AbsoluteLayout Grid.Row="1">
+
+            <!-- CollectionView -->
+            <CollectionView ItemsSource="{Binding BudgetItems}"
+                        Margin="10,0,10,10"
+                        AbsoluteLayout.LayoutFlags="All"
+                        AbsoluteLayout.LayoutBounds="0,0,1,1">
 
                 <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Border Stroke="LightGray"  StrokeThickness="1" BackgroundColor="AliceBlue" Margin="10" Padding="12">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="10" />
-                        </Border.StrokeShape>
+                    <DataTemplate>
+                        <Border Stroke="LightGray"
+                            StrokeThickness="1"
+                            BackgroundColor="AliceBlue"
+                            Margin="10"
+                            Padding="12">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="10"/>
+                            </Border.StrokeShape>
 
-                        <VerticalStackLayout Spacing="5">
-                            <HorizontalStackLayout Spacing="15">
-                                <Label Text="{Binding CodeBudget}" FontAttributes="Bold" />
-                                <Label Text="{Binding LibelleBudget}" FontAttributes="Bold"/>
-                            </HorizontalStackLayout>
-                            <!-- Dates -->
-                            <HorizontalStackLayout Spacing="15">
-                                <Label Text="{Binding DateDebutBudget, StringFormat='Période du : {0:dd/MM/yyyy}'}"  TextColor="Gray"/>
-                                <Label Text="{Binding DateDebutBudget, StringFormat='Au : {0:dd/MM/yyyy}'}"  TextColor="Gray"/>
-                            </HorizontalStackLayout>
-                            <!-- Montants -->
-                            <HorizontalStackLayout Spacing="10">
-                                <Label Text="{Binding MontantBudget, StringFormat='Mnt : {0:N0} FCFA'}" TextColor="#32CD32" />
-                                <Label Text="{Binding MontantBudget, StringFormat='Cons : {0:N0} FCFA'}" TextColor="#FF6347"/>
-                            </HorizontalStackLayout>
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto">
 
-                            <!-- Statut -->
-                            <HorizontalStackLayout Spacing="10">
-                                <Label Text="{Binding MontantBudget, StringFormat='Rest : {0:N0} FCFA'}" TextColor="Blue" />
-                                <Label Text="{Binding  StatutBudget}"  HorizontalOptions="Start"   FontAttributes="Italic" TextColor="Red" />
-                            </HorizontalStackLayout>
+                                <!-- Infos Budget -->
+                                <VerticalStackLayout Grid.Column="0" Grid.Row="0" Spacing="4">
+                                    <Label Text="{Binding CodeBudget}" FontAttributes="Bold"/>
+                                    <Label Text="{Binding LibelleBudget}" FontAttributes="Bold"/>
+                                </VerticalStackLayout>
 
-                        </VerticalStackLayout>
-                    </Border>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-        <!-- Bouton flottant circulaire "Ajouter" -->
-        <Button Text="+" 
-        BackgroundColor="#FF7F50" 
-        TextColor="White" 
-        FontSize="30" 
-        WidthRequest="60" 
-        HeightRequest="60" 
-        CornerRadius="30" 
-        VerticalOptions="End" 
-        HorizontalOptions="End"
-        Margin="20"
-        ZIndex="1" Grid.Row="1" />
+                                <!-- Bouton Actions modernisé (menu ⋮) -->
+                                <Button Grid.Column="1" Grid.Row="0"
+                                    Text="⋮"
+                                    FontSize="20"
+                                    BackgroundColor="Transparent"
+                                    TextColor="#4682B4"
+                                    WidthRequest="40"
+                                    HeightRequest="40"
+                                    CornerRadius="20"
+                                    BorderColor="#4682B4"
+                                    BorderWidth="1"
+                                    Clicked="OnActionsClicked"
+                                    HorizontalOptions="End"
+                                    VerticalOptions="Center"/>
+
+                                <!-- Dates -->
+                                <HorizontalStackLayout Grid.Row="1" Grid.ColumnSpan="2" Spacing="5">
+                                    <Label Text="{Binding DateDebutBudget, StringFormat='Du : {0:dd/MM/yyyy}'}" TextColor="Gray"/>
+                                    <Label Text="{Binding DateFinBudget, StringFormat='Au : {0:dd/MM/yyyy}'}" TextColor="Gray"/>
+                                </HorizontalStackLayout>
+
+                                <!-- Montants -->
+                                <HorizontalStackLayout Grid.Row="2" Grid.ColumnSpan="2" Spacing="15">
+                                    <Label Text="{Binding MontantBudget, StringFormat='Solde : {0:N0} FCFA'}" TextColor="#32CD32"/>
+                                   
+                                    <!--<Label Text="{Binding MontantRestant, StringFormat='Rest : {0:N0} FCFA'}" TextColor="Blue"/>-->
+                                </HorizontalStackLayout>
+
+                                <!-- Statut -->
+                                <HorizontalStackLayout Grid.Row="3" Grid.ColumnSpan="2" Spacing="15" HorizontalOptions="Start" >
+                                    <Label Text="{Binding MontantUtilise, StringFormat='Utilisé : {0:N0} FCFA'}" TextColor="Blue"/>
+                                </HorizontalStackLayout>
+                                
+                                <!-- Statut -->
+                                <HorizontalStackLayout Grid.Row="3" Grid.ColumnSpan="2" Spacing="15" HorizontalOptions="End" >
+                                    <Label Text="{Binding StatutBudget}" FontAttributes="Italic" TextColor="Red"/>
+                                </HorizontalStackLayout>
+
+                            </Grid>
+                            
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Bouton "+" flottant -->
+            <Button Text="+"
+                BackgroundColor="#FF7F50"
+                TextColor="White"
+                FontSize="30"
+                WidthRequest="60" HeightRequest="60"
+                CornerRadius="30"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                AbsoluteLayout.LayoutBounds="0.9,0.9,60,60"
+                ZIndex="5"
+                Command="{Binding AddBugetCommand}" />
+                 
+
+            <!-- Loader -->
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                           IsVisible="{Binding IsBusy}"
+                           Color="DodgerBlue"
+                           WidthRequest="50"
+                           HeightRequest="50"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           AbsoluteLayout.LayoutFlags="PositionProportional"
+                           AbsoluteLayout.LayoutBounds="0.5,0.5,50,50"/>
+        </AbsoluteLayout>
     </Grid>
+
 </ContentPage>

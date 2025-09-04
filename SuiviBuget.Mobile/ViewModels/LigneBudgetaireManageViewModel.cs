@@ -3,19 +3,22 @@ using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using SuiviBudget.Core.Constants;
-using SuiviBudget.Core.Interfaces;
+using SuiviBudget.Mobile.Constants;
+using SuiviBudget.Mobile.Interfaces;
 using SuiviBuget.Mobile.Interfaces;
 using SuiviBuget.Mobile.Models;
 using SuiviBuget.Mobile.Services;
 using static SuiviBuget.Mobile.Messages.Messages;
+using SuiviBuget.Mobile.Helpers;
+
 
 namespace SuiviBuget.Mobile.ViewModels
 {
     public partial class LigneBudgetaireManageViewModel : ObservableObject
     {
         [ObservableProperty]
-        private ObservableCollection<LigneBudgetaireManageModel> ligneBudgetaireItems; IService adminService { get; set; }
+        private ObservableCollection<LigneBudgetaireManageModel> ligneBudgetaireItems; 
+        IService adminService { get; set; }
         public ICommand AddLigneBugetaireCommand { get; }
         public ICommand EditCommand { get; }
         public ICommand DeleteCommand { get; }
@@ -39,7 +42,7 @@ namespace SuiviBuget.Mobile.ViewModels
         }
         public LigneBudgetaireManageViewModel()
         {
-            string dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), GlobalConst.dbPath);
+            string dbPath = Helper.GetDatabaseFullPath();
             adminService = new Services.Services(dbPath);
             _alertService = new AlertService();
             RegisterMessenger(); // Enregistre l'écoute du message
@@ -74,7 +77,7 @@ namespace SuiviBuget.Mobile.ViewModels
                     CodeLigneBudgetaire = item.CodeLigneBudgetaire,
                     LibelleLigneBudgetaire = item.LibelleLigneBudgetaire
                 };
-                var isOk = await adminService.DeleteLigneBudgetaireAsync(entity);
+                var isOk = await adminService.DeleteDetailBudgetAsync(entity);
                 if (!isOk)
                 {
                     await _alertService.ShowAlertAsync("Erreur", "Nous rencontrons une erreur lors de la suppression");

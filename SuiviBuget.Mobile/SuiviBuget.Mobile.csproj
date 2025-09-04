@@ -70,6 +70,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Views\BudgetDetailManageView.xaml.cs">
+	    <DependentUpon>BudgetDetailManageView.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\BudgetDetailView.xaml.cs">
+	    <DependentUpon>BudgetDetailView.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\ParametreManageView.xaml.cs">
 	    <DependentUpon>ParametreManageView.xaml</DependentUpon>
 	  </Compile>
@@ -85,7 +91,13 @@
 	  <MauiXaml Update="Views\ExecutionBudgetaireManageView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\BudgetDetailManageView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\LigneBudgetaireManageView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\BudgetDetailView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\LigneBudgetaireView.xaml">

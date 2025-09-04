@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
-using SuiviBudget.Core.Interfaces;
+using SuiviBudget.Mobile.Interfaces;
 using SuiviBuget.Mobile.Services;
 using SuiviBuget.Mobile.ViewModels;
 using SuiviBudget.Services;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SuiviBudget.Core.Constants;
+using SuiviBudget.Mobile.Constants;
 
 namespace SuiviBuget.Mobile.Helpers
 {
@@ -11,7 +11,7 @@ namespace SuiviBuget.Mobile.Helpers
     {
         public static string GetDatabaseFullPath()
         {
-            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), GlobalConst.dbPath);
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), GlobalConst.DbPath);
         }
     }
 }
