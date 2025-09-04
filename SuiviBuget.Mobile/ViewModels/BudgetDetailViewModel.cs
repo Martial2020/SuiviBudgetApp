@@ -94,7 +94,6 @@ namespace SuiviBuget.Mobile.ViewModels
             _alertService = new AlertService();
             _ = LoadLigneBudgetaireAsync("");
             SubmitCommand = new RelayCommand(OnSubmitCommand);
-
         }
 
         private async Task LoadLigneBudgetaireAsync(string searchText)
@@ -108,7 +107,6 @@ namespace SuiviBuget.Mobile.ViewModels
                     LibelleLigneBudgetaire = $"[{x.CodeLigneBudgetaire}] - {x.LibelleLigneBudgetaire}"
                 }));
         }
-
         private async Task<LigneBudgetaireManageModel> GetLigneBudgetaireByCodeAsync(string codeLine)
         {
             var ligne = await adminService.GetLigneBudgetaireByCode(codeLine);

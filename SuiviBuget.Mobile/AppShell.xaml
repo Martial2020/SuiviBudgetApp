@@ -6,7 +6,9 @@
     xmlns:local="clr-namespace:SuiviBuget.Mobile.Views"
     Shell.TabBarBackgroundColor="White" 
     xmlns:viewmodels="clr-namespace:SuiviBuget.Mobile.ViewModels"
-    Title="SuiviBuget.Mobile">
+    Title="SuiviBuget.Mobile" 
+    Shell.ForegroundColor="White" > 
+   
     <!--Shell.FlyoutBehavior="Flyout"-->
 
     <Shell.BindingContext>
@@ -20,16 +22,16 @@
 
     <!-- Barre d'onglets -->
     <TabBar >
-        <Tab Title="Accueil" >
+        <Tab Title="Accueil" Icon="accueil.png">
             <ShellContent ContentTemplate="{DataTemplate local:TableauBordManageView}" />
         </Tab>
-        <Tab Title="Budget"  >
+        <Tab Title="Budget" Icon="budget.png" >
             <ShellContent ContentTemplate="{DataTemplate local:BudgetManageView}" />
         </Tab>
-        <Tab Title="Execution">
+        <Tab Title="Execution" Icon="execution.png">
             <ShellContent ContentTemplate="{DataTemplate local:ExecutionBudgetaireManageView}" />
         </Tab>
-        <Tab Title="Rapports" >
+        <Tab Title="Rapports" Icon="report.png" >
             <ShellContent ContentTemplate="{DataTemplate local:StatistiqueManageView}" />
         </Tab>
     </TabBar>

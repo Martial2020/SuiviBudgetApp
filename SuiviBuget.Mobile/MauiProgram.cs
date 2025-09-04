@@ -15,11 +15,11 @@ namespace SuiviBuget.Mobile
         {
             var builder = MauiApp.CreateBuilder();
 
-            SQLitePCL.Batteries_V2.Init(); // <=== Ajoute ceci
-            // Utilisation du toolkit MAUI (doit être appelé avant la configuration des autres services)
+            SQLitePCL.Batteries_V2.Init(); // <=== Initialisation SQLite
+                                           // Utilisation du toolkit MAUI
             builder
-                .UseMauiApp<App>()  // Assurez-vous que vous utilisez le bon point d'entrée pour l'application MAUI
-                .UseMauiCommunityToolkit() // L'intégration du Toolkit MAUI
+                .UseMauiApp<App>()
+                .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -27,9 +27,9 @@ namespace SuiviBuget.Mobile
                 });
 
             // Enregistrement des services ou ViewModels
-            builder.Services.AddSingleton<AppShellViewModel>();  // Si tu utilises un ViewModel pour AppShell
-            builder.Services.AddSingleton<PopUpMenuViewModel>(); // Enregistrer PopUpMenuViewModel
-            builder.Services.AddSingleton<LigneBudgetaireManageViewModel>(); // Enregistrer PopUpMenuViewModel
+            builder.Services.AddSingleton<AppShellViewModel>();
+            builder.Services.AddSingleton<PopUpMenuViewModel>();
+            builder.Services.AddSingleton<LigneBudgetaireManageViewModel>();
 
             // Enregistrement du service de navigation
             builder.Services.AddSingleton<INavigationService, NavigationService>();
@@ -39,8 +39,21 @@ namespace SuiviBuget.Mobile
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
+            // ===== NO TINT pour tous les ImageButton =====
+            Microsoft.Maui.Handlers.ImageButtonHandler.Mapper.AppendToMapping("NoTint", (handler, view) =>
+            {
+                #if ANDROID
+                            handler.PlatformView.ImageTintList = null;
+                #elif IOS || MACCATALYST
+                                handler.PlatformView.TintColor = null;
+                #elif WINDOWS
+                            // Sur Windows MAUI, aucun tint n'est appliqué par défaut, mais si nécessaire :
+                            // handler.PlatformView.Foreground = null;
+                #endif
+            });
 
             return builder.Build();
         }
     }
+
 }
