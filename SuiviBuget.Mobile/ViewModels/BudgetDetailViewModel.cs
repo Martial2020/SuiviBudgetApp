@@ -79,7 +79,7 @@ namespace SuiviBuget.Mobile.ViewModels
         #endregion
 
         #region Interfaces
-        IService adminService { get; set; }
+        IServices adminService { get; set; }
         public ICommand SubmitCommand { get; }
         private readonly INavigationService _navigationService;
         private readonly IAlertService _alertService;
@@ -96,6 +96,17 @@ namespace SuiviBuget.Mobile.ViewModels
             SubmitCommand = new RelayCommand(OnSubmitCommand);
         }
 
+        private async Task<LigneBudgetaireModel> GetLigneBudgetaireByCodeAsync(string codeLine)
+        {
+            var ligne = await adminService.GetLigneBudgetaireByCode(codeLine);
+            if (ligne == null) return null;
+            return new LigneBudgetaireModel
+            {
+                CodeLigneBudgetaire = ligne.CodeLigneBudgetaire,
+                LibelleLigneBudgetaire = ligne.LibelleLigneBudgetaire
+            };
+        }
+
         private async Task LoadLigneBudgetaireAsync(string searchText)
         {
             var ligneItems = await adminService.GetLigneBudgetaireItems(searchText);
@@ -105,19 +116,10 @@ namespace SuiviBuget.Mobile.ViewModels
                 {
                     CodeLigneBudgetaire = x.CodeLigneBudgetaire,
                     LibelleLigneBudgetaire = $"[{x.CodeLigneBudgetaire}] - {x.LibelleLigneBudgetaire}"
-                }));
+                })
+            );
         }
-        private async Task<LigneBudgetaireManageModel> GetLigneBudgetaireByCodeAsync(string codeLine)
-        {
-            var ligne = await adminService.GetLigneBudgetaireByCode(codeLine);
-            if (ligne == null) return null;
-            return new LigneBudgetaireManageModel
-            {
-                CodeLigneBudgetaire = ligne.CodeLigneBudgetaire,
-                LibelleLigneBudgetaire = ligne.LibelleLigneBudgetaire
-            };
-        }
-
+    
         private async void OnSubmitCommand()
         {
             switch (Action)
@@ -173,11 +175,11 @@ namespace SuiviBuget.Mobile.ViewModels
                     return;
                 }
 
-
                 var isOk = await adminService.AddBudgetDetailAsync(DataItem);
                 if (!isOk)
                 {
-                    await _alertService.ShowAlertAsync("Erreur", "Nous rencontrons une erreur lors de l'enregistrement"); return;
+                    await _alertService.ShowAlertAsync("Erreur", "Nous rencontrons une erreur lors de l'enregistrement");
+                    return;
                 }
 
                 await _alertService.ShowAlertAsync("Information", $"Ligne budgetaire [{DataItem.CodeLigneBudgetaire}] a été Ajoutée au budget [{DataItem.CodeBudget}] avec succès");

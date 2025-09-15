@@ -1,12 +1,111 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SuiviBuget.Mobile.Views.TableauBordManageView"
              Title="Tableau de bord">
-    <VerticalStackLayout>
-        <Label 
-            Text="Bienvenu sur le tableau de bord"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+
+           
+            <!-- Grille badges 2 par ligne -->
+            <Grid ColumnDefinitions="*,*"
+                  RowDefinitions="Auto,Auto"
+                  RowSpacing="20"
+                  ColumnSpacing="20">
+
+                <!-- Badge Budget -->
+                <Border Grid.Row="0" Grid.Column="0"
+                        BackgroundColor="#4682B4"
+                        HeightRequest="120"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="Fill">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="20"/>
+                    </Border.StrokeShape>
+                    <VerticalStackLayout HorizontalOptions="Center"
+                                         VerticalOptions="Center">
+                        <Label Text="Budget"
+                               TextColor="White"
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center"/>
+                        <Label Text="12"
+                               TextColor="White"
+                               FontSize="28"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Badge Tâches -->
+                <Border Grid.Row="0" Grid.Column="1"
+                        BackgroundColor="#32CD32"
+                        HeightRequest="120"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="Fill">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="20"/>
+                    </Border.StrokeShape>
+                    <VerticalStackLayout HorizontalOptions="Center"
+                                         VerticalOptions="Center">
+                        <Label Text="Tâches"
+                               TextColor="White"
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center"/>
+                        <Label Text="7"
+                               TextColor="White"
+                               FontSize="28"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Badge Notifications -->
+                <Border Grid.Row="1" Grid.Column="0"
+                        BackgroundColor="Red"
+                        HeightRequest="120"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="Fill">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="20"/>
+                    </Border.StrokeShape>
+                    <VerticalStackLayout HorizontalOptions="Center"
+                                         VerticalOptions="Center">
+                        <Label Text="Notifications"
+                               TextColor="White"
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center"/>
+                        <Label Text="5"
+                               TextColor="White"
+                               FontSize="28"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Badge Profil -->
+                <Border Grid.Row="1" Grid.Column="1"
+                        BackgroundColor="#FF8C00"
+                        HeightRequest="120"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="Fill">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="20"/>
+                    </Border.StrokeShape>
+                    <VerticalStackLayout HorizontalOptions="Center"
+                                         VerticalOptions="Center">
+                        <Label Text="Profil"
+                               TextColor="White"
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </Border>
+
+            </Grid>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
 </ContentPage>

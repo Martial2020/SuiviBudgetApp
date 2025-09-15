@@ -13,7 +13,7 @@ using SuiviBuget.Mobile.Models;
 
 namespace SuiviBuget.Mobile.Services
 {
-    public class Services : IService
+    public class Services : IServices
     {
         private readonly SQLiteAsyncConnection _db;
 
@@ -23,10 +23,12 @@ namespace SuiviBuget.Mobile.Services
             _db = new SQLiteAsyncConnection(dbPath);
             // _db.DeleteAllAsync<Budget>();
             //_db.DeleteAllAsync<ParametreCompteur>();
+            _db.CreateTableAsync<ModePaiement>().Wait();
             _db.CreateTableAsync<LigneBudgetaire>().Wait();
             _db.CreateTableAsync<Budget>().Wait();
             _db.CreateTableAsync<ParametreCompteur>().Wait();
             _db.CreateTableAsync<BudgetDetail>().Wait();
+            _db.CreateTableAsync<ExecutionBudgetaire>().Wait();
         }
         #endregion
 
@@ -126,14 +128,97 @@ namespace SuiviBuget.Mobile.Services
                         CodeLigneBudgetaire = x.CodeLigneBudgetaire,
                         LibelleLigneBudgetaire = x.LibelleLigneBudgetaire
                     })
-                    .OrderBy(x => x.CodeLigneBudgetaire)
-                    .ToList();
+                    .OrderBy(x => x.LibelleLigneBudgetaire).ToList();
+
             }
             catch (Exception ex)
             {
                 // Log erreur (peut-être un fichier ou un service de journalisation)
                 Console.WriteLine($"Erreur lors de la récupération des lignes budgétaires: {ex.Message}");
                 return new List<LigneBudgetaireModel>();
+            }
+        }
+        #endregion
+
+        #region Mode de paiement
+        public async Task<bool> AddModePaiementAsync(ModePaiement paiement)
+        {
+            try
+            {
+                await _db.InsertAsync(paiement);
+                AddCompteurAsync(paiement.CodeModePaiement);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors de l'ajout: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<bool> DeleteModePaiementAsync(ModePaiement paiement)
+        {
+            var getPaiement = await _db.Table<ModePaiement>()
+                 .FirstOrDefaultAsync(x => x.CodeModePaiement == paiement.CodeModePaiement);
+
+            if (getPaiement == null)
+                return false; // Ligne non trouvée
+
+            await _db.DeleteAsync(getPaiement);
+            return true;
+        }
+        public async Task<bool> UpdateModePaiementAsync(ModePaiement paiement)
+        {
+            try
+            {
+                var getPaiement = await _db.Table<ModePaiement>()
+                    .FirstOrDefaultAsync(x => x.CodeModePaiement == paiement.CodeModePaiement);
+
+                if (getPaiement == null)
+                    return false; // Ligne non trouvée
+
+                getPaiement.LibelleModePaiement = paiement.LibelleModePaiement;
+                await _db.UpdateAsync(getPaiement);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors de la mise à jour: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<ModePaiement> GetModePaiementByCode(string codeModePaiement)
+        {
+            try
+            {
+                return await _db.Table<ModePaiement>()
+                                           .Where(x => x.CodeModePaiement.ToLower() == codeModePaiement.ToLower())
+                                           .FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors de la récupération de la ligne budgétaire par code: {ex.Message}");
+                return null;
+            }
+        }
+        public async Task<List<ModePaiement>> GetModePaiementItems(string searchText)
+        {
+            try
+            {
+                var search = searchText?.ToLower() ?? "";
+                var isSearchEmpty = string.IsNullOrWhiteSpace(search);
+
+                return await _db.Table<ModePaiement>()
+                 .Where(l => isSearchEmpty
+                     || l.CodeModePaiement.ToLower().Contains(searchText)
+                     || l.LibelleModePaiement.ToLower().Contains(searchText))
+                 .OrderBy(l => l.LibelleModePaiement)   // ✅ tri par libellé
+                 .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                // Log erreur (peut-être un fichier ou un service de journalisation)
+                Console.WriteLine($"Erreur lors de la récupération des lignes budgétaires: {ex.Message}");
+                return new List<ModePaiement>();
             }
         }
         #endregion
@@ -171,14 +256,9 @@ namespace SuiviBuget.Mobile.Services
         }
         public async Task<bool> DeleteBudgetAsync(BudgetModel budget)
         {
-            var getBudget = await _db.Table<Budget>()
-                 .FirstOrDefaultAsync(x => x.CodeBudget == budget.CodeBudget);
 
-            if (getBudget == null)
-                return false; // Ligne non trouvée
-
-            await _db.DeleteAsync(getBudget);
-            await DeleteBudgetDetailByCodeBudgetAsync(getBudget.CodeBudget);
+            await DeleteBudgetDetailByCodeBudgetAsync(budget.CodeBudget);
+            await _db.DeleteAsync(budget);
             return true;
         }
         public async Task<bool> UpdateBudgetAsync(BudgetModel budget)
@@ -207,6 +287,19 @@ namespace SuiviBuget.Mobile.Services
                 return false;
             }
         }
+        public async Task<bool> UpdateBudgetAsync(Budget budget)
+        {
+            try
+            {
+                await _db.UpdateAsync(budget);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors de la mise à jour: {ex.Message}");
+                return false;
+            }
+        }
         public async Task<BudgetModel> GetBudgetByCode(string codeBudget)
         {
             try
@@ -227,8 +320,23 @@ namespace SuiviBuget.Mobile.Services
                     LibelleBudget = budgetItem.LibelleBudget,
                     MontantBudget = budgetItem.MontantBudget,
                     NbreLigneBudgetaire = budgetItem.NbreLigneBudgetaire,
-                     StatutBudget=budgetItem.StatutBudget
+                    StatutBudget = budgetItem.StatutBudget
                 };
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors de la récupération de la ligne budgétaire par code: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<Budget> GetBudgetByCodeBudget(string codeBudget)
+        {
+            try
+            {
+                return await _db.Table<Budget>()
+                                          .Where(x => x.CodeBudget == codeBudget)
+                                          .FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {
@@ -242,11 +350,11 @@ namespace SuiviBuget.Mobile.Services
             {
                 var search = searchText?.ToLower() ?? "";
                 var isSearchEmpty = string.IsNullOrWhiteSpace(search);
-
                 var ligneBudgetaires = await _db.Table<Budget>()
                     .Where(l => isSearchEmpty
                         || l.CodeBudget.ToLower().Contains(searchText)
-                        || l.LibelleBudget.ToLower().Contains(searchText))
+                        || l.LibelleBudget.ToLower().Contains(searchText)
+                        || l.StatutBudget.ToLower().Contains(searchText))
                     .ToListAsync();
 
                 return ligneBudgetaires
@@ -261,8 +369,11 @@ namespace SuiviBuget.Mobile.Services
                         MontantBudget = budgetItem.MontantBudget,
                         NbreLigneBudgetaire = budgetItem.NbreLigneBudgetaire,
                         StatutBudget = budgetItem.StatutBudget,
+                        MontantUtilise= budgetItem.MontantUtilise,
+                        MontantRestant=budgetItem.MontantBudget-budgetItem.MontantUtilise
+                        
                     })
-                    .OrderBy(x => x.CodeBudget)
+                    .OrderBy(x => x.LibelleBudget)
                     .ToList();
             }
             catch (Exception ex)
@@ -272,6 +383,46 @@ namespace SuiviBuget.Mobile.Services
                 return new List<BudgetManageModel>();
             }
         }
+
+        public async Task<List<BudgetManageModel>> GetBudgetItemsByStatus(string searchText, List<string> statuts)
+        {
+            try
+            {
+                var search = searchText?.ToLower() ?? "";
+                var isSearchEmpty = string.IsNullOrWhiteSpace(search);
+                var ligneBudgetaires = await _db.Table<Budget>()
+                    .Where(l => (isSearchEmpty
+                        || l.CodeBudget.ToLower().Contains(searchText)
+                        || l.LibelleBudget.ToLower().Contains(searchText)
+                        || l.StatutBudget.ToLower().Contains(searchText))
+                        && statuts.Contains(l.StatutBudget)).ToListAsync();
+
+                return ligneBudgetaires
+                    .Select(budgetItem => new BudgetManageModel
+                    {
+                        CodeBudget = budgetItem.CodeBudget,
+                        DateCreationBudget = budgetItem.DateCreationBudget,
+                        DateDebutBudget = budgetItem.DateDebutBudget,
+                        DateFinBudget = budgetItem.DateFinBudget,
+                        DescriptionBudget = budgetItem.DescriptionBudget,
+                        LibelleBudget = budgetItem.LibelleBudget,
+                        MontantBudget = budgetItem.MontantBudget,
+                        NbreLigneBudgetaire = budgetItem.NbreLigneBudgetaire,
+                        StatutBudget = budgetItem.StatutBudget,
+                        MontantUtilise = budgetItem.MontantUtilise,
+                        MontantRestant = budgetItem.MontantRestant
+                    })
+                    .OrderBy(x => x.LibelleBudget)
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                // Log erreur (peut-être un fichier ou un service de journalisation)
+                Console.WriteLine($"Erreur lors de la récupération des lignes budgétaires: {ex.Message}");
+                return new List<BudgetManageModel>();
+            }
+        }
+
         #endregion
 
         #region BudgetDetail
@@ -315,7 +466,7 @@ namespace SuiviBuget.Mobile.Services
                  .FirstOrDefaultAsync(x => x.CodeBudget == codeBudget);
 
             if (getDetail == null)
-                return ; // Ligne non trouvée
+                return; // Ligne non trouvée
 
             await _db.DeleteAsync(getDetail);
         }
@@ -400,6 +551,84 @@ namespace SuiviBuget.Mobile.Services
         }
         #endregion
 
+        #region ExecutionBudgetaire
+        public async Task<bool> AddExecutionBudgetaireDetailAsync(ExecutionBudgetaire execution)
+        {
+            try
+            {
+                await _db.InsertAsync(execution);
+                MisAjourBudget(execution.CodeBudget);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors de l'ajout: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<bool> DeleteExecutionBudgetaireDetailAsync(ExecutionBudgetaire execution)
+        {
+            var getDetail = await _db.Table<ExecutionBudgetaire>()
+                 .FirstOrDefaultAsync(x => x.ExecutionBudgetaireID == execution.ExecutionBudgetaireID);
+
+            if (getDetail == null)
+                return false; // Ligne non trouvée
+
+            await _db.DeleteAsync(getDetail);
+            MisAjourBudget(execution.CodeBudget);
+            return true;
+        }
+        public async Task<List<ExecutionBudgetaireDetailManageModel>> GetExecutionBudgetaireDetailsItems(string codeBudget, string ligneBudgetaire)
+        {
+            try
+            {
+                var executions = await _db.Table<ExecutionBudgetaire>().ToListAsync();
+                var lignes = await _db.Table<LigneBudgetaire>()
+                    .Where(x => x.CodeLigneBudgetaire == ligneBudgetaire).ToListAsync();
+                var paiement = await _db.Table<ModePaiement>().ToListAsync();
+
+                var query = (from e in executions
+                             join l in lignes on e.CodeLigneBudgetaire equals l.CodeLigneBudgetaire
+                             join m in paiement on e.CodeModePaiement equals m.CodeModePaiement
+                             where e.CodeBudget == codeBudget
+                             select new ExecutionBudgetaireDetailManageModel
+                             {
+                                 DateExecution = e.DateExecution,
+                                 ExecutionBudgetaireID = e.ExecutionBudgetaireID,
+                                 LibelleLigneBudgetaire = l.LibelleLigneBudgetaire,
+                                 ModePaiement = m.LibelleModePaiement,
+                                 Montant = e.Montant,
+                                 CodeLigneBudgetaire= l.CodeLigneBudgetaire,
+                                 CodeBudget=e.CodeBudget
+                             }).ToList();
+
+                return query;
+            }
+            catch (Exception ex)
+            {
+                // Log erreur (peut-être un fichier ou un service de journalisation)
+                Console.WriteLine($"Erreur lors de la récupération des lignes budgétaires: {ex.Message}");
+                return new List<ExecutionBudgetaireDetailManageModel>();
+            }
+        }
+
+        public async Task<ExecutionBudgetaire> GetExecutionBudgetaireDetailsById(Guid id)
+        {
+            try
+            {
+                return await _db.Table<ExecutionBudgetaire>()
+                .FirstOrDefaultAsync(x => x.ExecutionBudgetaireID == id);
+            }
+            catch (Exception ex)
+            {
+                // Log erreur (peut-être un fichier ou un service de journalisation)
+                Console.WriteLine($"Erreur lors de la récupération des lignes budgétaires: {ex.Message}");
+                return new ExecutionBudgetaire();
+            }
+        }
+
+        #endregion
+
         #region ParametreCompteur
         public async Task<string> GetNumeroForCodeEntityAsync(string codeParametre)
         {
@@ -412,12 +641,12 @@ namespace SuiviBuget.Mobile.Services
 
             return $"{codeParametre}-{cpt.ToString("000")}";
         }
-        public async Task AddCompteurAsync(string codeBudget)
+        public async Task AddCompteurAsync(string code)
         {
             var compteur = new ParametreCompteur();
-            if (codeBudget.Length > 0)
+            if (code.Length > 0)
             {
-                var parts = codeBudget.Split('-');
+                var parts = code.Split('-');
                 var data = await GetParametreCompteurAsync(parts[0].Trim());
                 if (data == null)
                 {
@@ -445,19 +674,28 @@ namespace SuiviBuget.Mobile.Services
         #region Other Functions
         private async void MisAjourBudget(string codeBudget)
         {
-            decimal montant = 0;
-            var details = await _db.Table<BudgetDetail>().Where(x => x.CodeBudget == codeBudget).ToListAsync();
+            decimal montantBudget = 0;
+            decimal montantUtilise = 0;
+            var ligneBudgetaire= await _db.Table<BudgetDetail>().Where(x => x.CodeBudget == codeBudget).ToListAsync();
+            var executionBudgetaire = await _db.Table<ExecutionBudgetaire>().Where(x => x.CodeBudget == codeBudget).ToListAsync();
 
-            if (details.Any())
-                montant = details.Sum(x => x.Montant);
+            //Montant definie pour le budget
+            if (ligneBudgetaire.Count() > 0)
+                montantBudget = ligneBudgetaire.Sum(x => x.Montant);
 
-            var budget = await GetBudgetByCode(codeBudget);
+            //Montant utilise dans le budget
+            if (executionBudgetaire.Count() > 0)
+                montantUtilise = executionBudgetaire.Sum(x => x.Montant);
+
+            var budget = await GetBudgetByCodeBudget(codeBudget);
 
             if (budget == null)
                 return;
 
-            budget.MontantBudget = montant;
-            budget.NbreLigneBudgetaire = details.Count();
+            budget.MontantBudget = montantBudget;
+            budget.MontantUtilise= montantUtilise;
+            budget.MontantRestant= montantBudget- montantUtilise;
+            budget.NbreLigneBudgetaire = ligneBudgetaire.Count();
             var isUpdate = await UpdateBudgetAsync(budget);
         }
         #endregion

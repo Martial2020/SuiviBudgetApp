@@ -56,7 +56,7 @@ namespace SuiviBuget.Mobile.ViewModels
             }
         }
         #region Interfaces
-        IService service { get; set; }
+        IServices service { get; set; }
         public ICommand SubmitLigneBugetaireCommand { get; }
         private readonly INavigationService _navigationService;
         private readonly IAlertService _alertService;
@@ -90,14 +90,20 @@ namespace SuiviBuget.Mobile.ViewModels
             var confirm = await Shell.Current.CurrentPage.DisplayAlert("Confirmation", $"Changer le statut du budget [{budget.CodeBudget}] ?", "Oui", "Non");
             if (confirm)
             {
-                var getBudget =await service.GetBudgetByCode(budget.CodeBudget);
+                var getBudget = await service.GetBudgetByCode(budget.CodeBudget);
                 if (getBudget == null)
                 {
-                    await _alertService.ShowAlertAsync("Erreur", "Le budget selectionné est indisponible.");
+                    await _alertService.ShowAlertAsync("Information", "Le budget selectionné est indisponible.");
+                    return;
+                }
+                if (getBudget.NbreLigneBudgetaire <= 0)
+                {
+                    await _alertService.ShowAlertAsync("Information", "Impossible de mettre en cours car il ne contient pas de ligne budgetaire.");
                     return;
                 }
 
-                if (getBudget.statutBudget == StatutBudgetConst.Encours|| getBudget.statutBudget == StatutBudgetConst.Cloture)
+
+                if (getBudget.statutBudget == StatutBudgetConst.Encours || getBudget.statutBudget == StatutBudgetConst.Cloture)
                 {
                     await _alertService.ShowAlertAsync("Information", "Le budget selectionné est deja en cours ou cloturé.");
                     return;
@@ -213,7 +219,8 @@ namespace SuiviBuget.Mobile.ViewModels
                     MontantBudget = x.MontantBudget,
                     NbreLigneBudgetaire = x.NbreLigneBudgetaire,
                     StatutBudget = x.StatutBudget,
-                    MontantUtilise=x.MontantUtilise
+                    MontantUtilise = x.MontantUtilise,
+                    MontantRestant = x.MontantRestant
                 }));
             IsBusy = false;
         }

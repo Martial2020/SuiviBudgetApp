@@ -16,17 +16,18 @@ using static SuiviBuget.Mobile.Messages.Messages;
 using SuiviBuget.Mobile.Interfaces;
 using SuiviBuget.Mobile.Services;
 using static SQLite.SQLite3;
+using SuiviBuget.Mobile.DataAccess;
 
 namespace SuiviBuget.Mobile.ViewModels
 {
-    public partial class BudgetViewModel : ObservableObject
+    public partial class ModePaiementViewModel : ObservableObject
     {
         #region Propriete
         [ObservableProperty]
-        private BudgetModel dataItem = new();
+        private ModePaiementModel dataItem = new();
 
         [ObservableProperty]
-        private string title = "Ajouter un budget";
+        private string title = "Ajouter une ligne budgetaire";
 
         [ObservableProperty]
         private string labelButton = "Ajouter";
@@ -45,6 +46,19 @@ namespace SuiviBuget.Mobile.ViewModels
             }
         }
 
+        private bool _IsEnabled = true;
+        public bool IsEnabled
+        {
+            get => _IsEnabled;
+            set
+            {
+                if (_IsEnabled != value)
+                {
+                    _IsEnabled = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
         #endregion
 
         #region Interfaces
@@ -54,7 +68,7 @@ namespace SuiviBuget.Mobile.ViewModels
         private readonly IAlertService _alertService;
 
         #endregion
-        public BudgetViewModel()
+        public ModePaiementViewModel()
         {
             string dbPath = Helper.GetDatabaseFullPath();
             adminService = new Services.Services(dbPath);
@@ -62,7 +76,6 @@ namespace SuiviBuget.Mobile.ViewModels
             _navigationService = new NavigationService();
             _alertService = new AlertService();
             SubmitCommand = new RelayCommand(OnSubmitCommand);
-
         }
 
         private async void OnSubmitCommand()
@@ -70,13 +83,13 @@ namespace SuiviBuget.Mobile.ViewModels
             switch (Action)
             {
                 case GlobalConst.Add:
-                    CreateBudget();
+                    Create();
                     break;
                 case GlobalConst.Edit:
-                    UpdateBudget();
+                    Update();
                     break;
                 default:
-                    await _alertService.ShowAlertAsync("Erreur", "Aucune action définie.");
+                    await _alertService.ShowAlertAsync("Erreur", "Aucune action.");
                     break;
             }
         }
@@ -86,59 +99,50 @@ namespace SuiviBuget.Mobile.ViewModels
             Action = action;
             switch (Action)
             {
-                case GlobalConst.Add:
-                    DataItem.CodeBudget = await adminService.GetNumeroForCodeEntityAsync(ParametreCompteurConst.BG);
-                    DataItem.DateDebutBudget = DateTime.Today;
-                    DataItem.DateFinBudget = DateTime.Today;
+                case GlobalConst.Add:                  
+                    DataItem.CodeModePaiement = await adminService.GetNumeroForCodeEntityAsync(ParametreCompteurConst.MP);
+                    IsEnabled = false;
                     break;
                 case GlobalConst.Edit:
-                    Title = "Modifier un budget";
+                    Title = "Modifier un mode de paiement";
                     LabelButton = "Modifier";
-                    var budget = await adminService.GetBudgetByCode(code);
-                    if (budget == null) { return; }
-                    DataItem.CodeBudget = budget.CodeBudget;
-                    DataItem.LibelleBudget = budget.LibelleBudget;
-                    DataItem.DateDebutBudget = budget.DateDebutBudget;
-                    DataItem.DateFinBudget = budget.DateFinBudget;
-                    DataItem.StatutBudget = budget.StatutBudget;
+                    var modePaiement = await adminService.GetModePaiementByCode(code);
+                    if (modePaiement == null) { return; }
+                    DataItem.CodeModePaiement = modePaiement.CodeModePaiement;
+                    DataItem.LibelleModePaiement = modePaiement.LibelleModePaiement;
+                    IsEnabled = false;
                     break;
                 default:
                     break;
             }
 
-
         }
 
-        private async void CreateBudget()
-        {
+        private async void Create()
+        {      
             try
             {
-                var result = await Validator.ValidateBudgetCreateAsync(DataItem);
+                var result = await Validator.ValidateModePaiementCreate(DataItem);
                 if (!result.isSuccess)
                 {
                     await _alertService.ShowAlertAsync("Erreur", result.message);
                     return;
                 }
-                var dataEntity = new BudgetModel
+
+                var dataEntity = new ModePaiement
                 {
-                    CodeBudget = DataItem.CodeBudget,
-                    LibelleBudget = DataItem.LibelleBudget,
-                    DateDebutBudget = DataItem.DateDebutBudget,
-                    DateFinBudget = DataItem.DateFinBudget,
-                    DateCreationBudget = DateTime.Now,
-                    //DescriptionBudget = "",
-                    MontantBudget = 0,
-                    NbreLigneBudgetaire = 0,
-                    StatutBudget = StatutBudgetConst.Ouvert
+                    LibelleModePaiement = DataItem.LibelleModePaiement,
+                    CodeModePaiement = DataItem.CodeModePaiement
                 };
-                var isOk = await adminService.AddBudgetAsync(dataEntity);
+
+                var isOk = await adminService.AddModePaiementAsync(dataEntity);
                 if (!isOk)
                 {
                     await _alertService.ShowAlertAsync("Erreur", "Nous rencontrons une erreur lors de l'enregistrement");
                     return;
                 }
 
-                await _alertService.ShowAlertAsync("Information", $"Le budget[{dataEntity.LibelleBudget}] a été créé avec succès");
+                await _alertService.ShowAlertAsync("Information", $"Mode de paiement [{dataEntity.LibelleModePaiement}] a été créée avec succès");
                 WeakReferenceMessenger.Default.Send(new RefreshList());
                 await _navigationService.GoBackAsync();
             }
@@ -151,37 +155,31 @@ namespace SuiviBuget.Mobile.ViewModels
 
         }
 
-     
-        private async void UpdateBudget()
+        private async void Update()
         {
+           
             try
             {
-                var result = Validator.ValidateBudgetUpdate(DataItem);
+                var result = await Validator.ValidateModePaiementUpdate(DataItem);
                 if (!result.isSuccess)
                 {
                     await _alertService.ShowAlertAsync("Erreur", result.message);
                     return;
                 }
-                var dataEntity = new BudgetModel
+
+                var dataEntity = new ModePaiement
                 {
-                    CodeBudget = DataItem.CodeBudget,
-                    LibelleBudget = DataItem.LibelleBudget,
-                    DateDebutBudget = DataItem.DateDebutBudget,
-                    DateFinBudget = DataItem.DateFinBudget,
-                    DateCreationBudget = DataItem.DateCreationBudget,
-                    //DescriptionBudget = "",
-                    MontantBudget = DataItem.MontantBudget,
-                    NbreLigneBudgetaire = DataItem.NbreLigneBudgetaire,
-                    StatutBudget = DataItem.statutBudget
+                    LibelleModePaiement = DataItem.LibelleModePaiement,
+                    CodeModePaiement = DataItem.CodeModePaiement
                 };
-                var isOk = await adminService.UpdateBudgetAsync(dataEntity);
+                var isOk = await adminService.UpdateModePaiementAsync(dataEntity);
                 if (!isOk)
                 {
                     await _alertService.ShowAlertAsync("Erreur", "Nous rencontrons une erreur lors de la modification");
                     return;
                 }
 
-                await _alertService.ShowAlertAsync("Information", $"Le budget [{dataEntity.CodeBudget}] a été modifiée avec succs");
+                await _alertService.ShowAlertAsync("Information", $"Mode paiement [{dataEntity.LibelleModePaiement}] a été modifiée avec succès");
                 WeakReferenceMessenger.Default.Send(new RefreshList());
                 await _navigationService.GoBackAsync();
             }

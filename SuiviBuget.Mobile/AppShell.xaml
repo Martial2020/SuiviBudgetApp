@@ -6,8 +6,7 @@
     xmlns:local="clr-namespace:SuiviBuget.Mobile.Views"
     Shell.TabBarBackgroundColor="White" 
     xmlns:viewmodels="clr-namespace:SuiviBuget.Mobile.ViewModels"
-    Title="SuiviBuget.Mobile" 
-    Shell.ForegroundColor="White" > 
+    Title="SuiviBuget.Mobile"> 
    
     <!--Shell.FlyoutBehavior="Flyout"-->
 
@@ -17,7 +16,7 @@
     
     <!-- Header avec les 3 points -->
     <Shell.ToolbarItems >
-        <ToolbarItem Text="Menu" IconImageSource="config.png" Command="{Binding ShowMenuCommand}" />
+        <ToolbarItem Text="Menu" IconImageSource="setting.png" Command="{Binding ShowMenuCommand}" />
     </Shell.ToolbarItems>
 
     <!-- Barre d'onglets -->

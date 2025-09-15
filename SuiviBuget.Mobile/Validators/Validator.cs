@@ -15,7 +15,7 @@ namespace SuiviBudge.Validators
     {
 
         static string dbPath = Helper.GetDatabaseFullPath();
-        static IService adminService;
+        static IServices adminService;
         static Validator()
         {
             adminService = new Services(dbPath);
@@ -111,11 +111,15 @@ namespace SuiviBudge.Validators
             if (getBudget == null)
                 return (false, "Le budget à supprimer n'existe pas dans la base de donnée");
 
+            var execution = adminService.GetExecutionBudgetaireDetailsItems(budget.CodeBudget,string.Empty);
+            if (execution != null)
+                return (false, "Impossible de supprimer car le budget est encours d'utilisation");
+
+
             return (true, string.Empty);
         }
         #endregion
 
-      
         #region BudgetDetail
         public static async Task<(bool isSuccess, string message)> ValidateBudgetDetailCreate(BudgetDetailModel ligneBugetaire)
         {
@@ -152,6 +156,98 @@ namespace SuiviBudge.Validators
             return (true, string.Empty);
         }
 
+        #endregion
+
+        #region Mode de paiement
+        public static async Task<(bool isSuccess, string message)> ValidateModePaiementCreate(ModePaiementModel paiement)
+        {
+            if (paiement == null)
+                return (false, "Aucune donnée disponible pour la creation du mode de paiement");
+
+            if (string.IsNullOrEmpty(paiement.CodeModePaiement) || string.IsNullOrEmpty(paiement.LibelleModePaiement))
+                return (false, "Veuillez saisir obligatoirement le code ou libellé du mode paiement");
+
+            var getLigne = await adminService.GetModePaiementByCode(paiement.CodeModePaiement);
+            if (getLigne != null)
+                return (false, $"La ligne budgetaire [{paiement.CodeModePaiement}] existe dejà dans notre base de donnée");
+
+            return (true, string.Empty);
+        }
+        public static async Task<(bool isSuccess, string message)> ValidateModePaiementUpdate(ModePaiementModel paiement)
+        {
+
+            if (paiement == null)
+                return (false, "Aucune donnée disponible pour la creation du mode paiement");
+
+            if (string.IsNullOrEmpty(paiement.CodeModePaiement) || string.IsNullOrEmpty(paiement.LibelleModePaiement))
+                return (false, "Veuillez saisir obligatoirement le code ou libellé du mode paiement");
+
+            var getLigne = await adminService.GetModePaiementByCode(paiement.CodeModePaiement);
+            if (getLigne == null)
+                return (false, "Le mode de paiement à modifier n'existe pas dans la base de donnée");
+
+            return (true, string.Empty);
+        }
+        public static async Task<(bool isSuccess, string message)> ValidateModePaiementDelete(ModePaiementModel paiement)
+        {
+            if (paiement == null)
+                return (false, "Aucune donnée disponible pour la suppression du mode paiement");
+
+            var getLigne = await adminService.GetLigneBudgetaireByCode(paiement.CodeModePaiement);
+            if (getLigne == null)
+                return (false, "Le mode de paiement à supprimer n'existe pas dans la base de donnée");
+
+            return (true, string.Empty);
+        }
+
+        #endregion
+
+        #region Execution budgetaire
+        public static async Task<(bool isSuccess, string message)> ValidateExecutionBudgetaireDetailCreateAsync(ExecutionBudgetaireDetailModel execution)
+        {
+            if (execution == null)
+                return (false, "Aucune donnée disponible.");
+
+            if (string.IsNullOrEmpty(execution.CodeBudget))
+                return (false, "Veuillez choisir un budget");
+
+            if (string.IsNullOrEmpty(execution.CodeLigneBudgetaire))
+                return (false, "Veuillez choisir une ligne budgetaire");
+
+            if (string.IsNullOrEmpty(execution.CodeModePaiement))
+                return (false, "Veuillez choisir un mode de paiement");
+
+            if (execution.Montant <= 0)
+                return (false, "Veuillez saisir un montant valide");
+
+            if (execution.DateExecution == DateTime.MinValue)
+                return (false, "Veuillez saisir une date valide");
+
+
+            // Utilisation d'await au lieu de .Result
+            var budget = await adminService.GetBudgetByCode(execution.CodeBudget);
+
+            if (budget == null) // si getLigne existe déjà, le budget est dupliqué
+                return (false, "Le budget choisit n'existe pas");
+
+
+            if (budget.DateDebutBudget > execution.DateExecution)
+                return (false, "Impossible que l'execution du buget soit faite avant la création du budget");
+
+            return (true, string.Empty);
+        }
+
+        public static (bool isSuccess, string message) ValidateExecutionBudgetaireDetailDelete(ExecutionBudgetaireDetailModel execution)
+        {
+            if (execution == null)
+                return (false, "Aucune donnée disponible pour la suppression");
+
+            var detail = adminService.GetExecutionBudgetaireDetailsById(execution.ExecutionBudgetaireID);
+            if (detail == null)
+                return (false, "L'element à supprimer n'existe pas dans la base de donnée");
+
+            return (true, string.Empty);
+        }
         #endregion
     }
 }

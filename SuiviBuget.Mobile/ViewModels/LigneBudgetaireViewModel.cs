@@ -61,7 +61,7 @@ namespace SuiviBuget.Mobile.ViewModels
         #endregion
 
         #region Interfaces
-        IService adminService { get; set; }
+        IServices adminService { get; set; }
         public ICommand SubmitLigneBugetaireCommand { get; }
         private readonly INavigationService _navigationService;
         private readonly IAlertService _alertService;

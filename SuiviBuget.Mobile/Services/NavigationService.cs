@@ -19,13 +19,14 @@ namespace SuiviBuget.Mobile.Services
                 case "LigneBudgetaireManageView":
                     await Shell.Current.GoToAsync(nameof(LigneBudgetaireManageView));
                     break;
-                case "ParametreManageView":
-                    await Shell.Current.GoToAsync(nameof(ParametreManageView));
-                    break;
                 case "LigneBudgetaireView":
-                    //await Shell.Current.GoToAsync(nameof(LigneBudgetaireView));
-                    //await Shell.Current.GoToAsync($"LigneBudgetaireView?Code={code}");
                     await Shell.Current.GoToAsync($"{nameof(LigneBudgetaireView)}?Code={code}&&Action={action}");
+                    break;
+                case "ModePaiementManageView":
+                    await Shell.Current.GoToAsync(nameof(ModePaiementManageView));
+                    break;               
+                case "ModePaiementView":
+                    await Shell.Current.GoToAsync($"{nameof(ModePaiementView)}?Code={code}&&Action={action}");
                     break;
                 case "BudgetView":
                     await Shell.Current.GoToAsync($"{nameof(BudgetView)}?Code={code}&&Action={action}");
@@ -35,6 +36,12 @@ namespace SuiviBuget.Mobile.Services
                     break;
                 case "BudgetDetailView":
                     await Shell.Current.GoToAsync($"{nameof(BudgetDetailView)}?Code={code}&&Action={action}");
+                    break;
+                case "ExecutionBudgetaireManageDetailView":
+                    await Shell.Current.GoToAsync($"{nameof(ExecutionBudgetaireManageDetailView)}?Code={code}&&Action={action}");
+                    break;
+                case "ExecutionBudgetaireDetailView":
+                    await Shell.Current.GoToAsync($"{nameof(ExecutionBudgetaireDetailView)}?Code={code}&&Action={action}");
                     break;
                     
                 default:

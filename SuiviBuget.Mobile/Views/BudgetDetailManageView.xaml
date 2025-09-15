@@ -58,24 +58,6 @@
                           HorizontalOptions="End"
                           VerticalOptions="Center"/>
 
-                                <!-- Dates -->
-                                <HorizontalStackLayout Grid.Row="1" Grid.ColumnSpan="2" Spacing="15">
-                                    <Label Text="{Binding DateDebutBudget, StringFormat='Du : {0:dd/MM/yyyy}'}" TextColor="Gray"/>
-                                    <Label Text="{Binding DateFinBudget, StringFormat='Au : {0:dd/MM/yyyy}'}" TextColor="Gray"/>
-                                </HorizontalStackLayout>
-
-                                <!-- Montants -->
-                                <HorizontalStackLayout Grid.Row="2" Grid.ColumnSpan="2" Spacing="15">
-                                    <Label Text="{Binding MontantBudget, StringFormat='Mnt : {0:N0} FCFA'}" TextColor="#32CD32"/>
-                                    <Label Text="{Binding MontantConsomme, StringFormat='Cons : {0:N0} FCFA'}" TextColor="#FF6347"/>
-                                    <Label Text="{Binding MontantRestant, StringFormat='Rest : {0:N0} FCFA'}" TextColor="Blue"/>
-                                </HorizontalStackLayout>
-
-                                <!-- Statut -->
-                                <HorizontalStackLayout Grid.Row="3" Grid.ColumnSpan="2" Spacing="15">
-                                    <Label Text="{Binding StatutBudget}" FontAttributes="Italic" TextColor="Red"/>
-                                </HorizontalStackLayout>
-
                             </Grid>
 
                         </Border>
@@ -85,7 +67,7 @@
 
    
             <!-- Bouton "+" flottant -->
-            <Button Text="+"
+            <Button Text="+"  x:Name="btnAjouter1"
                   BackgroundColor="#FF7F50"
                   TextColor="White"
                   FontSize="30"

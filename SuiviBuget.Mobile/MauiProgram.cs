@@ -29,7 +29,7 @@ namespace SuiviBuget.Mobile
             // Enregistrement des services ou ViewModels
             builder.Services.AddSingleton<AppShellViewModel>();
             builder.Services.AddSingleton<PopUpMenuViewModel>();
-            builder.Services.AddSingleton<LigneBudgetaireManageViewModel>();
+            //builder.Services.AddSingleton<ExecutionBudgetaireDetailManageViewModel>();
 
             // Enregistrement du service de navigation
             builder.Services.AddSingleton<INavigationService, NavigationService>();
@@ -39,18 +39,6 @@ namespace SuiviBuget.Mobile
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
-            // ===== NO TINT pour tous les ImageButton =====
-            Microsoft.Maui.Handlers.ImageButtonHandler.Mapper.AppendToMapping("NoTint", (handler, view) =>
-            {
-                #if ANDROID
-                            handler.PlatformView.ImageTintList = null;
-                #elif IOS || MACCATALYST
-                                handler.PlatformView.TintColor = null;
-                #elif WINDOWS
-                            // Sur Windows MAUI, aucun tint n'est appliqué par défaut, mais si nécessaire :
-                            // handler.PlatformView.Foreground = null;
-                #endif
-            });
 
             return builder.Build();
         }

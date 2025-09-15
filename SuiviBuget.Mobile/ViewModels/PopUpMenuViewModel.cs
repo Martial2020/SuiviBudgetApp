@@ -14,14 +14,14 @@ namespace SuiviBuget.Mobile.ViewModels
     {
         private readonly INavigationService _navigationService;
         public ICommand LigneBudgetCommand { get; }
-        public ICommand ParametreCommand { get; }
+        public ICommand ModePaiementCommand { get; }
         public Action? ClosePopupAction { get; set; }
 
         public PopUpMenuViewModel(INavigationService navigationService)
         {
             _navigationService = navigationService;
             LigneBudgetCommand = new RelayCommand(OnLigneBudget);
-            ParametreCommand = new RelayCommand(OnParametreCommand);
+            ModePaiementCommand = new RelayCommand(OnModePaiement);
         }
         private async void OnLigneBudget()
         {
@@ -30,11 +30,11 @@ namespace SuiviBuget.Mobile.ViewModels
             await _navigationService.NavigateToAsync("LigneBudgetaireManageView");
         }
 
-        private async void OnParametreCommand()
+        private async void OnModePaiement()
         {
             ClosePopupAction?.Invoke(); // Ferme le popup
             // Navigation vers la page LigneBudgetPage
-            await _navigationService.NavigateToAsync("ParametreManageView");
+            await _navigationService.NavigateToAsync("ModePaiementManageView");
         }
 
     }

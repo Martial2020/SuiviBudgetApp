@@ -9,7 +9,7 @@ using SuiviBuget.Mobile.Models;
 
 namespace SuiviBudget.Mobile.Interfaces
 {
-    public interface IService
+    public interface IServices
     {
         Task<string> GetNumeroForCodeEntityAsync(string codeParametre);
         #region Ligne budgetaire
@@ -26,6 +26,8 @@ namespace SuiviBudget.Mobile.Interfaces
         Task<bool> UpdateBudgetAsync(BudgetModel budget);
         Task<BudgetModel> GetBudgetByCode(string codeBudget);
         Task<List<BudgetManageModel>> GetBudgetItems(string searchText);
+
+        Task<List<BudgetManageModel>> GetBudgetItemsByStatus(string searchText, List<string> statuts);
         #endregion
 
         #region BudgetDetail 
@@ -36,6 +38,21 @@ namespace SuiviBudget.Mobile.Interfaces
         Task<BudgetDetail> GetBudgetDetailByBudgetLigne(BudgetDetailModel detail);
 
         Task<List<BudgetDetailManageModel>> GetBudgetDetailItems(string codeBudget, string searchText);
+        #endregion
+
+        #region Execution budgetaire
+        Task<List<ExecutionBudgetaireDetailManageModel>> GetExecutionBudgetaireDetailsItems(string codeBudget,string ligneBudgetaire);
+        Task<bool> AddExecutionBudgetaireDetailAsync(ExecutionBudgetaire execution);
+        Task<bool> DeleteExecutionBudgetaireDetailAsync(ExecutionBudgetaire execution);
+        Task<ExecutionBudgetaire> GetExecutionBudgetaireDetailsById(Guid id);
+        #endregion
+
+        #region Mode de paiement
+        Task<bool> AddModePaiementAsync(ModePaiement paiement);
+        Task<bool> DeleteModePaiementAsync(ModePaiement paiement);
+        Task<bool> UpdateModePaiementAsync(ModePaiement paiement);
+        Task<ModePaiement> GetModePaiementByCode(string codeModePaiement);
+        Task<List<ModePaiement>> GetModePaiementItems(string searchText);
         #endregion
     }
 }

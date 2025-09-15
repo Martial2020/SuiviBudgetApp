@@ -42,7 +42,7 @@
 
             <!-- Paramètre -->
             <Button 
-            Text="Paramètre" 
+            Text="Mode de paiement" 
             FontSize="12" 
             TextColor="Black" 
             BackgroundColor="Transparent"
@@ -51,13 +51,13 @@
             BorderColor="LightBlue"
             BorderWidth="0.5">
                 <Button.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding ParametreCommand}" />
+                    <TapGestureRecognizer Command="{Binding ModePaiementCommand}" />
                 </Button.GestureRecognizers>
             </Button>
 
             <!-- À propos -->
             <Button 
-            Text="À propos" 
+            Text="Paramètre" 
             FontSize="12" 
             TextColor="Black" 
             BackgroundColor="Transparent"

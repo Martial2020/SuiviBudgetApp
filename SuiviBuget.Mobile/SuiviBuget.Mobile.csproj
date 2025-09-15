@@ -39,6 +39,21 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
+		<AndroidSigningKeyStore>MyApp.txt</AndroidSigningKeyStore>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-android|AnyCPU'">
+	  <AndroidKeyStore>False</AndroidKeyStore>
+	  <AndroidSigningStorePass>1994</AndroidSigningStorePass>
+	  <AndroidSigningKeyAlias>bleu</AndroidSigningKeyAlias>
+	  <AndroidSigningKeyPass>1994</AndroidSigningKeyPass>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-android|AnyCPU'">
+	  <AndroidKeyStore>False</AndroidKeyStore>
+	  <AndroidSigningStorePass>1994</AndroidSigningStorePass>
+	  <AndroidSigningKeyAlias>bleu</AndroidSigningKeyAlias>
+	  <AndroidSigningKeyPass>1994</AndroidSigningKeyPass>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -86,6 +101,9 @@
 	  <Compile Update="Views\BudgetDetailView.xaml.cs">
 	    <DependentUpon>BudgetDetailView.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="Views\ExecutionBudgetaireManageDetailView.xaml.cs">
+	    <DependentUpon>ExecutionBudgetaireManageDetailView.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\ParametreManageView.xaml.cs">
 	    <DependentUpon>ParametreManageView.xaml</DependentUpon>
 	  </Compile>
@@ -98,19 +116,31 @@
 	  <MauiXaml Update="Views\BudgetView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\ExecutionBudgetaireDetailView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\ExecutionBudgetaireManageDetailView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\ExecutionBudgetaireManageView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\BudgetDetailManageView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\LigneBudgetaireManageView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
 	  <MauiXaml Update="Views\BudgetDetailView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\LigneBudgetaireManageView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\LigneBudgetaireView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\ModePaiementManageView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\ModePaiementView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\ParametreManageView.xaml">

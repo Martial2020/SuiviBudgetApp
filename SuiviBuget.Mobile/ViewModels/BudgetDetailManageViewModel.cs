@@ -74,7 +74,7 @@ namespace SuiviBuget.Mobile.ViewModels
                 }
             }
         }
-        IService service { get; set; }
+        IServices service { get; set; }
 
         public ICommand AddBudgetDetailCommand { get; }
         public ICommand EditCommand { get; }

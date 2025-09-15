@@ -3,16 +3,15 @@ using SuiviBuget.Mobile.ViewModels;
 
 namespace SuiviBuget.Mobile.Views;
 
-public partial class LigneBudgetaireManageView : ContentPage
+public partial class ModePaiementManageView : ContentPage
 {
-	public LigneBudgetaireManageView()
+	public ModePaiementManageView()
 	{
-		InitializeComponent();	
-       
+		InitializeComponent();	     
     }
-    private async void OnActionsLigneClicked(object sender, EventArgs e)
+    private async void OnActionsModePaiementClicked(object sender, EventArgs e)
     {
-        if (sender is Button btn && btn.BindingContext is LigneBudgetaireManageModel item)
+        if (sender is Button btn && btn.BindingContext is ModePaiementManageModel item)
         {
             // Crée la liste des options dynamiquement
             var options = new List<string>();
@@ -36,7 +35,7 @@ public partial class LigneBudgetaireManageView : ContentPage
                      null,
                      options.ToArray()
                  );
-            if (BindingContext is LigneBudgetaireManageViewModel vm)
+            if (BindingContext is ModePaiementManageViewModel vm)
             {
                 switch (action)
                 {

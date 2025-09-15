@@ -3,20 +3,31 @@ using SuiviBuget.Mobile.ViewModels;
 
 namespace SuiviBuget.Mobile.Views;
 
-public partial class LigneBudgetaireManageView : ContentPage
+public partial class ExecutionBudgetaireManageDetailView : ContentPage, IQueryAttributable
 {
-	public LigneBudgetaireManageView()
+	public ExecutionBudgetaireManageDetailView()
 	{
-		InitializeComponent();	
-       
-    }
-    private async void OnActionsLigneClicked(object sender, EventArgs e)
+		InitializeComponent();
+	}
+    public async void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        if (sender is Button btn && btn.BindingContext is LigneBudgetaireManageModel item)
+        if (query.TryGetValue("Code", out var code) && query.TryGetValue("Action", out var action))
+        {
+            if (BindingContext is ExecutionBudgetaireManageDetailViewModel vm)
+            {
+                _ = vm.InitializePageAsync(code.ToString(), action.ToString());
+            }
+        }
+    }
+
+    private async void Button_Clicked(object sender, EventArgs e)
+    {
+  
+        if (sender is Button btn && btn.BindingContext is ExecutionBudgetaireDetailManageModel item)
         {
             // Crée la liste des options dynamiquement
             var options = new List<string>();
-            options.Add("Modifier");
+            options.Add("Description");
             options.Add("Supprimer");
 
             // Affiche l'ActionSheet
@@ -36,11 +47,11 @@ public partial class LigneBudgetaireManageView : ContentPage
                      null,
                      options.ToArray()
                  );
-            if (BindingContext is LigneBudgetaireManageViewModel vm)
+            if (BindingContext is ExecutionBudgetaireManageDetailViewModel vm)
             {
                 switch (action)
                 {
-                    case "Modifier":
+                    case "Description":
                         vm.EditCommand.Execute(item);
                         break;
                     case "Supprimer":

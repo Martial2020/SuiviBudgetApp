@@ -18,7 +18,7 @@ namespace SuiviBuget.Mobile.ViewModels
     {
         [ObservableProperty]
         private ObservableCollection<LigneBudgetaireManageModel> ligneBudgetaireItems; 
-        IService adminService { get; set; }
+        IServices adminService { get; set; }
         public ICommand AddLigneBugetaireCommand { get; }
         public ICommand EditCommand { get; }
         public ICommand DeleteCommand { get; }
