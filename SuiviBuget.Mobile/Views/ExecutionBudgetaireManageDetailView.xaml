@@ -10,9 +10,9 @@
         <viewModels:ExecutionBudgetaireManageDetailViewModel />
     </ContentPage.BindingContext>
 
-    <Grid RowDefinitions="Auto, *">
+    <Grid RowDefinitions="Auto,Auto, *">
         <!-- ComboBox (Picker dans MAUI) -->
-            <Picker Title="Sélectionnez une ligne budgetaire" Grid.Row="0"
+        <Picker Title="Sélectionnez une ligne budgetaire" Grid.Row="0"
                Margin="10,0,10,10" HorizontalOptions="FillAndExpand"  VerticalOptions="Start"
                HeightRequest="50" VerticalTextAlignment="Center" 
                ItemsSource="{Binding LigneBudgetaireItems,Mode=TwoWay}" 
@@ -20,8 +20,54 @@
                SelectedItem="{Binding SelectedLigneBudgetaire, Mode=TwoWay}"
                IsEnabled="{Binding CodeLigneBudgetaireIsEnabled,Mode=TwoWay}"/>
 
-            <!-- Contenu -->
-        <AbsoluteLayout Grid.Row="1">
+        <Frame x:Name="BadgeFrame" Grid.Row="1"
+       IsVisible="{Binding IsVisibleBadgeFrame}"
+       Padding="20"
+       Margin="15"
+       CornerRadius="20"
+       BackgroundColor="White"
+       BorderColor="#E0E0E0"
+       HasShadow="True"
+       HorizontalOptions="FillAndExpand"
+       VerticalOptions="FillAndExpand">
+
+            <VerticalStackLayout Spacing="15">
+
+                <!-- Première ligne : Montant -->
+                <Label x:Name="LblMontant"
+               Text="{Binding MontantBudget, StringFormat='Montant : {0:N0} FCFA'}"
+               FontSize="16"
+               FontAttributes="Bold"
+               TextColor="Green"
+               HorizontalOptions="Center"/>
+
+                <!-- Deuxième ligne : Utilisé et Restant -->
+                <Grid ColumnDefinitions="*,*"
+              Padding="10,0"
+              VerticalOptions="Center">
+                    <Label x:Name="LblUtilise"
+                   Text="{Binding MontantUtilise, StringFormat='Utilisé : {0:N0} FCFA'}"
+                   FontSize="16"
+                   FontAttributes="Bold"
+                   TextColor="#1565C0"  
+                    Grid.Column="0"
+                   HorizontalOptions="Start"/>
+
+                    <Label x:Name="LblRestant"
+                   Text="{Binding MontantRestant, StringFormat='Restant : {0:N0} FCFA'}"
+                   FontSize="16"
+                   FontAttributes="Bold"
+                   TextColor="#D32F2F"  
+                   Grid.Column="1"
+                   HorizontalOptions="End"/>
+                </Grid>
+
+            </VerticalStackLayout>
+        </Frame>
+
+
+        <!-- Contenu -->
+        <AbsoluteLayout Grid.Row="2">
             <!-- CollectionView -->
             <CollectionView ItemsSource="{Binding ExecutionBugetaireDetailItems}"
             Margin="10,0,10,10"
@@ -71,8 +117,6 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-
-
             <!-- Bouton "+" flottant -->
             <Button Text="+"  x:Name="btnAjouter2"
                 BackgroundColor="#FF7F50"

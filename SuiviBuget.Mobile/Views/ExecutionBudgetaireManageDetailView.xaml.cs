@@ -52,7 +52,7 @@ public partial class ExecutionBudgetaireManageDetailView : ContentPage, IQueryAt
                 switch (action)
                 {
                     case "Description":
-                        vm.EditCommand.Execute(item);
+                        vm.DescriptionCommand.Execute(item);
                         break;
                     case "Supprimer":
                         vm.DeleteCommand.Execute(item);

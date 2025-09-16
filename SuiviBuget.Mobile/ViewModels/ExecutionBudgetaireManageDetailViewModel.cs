@@ -8,6 +8,7 @@ using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Maui.Controls.Shapes;
 using SuiviBudget.Mobile.Constants;
 using SuiviBudget.Mobile.Interfaces;
 using SuiviBuget.Mobile.DataAccess;
@@ -37,6 +38,10 @@ namespace SuiviBuget.Mobile.ViewModels
                 // mettre à jour le code dans DataItem
                 //DataItem.CodeLigneBudgetaire = value?.CodeLigneBudgetaire;
                 _ = LoadExecutionBudgetaireAsync(CodeBudget, value?.CodeLigneBudgetaire);
+
+              
+
+
             }
         }
 
@@ -85,8 +90,68 @@ namespace SuiviBuget.Mobile.ViewModels
             }
         }
 
+
+
+        private bool _IsVisibleBadgeFrame = false;
+        public bool IsVisibleBadgeFrame
+        {
+            get => _IsVisibleBadgeFrame;
+            set
+            {
+                if (_IsVisibleBadgeFrame != value)
+                {
+                    _IsVisibleBadgeFrame = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private decimal _montantBudget = 0;
+        public decimal MontantBudget
+        {
+            get => _montantBudget;
+            set
+            {
+                if (_montantBudget != value)
+                {
+                    _montantBudget = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+
+        private decimal _montantUtilise = 0;
+        public decimal MontantUtilise
+        {
+            get => _montantUtilise;
+            set
+            {
+                if (_montantUtilise != value)
+                {
+                    _montantUtilise = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+
+        private decimal _montantRestant = 0;
+        public decimal MontantRestant
+        {
+            get => _montantRestant;
+            set
+            {
+                if (_montantRestant != value)
+                {
+                    _montantRestant = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public ICommand AddCommand { get; }
-        public ICommand EditCommand { get; }
+        public ICommand DescriptionCommand { get; }
         public ICommand DeleteCommand { get; }
         private readonly INavigationService _navigationService;
         private readonly IAlertService _alertService;
@@ -94,7 +159,7 @@ namespace SuiviBuget.Mobile.ViewModels
         public ExecutionBudgetaireManageDetailViewModel()
         {
             AddCommand = new RelayCommand(OnAddCommand);
-            //EditCommand = new RelayCommand<BudgetManageModel>(OnEdit);
+            DescriptionCommand = new RelayCommand<ExecutionBudgetaireDetailManageModel>(OnDescription);
             DeleteCommand = new RelayCommand<ExecutionBudgetaireDetailManageModel>(OnDelete);
             _alertService = new AlertService();
             _navigationService = new NavigationService();
@@ -103,11 +168,21 @@ namespace SuiviBuget.Mobile.ViewModels
             RegisterMessenger(); // Enregistre l'écoute du message
 
         }
+
+        private async void ActualiserMontants(string codeBudget, string ligne)
+        {
+            var detail = await _service.GetBudgetDetailByBudgetLigne(codeBudget, ligne);
+            MontantBudget = detail == null ? 0 : detail.Montant;
+            MontantUtilise = ExecutionBugetaireDetailItems?.Sum(x => x.Montant) ?? 0;
+            MontantRestant = MontantBudget - MontantUtilise;
+            IsVisibleBadgeFrame = true;
+
+        }
         private void RegisterMessenger()
         {
             WeakReferenceMessenger.Default.Register<RefreshList>(this, async (r, m) =>
             {
-                await LoadLigneBudgetaireAsync(CodeBudget, SelectedLigneBudgetaire.CodeLigneBudgetaire);// Rafraîchit la liste si un ajout est effectué
+                await LoadExecutionBudgetaireAsync(CodeBudget, SelectedLigneBudgetaire.CodeLigneBudgetaire);// Rafraîchit la liste si un ajout est effectué
             });
         }
 
@@ -126,7 +201,7 @@ namespace SuiviBuget.Mobile.ViewModels
 
         private async Task LoadExecutionBudgetaireAsync(string codeBudget,string ligne)
         {
-            var executeItems = await _service.GetExecutionBudgetaireDetailsItems(codeBudget,ligne);
+            var executeItems = await _service.GetExecutionBudgetaireDetailsItems(codeBudget, ligne);
 
             ExecutionBugetaireDetailItems = new ObservableCollection<ExecutionBudgetaireDetailManageModel>(
                 executeItems.Select(x => new ExecutionBudgetaireDetailManageModel
@@ -136,12 +211,16 @@ namespace SuiviBuget.Mobile.ViewModels
                     LibelleLigneBudgetaire = x.LibelleLigneBudgetaire,
                     ModePaiement = x.ModePaiement,
                     Montant = x.Montant,
-                    CodeBudget=codeBudget,
-                    CodeLigneBudgetaire=x.CodeLigneBudgetaire
+                    CodeBudget = x.CodeBudget,
+                    CodeLigneBudgetaire = x.CodeLigneBudgetaire,
+                    Descritpion = x.Descritpion,
                 })
             );
+
+            ActualiserMontants(codeBudget, ligne);
         }
 
+      
         private async void OnDelete(ExecutionBudgetaireDetailManageModel model)
         {
             var confirm = await Shell.Current.CurrentPage.DisplayAlert("Confirmation", "Supprimer cet élément ?", "Oui", "Non");
@@ -149,8 +228,8 @@ namespace SuiviBuget.Mobile.ViewModels
             {
                 var entity = new ExecutionBudgetaire
                 {
-                   ExecutionBudgetaireID= model.ExecutionBudgetaireID,
-                   CodeBudget=model.CodeBudget
+                    ExecutionBudgetaireID = model.ExecutionBudgetaireID,
+                    CodeBudget = model.CodeBudget
 
                 };
                 var isOk = await _service.DeleteExecutionBudgetaireDetailAsync(entity);
@@ -161,10 +240,19 @@ namespace SuiviBuget.Mobile.ViewModels
                 }
 
                 await _alertService.ShowAlertAsync("Information", $"Ligne budgetaire [{model.LibelleLigneBudgetaire}] a été supprimée avec succès");
-                SelectedLigneBudgetaire.CodeLigneBudgetaire = model.CodeLigneBudgetaire;
                 WeakReferenceMessenger.Default.Send(new RefreshList());
             }
         }
+
+        private async void OnDescription(ExecutionBudgetaireDetailManageModel model)
+        {
+            if (string.IsNullOrEmpty(model.Descritpion))
+                await _alertService.ShowAlertAsync("Information", "Pas de description");
+            else
+                await _alertService.ShowAlertAsync("Information", model.Descritpion);
+        }
+
+
 
         private async void OnAddCommand()
         {

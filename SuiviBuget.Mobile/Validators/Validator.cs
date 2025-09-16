@@ -60,6 +60,11 @@ namespace SuiviBudge.Validators
             if (getLigne == null)
                 return (false, "La ligne budgetaire à supprimer n'existe pas dans la base de donnée");
 
+            var executionLigne = await adminService.GetBudgetDetailByCodeLigneBudgetaire(ligneBugetaire.CodeLigneBudgetaire);
+            if (executionLigne != null)
+                return (false, "Impossible de supprimer cette ligne budgetaire , car elle appartient dejà a un budget.");
+
+
             return (true, string.Empty);
         }
 
@@ -188,14 +193,18 @@ namespace SuiviBudge.Validators
 
             return (true, string.Empty);
         }
-        public static async Task<(bool isSuccess, string message)> ValidateModePaiementDelete(ModePaiementModel paiement)
+        public static async Task<(bool isSuccess, string message)> ValidateModePaiementDelete(ModePaiementManageModel paiement)
         {
             if (paiement == null)
                 return (false, "Aucune donnée disponible pour la suppression du mode paiement");
 
-            var getLigne = await adminService.GetLigneBudgetaireByCode(paiement.CodeModePaiement);
+            var getLigne = await adminService.GetModePaiementByCode(paiement.CodeModePaiement);
             if (getLigne == null)
                 return (false, "Le mode de paiement à supprimer n'existe pas dans la base de donnée");
+
+            var paiementExecution = await adminService.GetExecutionBudgetaireDetailsByModePaiement(paiement.CodeModePaiement);
+            if (paiementExecution != null)
+                return (false, "Impossible de supprimer ce mode de paiement car il a dejà fait l'objet d'une exécution budgetaire");
 
             return (true, string.Empty);
         }

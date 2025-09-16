@@ -36,7 +36,7 @@
           Date="{Binding DataItem.DateExecution, Mode=TwoWay}"/>
 
         <!-- Nouveau champ : Description -->
-        <Editor Placeholder="Description"  Text="{Binding Description}"  AutoSize="TextChanges" 
+        <Editor Placeholder="Description"  Text="{Binding DataItem.Description}"  AutoSize="TextChanges" 
             HeightRequest="100"/>
 
 

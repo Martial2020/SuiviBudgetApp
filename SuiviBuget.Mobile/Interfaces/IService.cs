@@ -38,6 +38,9 @@ namespace SuiviBudget.Mobile.Interfaces
         Task<BudgetDetail> GetBudgetDetailByBudgetLigne(BudgetDetailModel detail);
 
         Task<List<BudgetDetailManageModel>> GetBudgetDetailItems(string codeBudget, string searchText);
+
+        Task<BudgetDetail> GetBudgetDetailByCodeLigneBudgetaire(string codeLigne);
+        Task<BudgetDetail> GetBudgetDetailByBudgetLigne(string codeBudget, string codeLigneBudgetaire);
         #endregion
 
         #region Execution budgetaire
@@ -45,6 +48,8 @@ namespace SuiviBudget.Mobile.Interfaces
         Task<bool> AddExecutionBudgetaireDetailAsync(ExecutionBudgetaire execution);
         Task<bool> DeleteExecutionBudgetaireDetailAsync(ExecutionBudgetaire execution);
         Task<ExecutionBudgetaire> GetExecutionBudgetaireDetailsById(Guid id);
+
+        Task<ExecutionBudgetaire> GetExecutionBudgetaireDetailsByModePaiement(string codeLigne);
         #endregion
 
         #region Mode de paiement

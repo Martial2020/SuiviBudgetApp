@@ -11,6 +11,7 @@ using SuiviBuget.Mobile.Services;
 using SuiviBuget.Mobile.DataAccess;
 using static SuiviBuget.Mobile.Messages.Messages;
 using SuiviBuget.Mobile.Helpers;
+using SuiviBudge.Validators;
 
 
 namespace SuiviBuget.Mobile.ViewModels
@@ -73,9 +74,15 @@ namespace SuiviBuget.Mobile.ViewModels
             var confirm = await Shell.Current.CurrentPage.DisplayAlert("Confirmation", "Supprimer cet élément ?", "Oui", "Non");
             if (confirm)
             {
-                var entity = new ModePaiement    
+                var result = await Validator.ValidateModePaiementDelete(item);
+                if (!result.isSuccess)
                 {
-                 CodeModePaiement= item.CodeModePaiement,
+                    await _alertService.ShowAlertAsync("Erreur", result.message);
+                    return;
+                }
+                var entity = new ModePaiement
+                {
+                    CodeModePaiement = item.CodeModePaiement,
                     LibelleModePaiement = item.LibelleModePaiement
                 };
                 var isOk = await adminService.DeleteModePaiementAsync(entity);
@@ -89,17 +96,17 @@ namespace SuiviBuget.Mobile.ViewModels
                 WeakReferenceMessenger.Default.Send(new RefreshList());
             }
         }
-      
+
         private async Task LoadModePaiementAsync(string searchText)
         {
             var paiemnts = await adminService.GetModePaiementItems(searchText);
 
-           ModePaiementItems = new ObservableCollection<ModePaiementManageModel>(
-                paiemnts.Select(x => new ModePaiementManageModel
-                {
-                  CodeModePaiement= x.CodeModePaiement,
-                  LibelleModePaiement = x.LibelleModePaiement
-                }));
+            ModePaiementItems = new ObservableCollection<ModePaiementManageModel>(
+                 paiemnts.Select(x => new ModePaiementManageModel
+                 {
+                     CodeModePaiement = x.CodeModePaiement,
+                     LibelleModePaiement = x.LibelleModePaiement
+                 }));
         }
 
         private void RegisterMessenger()

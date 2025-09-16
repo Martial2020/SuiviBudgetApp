@@ -14,6 +14,7 @@ namespace SuiviBuget.Mobile.Models
         public string ModePaiement { get; set; }
         public decimal Montant { get; set; }
         public string CodeBudget { get; set; }
+        public string Descritpion { get; set; }
         public DateTime DateExecution { get; set; }
 
     }

@@ -155,7 +155,7 @@ namespace SuiviBuget.Mobile.ViewModels
         public async Task InitializePageAsync(string code, string action)
         {
             Action = action;
-           
+
             DataItem.CodeBudget = code;
             switch (Action)
             {
@@ -204,7 +204,7 @@ namespace SuiviBuget.Mobile.ViewModels
                     CodeLigneBudgetaire = DataItem.CodeLigneBudgetaire,
                     CodeModePaiement = DataItem.CodeModePaiement,
                     Montant = DataItem.Montant,
-                    Description=DataItem.Description,
+                    Description = DataItem.Description,
                     ExecutionBudgetaireID = DataItem.ExecutionBudgetaireID
                 };
                 var isOk = await adminService.AddExecutionBudgetaireDetailAsync(data);
