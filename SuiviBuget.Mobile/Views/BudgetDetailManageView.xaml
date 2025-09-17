@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SuiviBuget.Mobile.Views.BudgetDetailManageView"
              xmlns:viewModels="clr-namespace:SuiviBuget.Mobile.ViewModels;assembly=SuiviBuget.Mobile"
-             Title="{Binding Title}">
+             Title="{Binding Title}" x:Name="AllocationPage">
     <!-- Liaison du ViewModel à la page -->
     <ContentPage.BindingContext>
         <viewModels:BudgetDetailManageViewModel />
@@ -12,7 +12,7 @@
    
     <Grid RowDefinitions="Auto, *">
         <!-- Première ligne pour la barre de recherche -->
-        <SearchBar  Placeholder="Rechercher d'une ligne..."  BackgroundColor="White"  Margin="10,20,10,0"
+        <SearchBar  Placeholder="Rechercher d'une dépense..."  BackgroundColor="White"  Margin="10,20,10,0"
         FontSize="16" TextColor="Black" HorizontalOptions="FillAndExpand"  VerticalOptions="Start" HeightRequest="50" VerticalTextAlignment="Center"  Grid.Row="0" Text="{Binding SearchText, Mode=TwoWay}"/>
 
         <!-- Contenu -->
@@ -45,18 +45,19 @@
 
                                 <!-- Bouton Actions modernisé (menu ⋮) -->
                                 <Button Grid.Column="1" Grid.Row="0"
-                          Text="⋮"
-                          FontSize="20"
-                          BackgroundColor="Transparent"
-                          TextColor="#4682B4"
-                          WidthRequest="40"
-                          HeightRequest="40"
-                          CornerRadius="20"
-                          BorderColor="#4682B4"
-                          BorderWidth="1"
-                          Clicked="OnActionsClicked"
-                          HorizontalOptions="End"
-                          VerticalOptions="Center"/>
+                                  Text="⋮"
+                                  IsVisible="{Binding Source={x:Reference AllocationPage},Path=BindingContext.ActionPossible}"
+                                  FontSize="20"
+                                  BackgroundColor="Transparent"
+                                  TextColor="#4682B4"
+                                  WidthRequest="40"
+                                  HeightRequest="40"
+                                  CornerRadius="20"
+                                  BorderColor="#4682B4"
+                                  BorderWidth="1"
+                                  Clicked="OnActionsClicked"
+                                  HorizontalOptions="End"
+                                  VerticalOptions="Center"/>
 
                             </Grid>
 

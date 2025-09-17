@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SuiviBuget.Mobile.Views.ExecutionBudgetaireManageView"
              xmlns:viewModels="clr-namespace:SuiviBuget.Mobile.ViewModels;assembly=SuiviBuget.Mobile"
-             Title="Liste des budgets à exécuter">
+             Title="Gestion des dépenses">
 
     <!-- Liaison du ViewModel à la page -->
     <ContentPage.BindingContext>

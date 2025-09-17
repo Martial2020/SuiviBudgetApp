@@ -21,6 +21,20 @@ namespace SuiviBuget.Mobile.ViewModels
 
         [ObservableProperty]
         private ObservableCollection<BudgetDetailManageModel> budgetDetailsItems;
+        private bool _actionPossible = true;
+        public bool ActionPossible
+        {
+            get => _actionPossible;
+            set
+            {
+                if (_actionPossible != value)
+                {
+                    _actionPossible = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private string _action;
         public string Action
         {
@@ -34,6 +48,7 @@ namespace SuiviBuget.Mobile.ViewModels
                 }
             }
         }
+
         private string _searchText;
         public string SearchText
         {
@@ -116,7 +131,7 @@ namespace SuiviBuget.Mobile.ViewModels
                     await _alertService.ShowAlertAsync("Erreur", isValid.message);
                     return;
                 }
-               
+
                 var isOk = await service.DeleteBudgetDetailAsync(item);
                 if (!isOk)
                 {
@@ -139,27 +154,30 @@ namespace SuiviBuget.Mobile.ViewModels
         {
             BudgetDetailsItems = null;
             IsBusy = true;
-            var details = await service.GetBudgetDetailItems(CodeBudget,searchText);
+            var details = await service.GetBudgetDetailItems(CodeBudget, searchText);
             BudgetDetailsItems = new ObservableCollection<BudgetDetailManageModel>(
                 details.Select(x => new BudgetDetailManageModel
                 {
                     CodeLigneBudgetaire = x.CodeLigneBudgetaire,
                     LibelleLigneBudgetaire = x.LibelleLigneBudgetaire,
-                    Montant=x.Montant,
-                    BudgetDetailID=x.BudgetDetailID,
-                    CodeBudget=x.CodeBudget
+                    Montant = x.Montant,
+                    BudgetDetailID = x.BudgetDetailID,
+                    CodeBudget = x.CodeBudget
                 }));
             IsBusy = false;
         }
         private async void OnAddBudgetDetailCommand(string codeBudget)
         {
-            await _navigationService.NavigateToAsync("BudgetDetailView",codeBudget);
+            await _navigationService.NavigateToAsync("BudgetDetailView", codeBudget);
         }
         public async Task InitializePageAsync(string code, string action)
         {
             CodeBudget = code;
-            Title = $"Détails du budget {CodeBudget}";
+            Title = $"Allocation {CodeBudget}";
             _ = LoadBudgetDetailsAsync(SearchText); // Charge la liste initialement
+            var budget = await service.GetBudgetByCode(CodeBudget);
+            if (budget != null && budget.StatutBudget == StatutBudgetConst.Cloture)
+                ActionPossible = false;
         }
     }
 }

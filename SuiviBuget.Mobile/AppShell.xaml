@@ -16,21 +16,21 @@
     
     <!-- Header avec les 3 points -->
     <Shell.ToolbarItems >
-        <ToolbarItem Text="Menu" IconImageSource="setting.png" Command="{Binding ShowMenuCommand}" />
+        <ToolbarItem  IconImageSource="setting.png" Command="{Binding ShowMenuCommand}"  />
     </Shell.ToolbarItems>
 
     <!-- Barre d'onglets -->
     <TabBar >
-        <Tab Title="Accueil" Icon="accueil.png">
+        <Tab Title="Accueil" Icon="accueil.png" x:Name="AccueilTab">
             <ShellContent ContentTemplate="{DataTemplate local:TableauBordManageView}" />
         </Tab>
-        <Tab Title="Budget" Icon="budget.png" >
+        <Tab Title="Budgets" Icon="budget.png" >
             <ShellContent ContentTemplate="{DataTemplate local:BudgetManageView}" />
         </Tab>
-        <Tab Title="Execution" Icon="execution.png">
+        <Tab Title="Dépenses" Icon="execution.png">
             <ShellContent ContentTemplate="{DataTemplate local:ExecutionBudgetaireManageView}" />
         </Tab>
-        <Tab Title="Rapports" Icon="report.png" >
+        <Tab Title="Statistiques" Icon="report.png" >
             <ShellContent ContentTemplate="{DataTemplate local:StatistiqueManageView}" />
         </Tab>
     </TabBar>

@@ -160,7 +160,7 @@ namespace SuiviBuget.Mobile.ViewModels
             switch (Action)
             {
                 case GlobalConst.Add:
-                    Title = $"Exécution du budget {DataItem.CodeBudget}";
+                    Title = $"Ajouter une dépense";
                     DataItem.ExecutionBudgetaireID = Guid.NewGuid();
                     DataItem.DateExecution = DateTime.Now;
                     _ = LoadLigneBudgetaireAsync(DataItem.CodeBudget, "");

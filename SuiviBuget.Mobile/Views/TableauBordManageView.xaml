@@ -16,7 +16,7 @@
                 <!-- Section Dépassements -->
                 <Frame BackgroundColor="White" CornerRadius="15" Padding="15" HasShadow="True">
                     <VerticalStackLayout Spacing="10">
-                        <Label Text="⚠ Dépassements" FontSize="20" FontAttributes="Bold" TextColor="Red" />
+                        <Label Text="⚠ Dépassements du jour" FontSize="20" FontAttributes="Bold" TextColor="Red" />
 
                         <CollectionView ItemsSource="{Binding DepassementItems}">
                             <CollectionView.ItemTemplate>

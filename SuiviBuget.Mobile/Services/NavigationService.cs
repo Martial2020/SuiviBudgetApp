@@ -16,6 +16,9 @@ namespace SuiviBuget.Mobile.Services
         {
             switch (pageName)
             {
+                case "TableauBordManageView":
+                    await Shell.Current.GoToAsync(nameof(TableauBordManageView));
+                    break;
                 case "LigneBudgetaireManageView":
                     await Shell.Current.GoToAsync(nameof(LigneBudgetaireManageView));
                     break;

@@ -44,7 +44,7 @@ namespace SuiviBuget.Mobile.ViewModels
         }
 
         [ObservableProperty]
-        private string title = "Ajouter une ligne budgetaire";
+        private string title = "Ajouter une allocation";
 
         [ObservableProperty]
         private string labelButton = "Ajouter";
@@ -145,7 +145,7 @@ namespace SuiviBuget.Mobile.ViewModels
                     DataItem.CodeBudget = code;
                     break;
                 case GlobalConst.Edit:
-                    Title = "Modifier un detail";
+                    Title = "Modifier une allocation";
                     LabelButton = "Modifier";
                     DataItem.BudgetDetailID = Guid.Parse(code);
                     var ligne = await adminService.GetBudgetDetailByCode(DataItem.BudgetDetailID);

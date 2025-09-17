@@ -26,7 +26,7 @@ namespace SuiviBuget.Mobile.ViewModels
         private LigneBudgetaireModel dataItem = new();
 
         [ObservableProperty]
-        private string title = "Ajouter une ligne budgetaire";
+        private string title = "Ajouter une dépense";
 
         [ObservableProperty]
         private string labelButton = "Ajouter";
@@ -103,7 +103,7 @@ namespace SuiviBuget.Mobile.ViewModels
                     CodeLigneBudgetaireIsEnabled = false;
                     break;
                 case GlobalConst.Edit:
-                    Title = "Modifier une ligne budgetaire";
+                    Title = "Modifier une dépense";
                     LabelButton = "Modifier";
                     var ligne = await adminService.GetLigneBudgetaireByCode(code);
                     if (ligne == null) { return; }

@@ -22,21 +22,20 @@ public partial class BudgetManageView : ContentPage
 
                 options.Add("Modifier");
                 options.Add("Supprimer");              
-                options.Add("En cours");               
+                options.Add("Mettre en cours le budget");               
                 // Ne pas ajouter "Clôturer"
             }
             else if (item.StatutBudget == StatutBudgetConst.Encours)
             {
                 options.Add("Modifier");
                 options.Add("Supprimer");
-                options.Add("Clôturer");
-                
+                options.Add("Clôturer le budget");            
             }
-            else
-            {
-                options.Add("Supprimer");
-            }
-            options.Add("Détails");
+            //else
+            //{
+            //    options.Add("Supprimer");
+            //}
+            options.Add("Allocation budgétaire");
 
             // Affiche l'ActionSheet
             if (options.Count == 0)
@@ -65,13 +64,13 @@ public partial class BudgetManageView : ContentPage
                     case "Supprimer":
                         vm.DeleteCommand.Execute(item);
                         break;
-                    case "Clôturer":
+                    case "Clôturer le budget":
                         vm.CloturerCommand.Execute(item);
                         break;
-                    case "En cours":
+                    case "Mettre en cours le budget":
                         vm.EncoursCommand.Execute(item);
                         break;
-                    case "Détails":
+                    case "Allocation budgétaire":
                         vm.BudgetDetailCommand.Execute(item);
                         break;
                 }

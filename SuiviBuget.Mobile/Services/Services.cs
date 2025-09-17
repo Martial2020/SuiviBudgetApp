@@ -20,14 +20,8 @@ namespace SuiviBuget.Mobile.Services
         #region Constructeur
         public Services(string dbPath)
         {
-            _db = new SQLiteAsyncConnection(dbPath);
-            //_db.DeleteAllAsync<Budget>();
-            //_db.DeleteAllAsync<BudgetDetail>();
-            //_db.DeleteAllAsync<ModePaiement>();
-            //_db.DeleteAllAsync<ParametreCompteur>();
-            //_db.DeleteAllAsync<LigneBudgetaire>();
-            //_db.DeleteAllAsync<ExecutionBudgetaire>();
 
+            _db = new SQLiteAsyncConnection(dbPath);
             _db.CreateTableAsync<ModePaiement>().Wait();
             _db.CreateTableAsync<LigneBudgetaire>().Wait();
             _db.CreateTableAsync<Budget>().Wait();

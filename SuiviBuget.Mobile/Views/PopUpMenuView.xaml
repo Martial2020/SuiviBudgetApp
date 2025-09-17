@@ -27,7 +27,7 @@
 
             <!-- Ligne Budgétaire -->
             <Button 
-            Text="Ligne budgétaire" 
+            Text="Type de depense" 
             FontSize="12" 
             TextColor="Black" 
             BackgroundColor="Transparent"
@@ -57,7 +57,7 @@
 
             <!-- À propos -->
             <Button 
-            Text="Paramètre" 
+            Text="Réinitialiser" 
             FontSize="12" 
             TextColor="Black" 
             BackgroundColor="Transparent"
@@ -66,7 +66,7 @@
             BorderColor="LightBlue"
             BorderWidth="0.5">
                 <Button.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding AproposCommand}" />
+                    <TapGestureRecognizer Command="{Binding ReinitialiserCommand}" />
                 </Button.GestureRecognizers>
             </Button>
 

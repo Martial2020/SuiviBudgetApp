@@ -294,7 +294,7 @@ namespace SuiviBuget.Mobile.ViewModels
         public async Task InitializePageAsync(string code, string action)
         {
             CodeBudget = code;
-            Title = $"Liste des exécutions du budget {CodeBudget}";
+            Title = $"Dépenses {CodeBudget}";
             _ = LoadLigneBudgetaireAsync(CodeBudget, "");
             var buget = await _service.GetBudgetByCode(CodeBudget);
             if (buget != null && buget.StatutBudget == StatutBudgetConst.Cloture)
