@@ -156,7 +156,7 @@ namespace SuiviBuget.Mobile.ViewModels
         {
             try
             {
-                var result = Validator.ValidateBudgetUpdate(DataItem);
+                var result = Validator.ValidateBudgetDelete(DataItem);
                 if (!result.isSuccess)
                 {
                     await _alertService.ShowAlertAsync("Erreur", result.message);

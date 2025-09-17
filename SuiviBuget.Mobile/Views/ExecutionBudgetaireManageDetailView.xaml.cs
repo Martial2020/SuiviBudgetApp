@@ -27,7 +27,7 @@ public partial class ExecutionBudgetaireManageDetailView : ContentPage, IQueryAt
         {
             // Crée la liste des options dynamiquement
             var options = new List<string>();
-            options.Add("Description");
+            //options.Add("Description");
             options.Add("Supprimer");
 
             // Affiche l'ActionSheet

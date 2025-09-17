@@ -3,6 +3,7 @@ using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using SuiviBudge.Validators;
 using SuiviBudget.Mobile.Constants;
 using SuiviBudget.Mobile.Interfaces;
 using SuiviBuget.Mobile.Helpers;
@@ -108,7 +109,14 @@ namespace SuiviBuget.Mobile.ViewModels
         {
             var confirm = await Shell.Current.CurrentPage.DisplayAlert("Confirmation", "Supprimer cet élément ?", "Oui", "Non");
             if (confirm)
-            {         
+            {
+                var isValid = await Validator.ValidateBudgetDetailDelete(item);
+                if (!isValid.isSuccess)
+                {
+                    await _alertService.ShowAlertAsync("Erreur", isValid.message);
+                    return;
+                }
+               
                 var isOk = await service.DeleteBudgetDetailAsync(item);
                 if (!isOk)
                 {

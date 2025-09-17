@@ -92,7 +92,7 @@ namespace SuiviBudge.Validators
 
             return (true, string.Empty);
         }
-        public static (bool isSuccess, string message) ValidateBudgetUpdate(BudgetModel budget)
+        public static (bool isSuccess, string message) ValidateBudgetDelete(BudgetModel budget)
         {
 
             if (budget == null)
@@ -107,7 +107,7 @@ namespace SuiviBudge.Validators
 
             return (true, string.Empty);
         }
-        public static (bool isSuccess, string message) ValidateBudgeteDelete(BudgetModel budget)
+        public static (bool isSuccess, string message) ValidateBudgeteDelete(BudgetManageModel budget)
         {
             if (budget == null)
                 return (false, "Aucune donnée disponible pour la suppression de la ligne budgetaire");
@@ -157,6 +157,19 @@ namespace SuiviBudge.Validators
             var getLigne = await adminService.GetBudgetDetailByCode(ligneBugetaire.BudgetDetailID);
             if (getLigne == null)
                 return (false, $"Modification impossible.La ligne budgetaire [{ligneBugetaire.CodeLigneBudgetaire}] existe pas;");
+
+            return (true, string.Empty);
+        }
+
+        public static async Task<(bool isSuccess, string message)> ValidateBudgetDetailDelete(BudgetDetailManageModel ligneBugetaire)
+        {
+            if (ligneBugetaire == null)
+                return (false, "Aucune donnée disponible pour la suppression de la ligne budgetaire du budget");
+
+
+            var getLigne = await adminService.GetExecutionBudgetaireDetailsByBudgetDetail(ligneBugetaire.CodeBudget,ligneBugetaire.CodeLigneBudgetaire);
+            if (getLigne != null)
+                return (false, $"Impossible de supprimer, ce detail du budget {ligneBugetaire.CodeBudget} a dejà fait l'objet d'une exécution budgetaire");
 
             return (true, string.Empty);
         }
@@ -228,6 +241,9 @@ namespace SuiviBudge.Validators
 
             if (execution.Montant <= 0)
                 return (false, "Veuillez saisir un montant valide");
+
+            if (string.IsNullOrEmpty(execution.Description))
+                return (false, "Veuillez saisir le détail de votre exécution budgetaire");
 
             if (execution.DateExecution == DateTime.MinValue)
                 return (false, "Veuillez saisir une date valide");

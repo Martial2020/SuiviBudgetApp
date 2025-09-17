@@ -27,7 +27,7 @@ namespace SuiviBuget.Mobile.Services
             //_db.DeleteAllAsync<ParametreCompteur>();
             //_db.DeleteAllAsync<LigneBudgetaire>();
             //_db.DeleteAllAsync<ExecutionBudgetaire>();
-            
+
             _db.CreateTableAsync<ModePaiement>().Wait();
             _db.CreateTableAsync<LigneBudgetaire>().Wait();
             _db.CreateTableAsync<Budget>().Wait();
@@ -259,7 +259,7 @@ namespace SuiviBuget.Mobile.Services
                 return false;
             }
         }
-        public async Task<bool> DeleteBudgetAsync(BudgetModel budget)
+        public async Task<bool> DeleteBudgetAsync(Budget budget)
         {
 
             await DeleteBudgetDetailByCodeBudgetAsync(budget.CodeBudget);
@@ -524,7 +524,7 @@ namespace SuiviBuget.Mobile.Services
             }
         }
 
-        public async Task<BudgetDetail> GetBudgetDetailByBudgetLigne(string codeBudget,string codeLigneBudgetaire)
+        public async Task<BudgetDetail> GetBudgetDetailByBudgetLigne(string codeBudget, string codeLigneBudgetaire)
         {
             try
             {
@@ -635,7 +635,7 @@ namespace SuiviBuget.Mobile.Services
                                  Montant = e.Montant,
                                  CodeLigneBudgetaire = l.CodeLigneBudgetaire,
                                  CodeBudget = e.CodeBudget,
-                                 Descritpion = e.Description
+                                 Description = e.Description
                              }).ToList();
 
                 return query;
@@ -678,6 +678,63 @@ namespace SuiviBuget.Mobile.Services
             }
         }
 
+        public async Task<ExecutionBudgetaire> GetExecutionBudgetaireDetailsByBudgetDetail(string codeBudget, string codeLigneBudgetaire)
+        {
+            try
+            {
+                return await _db.Table<ExecutionBudgetaire>()
+                .FirstOrDefaultAsync(x => x.CodeBudget == codeBudget && x.CodeLigneBudgetaire == codeLigneBudgetaire);
+            }
+            catch (Exception ex)
+            {
+                // Log erreur (peut-être un fichier ou un service de journalisation)
+                Console.WriteLine($"Erreur lors de la récupération des lignes budgétaires: {ex.Message}");
+                return new ExecutionBudgetaire();
+            }
+        }
+
+        #endregion
+
+        #region Tableau de bord
+        public async Task<List<ExecutionBudgetaireDetailManageModel>> GetDepenseItemsByDate(DateTime date)
+        {
+            try
+            {
+                var startDate = date.Date;          // 00:00:00 du jour
+                var endDate = date.Date.AddDays(1); // 00:00:00 du jour suivant
+
+                var executions = await _db.Table<ExecutionBudgetaire>()
+                 .Where(x => x.DateExecution >= startDate && x.DateExecution < endDate).ToListAsync();
+                var lignes = await _db.Table<LigneBudgetaire>().ToListAsync();
+                var paiement = await _db.Table<ModePaiement>().ToListAsync();
+                var budget = await _db.Table<Budget>().ToListAsync();
+
+                var query = (from e in executions
+                             join l in lignes on e.CodeLigneBudgetaire equals l.CodeLigneBudgetaire
+                             join m in paiement on e.CodeModePaiement equals m.CodeModePaiement
+                             join b in budget on e.CodeBudget equals b.CodeBudget
+                             select new ExecutionBudgetaireDetailManageModel
+                             {
+                                 DateExecution = e.DateExecution,
+                                 ExecutionBudgetaireID = e.ExecutionBudgetaireID,
+                                 LibelleLigneBudgetaire = l.LibelleLigneBudgetaire,
+                                 ModePaiement = m.LibelleModePaiement,
+                                 Montant = e.Montant,
+                                 CodeLigneBudgetaire = l.CodeLigneBudgetaire,
+                                 CodeBudget = e.CodeBudget,
+                                 Description = e.Description,
+                                 LibelleBudget = b.LibelleBudget
+                             }).ToList();
+
+                return query;
+            }
+            catch (Exception ex)
+            {
+                // Log erreur (peut-être un fichier ou un service de journalisation)
+                Console.WriteLine($"Erreur lors de la récupération des lignes budgétaires: {ex.Message}");
+                return new List<ExecutionBudgetaireDetailManageModel>();
+            }
+        }
         #endregion
 
         #region ParametreCompteur

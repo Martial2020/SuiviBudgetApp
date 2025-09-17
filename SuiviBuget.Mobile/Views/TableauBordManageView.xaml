@@ -1,111 +1,87 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SuiviBuget.Mobile.Views.TableauBordManageView"
+               xmlns:viewModels="clr-namespace:SuiviBuget.Mobile.ViewModels;assembly=SuiviBuget.Mobile"
              Title="Tableau de bord">
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="20">
 
-           
-            <!-- Grille badges 2 par ligne -->
-            <Grid ColumnDefinitions="*,*"
-                  RowDefinitions="Auto,Auto"
-                  RowSpacing="20"
-                  ColumnSpacing="20">
+    <!-- Liaison du ViewModel à la page -->
+    <ContentPage.BindingContext>
+        <viewModels:TableauBordManageViewModel />
+    </ContentPage.BindingContext>
 
-                <!-- Badge Budget -->
-                <Border Grid.Row="0" Grid.Column="0"
-                        BackgroundColor="#4682B4"
-                        HeightRequest="120"
-                        HorizontalOptions="Fill"
-                        VerticalOptions="Fill">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="20"/>
-                    </Border.StrokeShape>
-                    <VerticalStackLayout HorizontalOptions="Center"
-                                         VerticalOptions="Center">
-                        <Label Text="Budget"
-                               TextColor="White"
-                               FontSize="20"
-                               FontAttributes="Bold"
-                               HorizontalOptions="Center"/>
-                        <Label Text="12"
-                               TextColor="White"
-                               FontSize="28"
-                               FontAttributes="Bold"
-                               HorizontalOptions="Center"/>
+    <Grid>
+        <!-- Contenu principal -->
+        <ScrollView>
+            <VerticalStackLayout Padding="20" Spacing="25">
+                <!-- Section Dépassements -->
+                <Frame BackgroundColor="White" CornerRadius="15" Padding="15" HasShadow="True">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="⚠ Dépassements" FontSize="20" FontAttributes="Bold" TextColor="Red" />
+
+                        <CollectionView ItemsSource="{Binding DepassementItems}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Frame BackgroundColor="#FFEAEA" CornerRadius="10" Padding="10" Margin="0,5">
+                                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                                            <!-- Colonne libellé et budget -->
+                                            <VerticalStackLayout Grid.Column="0" Grid.Row="0" Spacing="2">
+                                                <Label Text="{Binding LibelleLigneBudgetaire}" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#C0392B"/>
+                                                <Label Text="{Binding LibelleBudget}" 
+                                       FontSize="12" 
+                                       TextColor="#E74C3C"/>
+                                            </VerticalStackLayout>
+
+                                            <!-- Montant à droite -->
+                                            <Label Grid.Column="1" Grid.Row="0" 
+                                   Text="{Binding Montant, StringFormat='{0:N0} FCFA'}" 
+                                   TextColor="#E74C3C" 
+                                   FontAttributes="Bold" 
+                                   FontSize="16" 
+                                   VerticalOptions="Center"/>
+                                        </Grid>
+                                    </Frame>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
                     </VerticalStackLayout>
-                </Border>
+                </Frame>
 
-                <!-- Badge Tâches -->
-                <Border Grid.Row="0" Grid.Column="1"
-                        BackgroundColor="#32CD32"
-                        HeightRequest="120"
-                        HorizontalOptions="Fill"
-                        VerticalOptions="Fill">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="20"/>
-                    </Border.StrokeShape>
-                    <VerticalStackLayout HorizontalOptions="Center"
-                                         VerticalOptions="Center">
-                        <Label Text="Tâches"
-                               TextColor="White"
-                               FontSize="20"
-                               FontAttributes="Bold"
-                               HorizontalOptions="Center"/>
-                        <Label Text="7"
-                               TextColor="White"
-                               FontSize="28"
-                               FontAttributes="Bold"
-                               HorizontalOptions="Center"/>
+
+                <!-- Section Dépenses du jour -->
+                <Frame BackgroundColor="White" CornerRadius="15" Padding="15" HasShadow="True">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="📅 Dépenses du jour" FontSize="20" FontAttributes="Bold" TextColor="#2C3E50" />
+                        <CollectionView ItemsSource="{Binding ExecutionBudgetaireItems}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Frame BackgroundColor="#ECF0F1" CornerRadius="10" Padding="10" Margin="0,5">
+                                        <Grid ColumnDefinitions="*,Auto,Auto">
+                                            <VerticalStackLayout Spacing="2">
+                                                <Label Text="{Binding LibelleLigneBudgetaire}"  FontAttributes="Bold" TextColor="#2C3E50"/>
+                                                <Label Text="{Binding Description}"  TextColor="#7F8C8D" LineBreakMode="WordWrap"/>
+                                                <Label Text="{Binding LibelleBudget}"  TextColor="#95A5A6"/>
+                                            </VerticalStackLayout>
+                                            <Label Grid.Column="1" Text="{Binding Montant, StringFormat='{0:N0} FCFA'}" TextColor="#27AE60"  FontAttributes="Bold" FontSize="16"   VerticalOptions="Center"/>
+                                               
+                                        </Grid>
+                                    </Frame>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
                     </VerticalStackLayout>
-                </Border>
+                </Frame>
+            </VerticalStackLayout>
+        </ScrollView>
 
-                <!-- Badge Notifications -->
-                <Border Grid.Row="1" Grid.Column="0"
-                        BackgroundColor="Red"
-                        HeightRequest="120"
-                        HorizontalOptions="Fill"
-                        VerticalOptions="Fill">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="20"/>
-                    </Border.StrokeShape>
-                    <VerticalStackLayout HorizontalOptions="Center"
-                                         VerticalOptions="Center">
-                        <Label Text="Notifications"
-                               TextColor="White"
-                               FontSize="20"
-                               FontAttributes="Bold"
-                               HorizontalOptions="Center"/>
-                        <Label Text="5"
-                               TextColor="White"
-                               FontSize="28"
-                               FontAttributes="Bold"
-                               HorizontalOptions="Center"/>
-                    </VerticalStackLayout>
-                </Border>
-
-                <!-- Badge Profil -->
-                <Border Grid.Row="1" Grid.Column="1"
-                        BackgroundColor="#FF8C00"
-                        HeightRequest="120"
-                        HorizontalOptions="Fill"
-                        VerticalOptions="Fill">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="20"/>
-                    </Border.StrokeShape>
-                    <VerticalStackLayout HorizontalOptions="Center"
-                                         VerticalOptions="Center">
-                        <Label Text="Profil"
-                               TextColor="White"
-                               FontSize="20"
-                               FontAttributes="Bold"
-                               HorizontalOptions="Center"/>
-                    </VerticalStackLayout>
-                </Border>
-
-            </Grid>
-
-        </VerticalStackLayout>
-    </ScrollView>
+        <!-- Loader centré -->
+        <ActivityIndicator IsRunning="{Binding IsBusy}" 
+                       IsVisible="{Binding IsBusy}" 
+                       Color="#4682B4" 
+                       VerticalOptions="CenterAndExpand" 
+                       HorizontalOptions="CenterAndExpand" 
+                       Scale="1.5"/>
+    </Grid>
 
 </ContentPage>

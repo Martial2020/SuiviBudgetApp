@@ -10,8 +10,10 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Maui.Controls;
+using SuiviBudge.Validators;
 using SuiviBudget.Mobile.Constants;
 using SuiviBudget.Mobile.Interfaces;
+using SuiviBudget.Services.DataAccess;
 using SuiviBuget.Mobile.Helpers;
 using SuiviBuget.Mobile.Interfaces;
 using SuiviBuget.Mobile.Models;
@@ -173,10 +175,16 @@ namespace SuiviBuget.Mobile.ViewModels
         }
         private async void OnDelete(BudgetManageModel budget)
         {
+            var result = Validator.ValidateBudgeteDelete(budget);
+            if (!result.isSuccess)
+            {
+                await _alertService.ShowAlertAsync("Erreur", result.message);
+                return;
+            }
             var confirm = await Shell.Current.CurrentPage.DisplayAlert("Confirmation", $"Supprimer le budget [{budget.CodeBudget}] ?", "Oui", "Non");
             if (confirm)
             {
-                var entity = new BudgetModel
+                var entity = new Budget
                 {
                     CodeBudget = budget.CodeBudget,
                     LibelleBudget = budget.LibelleBudget

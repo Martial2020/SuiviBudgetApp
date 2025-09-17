@@ -103,12 +103,11 @@ namespace SuiviBuget.Mobile.ViewModels
         }
         public async Task LoadBudgetAsync(string searchText)
         {
-            BudgetItems = null;
+            BudgetItems = new ObservableCollection<BudgetManageModel>();
             IsBusy = true;
-            var statutList = new List<string> { StatutBudgetConst.Encours, StatutBudgetConst.Cloture };
-        
+            await Task.Delay(1000); // ⏳ attend 1,5 secondes (1500 ms)
+            var statutList = new List<string> { StatutBudgetConst.Encours, StatutBudgetConst.Cloture };     
             var budgets = await service.GetBudgetItemsByStatus(searchText, statutList);
-
             BudgetItems = new ObservableCollection<BudgetManageModel>(
                 budgets.Select(x => new BudgetManageModel
                 {

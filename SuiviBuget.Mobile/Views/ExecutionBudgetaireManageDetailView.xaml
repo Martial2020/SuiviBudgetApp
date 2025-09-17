@@ -70,14 +70,17 @@
         <AbsoluteLayout Grid.Row="2">
             <!-- CollectionView -->
             <CollectionView ItemsSource="{Binding ExecutionBugetaireDetailItems}"
-            Margin="10,0,10,10"
-            AbsoluteLayout.LayoutFlags="All"
-            AbsoluteLayout.LayoutBounds="0,0,1,1">
+                Margin="10,0,10,10"
+                AbsoluteLayout.LayoutFlags="All"
+                AbsoluteLayout.LayoutBounds="0,0,1,1">
 
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Border Stroke="LightGray"   StrokeThickness="1"
-                      BackgroundColor="AliceBlue" Margin="10"  Padding="6" >
+                        <Border Stroke="LightGray"
+                    StrokeThickness="1"
+                    BackgroundColor="AliceBlue"
+                    Margin="10"
+                    Padding="6">
                             <Border.StrokeShape>
                                 <RoundRectangle CornerRadius="10"/>
                             </Border.StrokeShape>
@@ -85,38 +88,56 @@
                             <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
                                 <!-- Infos Budget -->
                                 <VerticalStackLayout Grid.Column="0" Grid.Row="0" Spacing="4">
-                                    <Label Text="{Binding DateExecution, StringFormat='{0:dd/MM/yyyy}'}" />
-                                    <Label Text="{Binding LibelleLigneBudgetaire}"/>
 
-                                    <!-- Dates -->
-                                    <HorizontalStackLayout Spacing="4" Grid.Column="0" Grid.Row="0">
-                                        <Label Text="{Binding ModePaiement,StringFormat='{0} : '}"/>
-                                        <Label Text="{Binding Montant, StringFormat='{0:N0} FCFA'}"/>
+                                    <!-- Date -->
+                                    <Label Text="{Binding DateExecution, StringFormat='{0:dd/MM/yyyy}'}"
+                               FontAttributes="Bold"
+                               TextColor="#2C3E50"/>
+
+                                    <!-- Libelle ligne budgetaire -->
+                                    <Label Text="{Binding LibelleLigneBudgetaire}"
+                               FontSize="16"
+                               TextColor="#34495E"/>
+
+
+                                    <!-- Mode paiement + montant -->
+                                    <HorizontalStackLayout Spacing="4">
+                                        <Label Text="{Binding ModePaiement, StringFormat='{0} : '}"
+                                                 TextColor="#2C3E50"/>
+                                        <Label Text="{Binding Montant, StringFormat='{0:N0} FCFA'}"
+                                           TextColor="#27AE60"  FontAttributes="Bold"/>
+            
                                     </HorizontalStackLayout>
+                                    <!-- ✅ Description ajoutée -->
+                                    <Label Text="{Binding Description}"
+                                       FontSize="14"
+                                       TextColor="#7F8C8D"
+                                       FontAttributes="Italic"
+                                       LineBreakMode="WordWrap"/>
 
+                              
                                 </VerticalStackLayout>
 
                                 <!-- Bouton Actions modernisé (menu ⋮) -->
                                 <Button Grid.Column="1" Grid.Row="0"
-                                    Text="⋮"
-                                    FontSize="20"
-                                    BackgroundColor="Transparent"
-                                    TextColor="#4682B4"
-                                    WidthRequest="40"
-                                    HeightRequest="40"
-                                    CornerRadius="20"
-                                    BorderColor="#4682B4"
-                                    BorderWidth="1"
-                                    Clicked="Button_Clicked"
-                                    HorizontalOptions="End"
-                                    VerticalOptions="Center"/>
-
+                            Text="⋮"
+                            FontSize="20"
+                            BackgroundColor="Transparent"
+                            TextColor="#4682B4"
+                            WidthRequest="40"
+                            HeightRequest="40"
+                            CornerRadius="20"
+                            BorderColor="#4682B4"
+                            BorderWidth="1"
+                            Clicked="Button_Clicked"
+                            HorizontalOptions="End"
+                            VerticalOptions="Center"/>
                             </Grid>
-
                         </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
+
             <!-- Bouton "+" flottant -->
             <Button Text="+"  x:Name="btnAjouter2"
                 BackgroundColor="#FF7F50"

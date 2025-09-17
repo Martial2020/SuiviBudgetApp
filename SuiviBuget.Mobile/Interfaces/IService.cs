@@ -22,7 +22,7 @@ namespace SuiviBudget.Mobile.Interfaces
 
         #region Budget
         Task<bool> AddBudgetAsync(BudgetModel budget);
-        Task<bool> DeleteBudgetAsync(BudgetModel budget);
+        Task<bool> DeleteBudgetAsync(Budget budget);
         Task<bool> UpdateBudgetAsync(BudgetModel budget);
         Task<BudgetModel> GetBudgetByCode(string codeBudget);
         Task<List<BudgetManageModel>> GetBudgetItems(string searchText);
@@ -48,8 +48,12 @@ namespace SuiviBudget.Mobile.Interfaces
         Task<bool> AddExecutionBudgetaireDetailAsync(ExecutionBudgetaire execution);
         Task<bool> DeleteExecutionBudgetaireDetailAsync(ExecutionBudgetaire execution);
         Task<ExecutionBudgetaire> GetExecutionBudgetaireDetailsById(Guid id);
-
         Task<ExecutionBudgetaire> GetExecutionBudgetaireDetailsByModePaiement(string codeLigne);
+        Task<ExecutionBudgetaire> GetExecutionBudgetaireDetailsByBudgetDetail(string codeBudget, string codeLigneBudgetaire);
+        #endregion
+
+        #region Tableau de bord
+        Task<List<ExecutionBudgetaireDetailManageModel>> GetDepenseItemsByDate(DateTime date);
         #endregion
 
         #region Mode de paiement

@@ -38,10 +38,6 @@ namespace SuiviBuget.Mobile.ViewModels
                 // mettre à jour le code dans DataItem
                 //DataItem.CodeLigneBudgetaire = value?.CodeLigneBudgetaire;
                 _ = LoadExecutionBudgetaireAsync(CodeBudget, value?.CodeLigneBudgetaire);
-
-              
-
-
             }
         }
 
@@ -90,7 +86,19 @@ namespace SuiviBuget.Mobile.ViewModels
             }
         }
 
-
+        private bool _isBusy = false;
+        public bool IsBusy
+        {
+            get => _isBusy;
+            set
+            {
+                if (_isBusy != value)
+                {
+                    _isBusy = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         private bool _IsVisibleBadgeFrame = false;
         public bool IsVisibleBadgeFrame
@@ -199,10 +207,12 @@ namespace SuiviBuget.Mobile.ViewModels
             );
         }
 
-        private async Task LoadExecutionBudgetaireAsync(string codeBudget,string ligne)
+        private async Task LoadExecutionBudgetaireAsync(string codeBudget, string ligne)
         {
+            ExecutionBugetaireDetailItems = new ObservableCollection<ExecutionBudgetaireDetailManageModel>();
+            IsBusy = true;
+            await Task.Delay(1000); // ⏳ attend 1,5 secondes (1500 ms)
             var executeItems = await _service.GetExecutionBudgetaireDetailsItems(codeBudget, ligne);
-
             ExecutionBugetaireDetailItems = new ObservableCollection<ExecutionBudgetaireDetailManageModel>(
                 executeItems.Select(x => new ExecutionBudgetaireDetailManageModel
                 {
@@ -213,14 +223,14 @@ namespace SuiviBuget.Mobile.ViewModels
                     Montant = x.Montant,
                     CodeBudget = x.CodeBudget,
                     CodeLigneBudgetaire = x.CodeLigneBudgetaire,
-                    Descritpion = x.Descritpion,
+                    Description = x.Description,
                 })
             );
-
             ActualiserMontants(codeBudget, ligne);
+            IsBusy = false;
         }
 
-      
+
         private async void OnDelete(ExecutionBudgetaireDetailManageModel model)
         {
             var confirm = await Shell.Current.CurrentPage.DisplayAlert("Confirmation", "Supprimer cet élément ?", "Oui", "Non");
@@ -246,10 +256,10 @@ namespace SuiviBuget.Mobile.ViewModels
 
         private async void OnDescription(ExecutionBudgetaireDetailManageModel model)
         {
-            if (string.IsNullOrEmpty(model.Descritpion))
+            if (string.IsNullOrEmpty(model.Description))
                 await _alertService.ShowAlertAsync("Information", "Pas de description");
             else
-                await _alertService.ShowAlertAsync("Information", model.Descritpion);
+                await _alertService.ShowAlertAsync("Information", model.Description);
         }
 
 
