@@ -216,7 +216,7 @@ namespace SuiviBuget.Mobile.ViewModels
 
                 await _alertService.ShowAlertAsync("Information", $"Execution effectuée sur la ligne budgetaire [{DataItem.CodeLigneBudgetaire}] avec succès");
                 WeakReferenceMessenger.Default.Send(new RefreshList());
-                await _navigationService.GoBackAsync();
+                await _navigationService.GoBackAsync(DataItem.CodeBudget);
             }
             catch (Exception ex)
             {

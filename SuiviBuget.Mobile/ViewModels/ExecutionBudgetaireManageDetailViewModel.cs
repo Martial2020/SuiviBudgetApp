@@ -158,6 +158,20 @@ namespace SuiviBuget.Mobile.ViewModels
             }
         }
 
+        private bool _actionPossible = true;
+        public bool ActionPossible
+        {
+            get => _actionPossible;
+            set
+            {
+                if (_actionPossible != value)
+                {
+                    _actionPossible = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public ICommand AddCommand { get; }
         public ICommand DescriptionCommand { get; }
         public ICommand DeleteCommand { get; }
@@ -205,6 +219,11 @@ namespace SuiviBuget.Mobile.ViewModels
                     LibelleLigneBudgetaire = $"[{x.CodeLigneBudgetaire}] - {x.LibelleLigneBudgetaire}"
                 })
             );
+
+            if (LigneBudgetaireItems.Count > 0)
+            {
+                SelectedLigneBudgetaire = LigneBudgetaireItems.FirstOrDefault();
+            }
         }
 
         private async Task LoadExecutionBudgetaireAsync(string codeBudget, string ligne)
@@ -262,8 +281,6 @@ namespace SuiviBuget.Mobile.ViewModels
                 await _alertService.ShowAlertAsync("Information", model.Description);
         }
 
-
-
         private async void OnAddCommand()
         {
             if (string.IsNullOrEmpty(CodeBudget))
@@ -279,6 +296,9 @@ namespace SuiviBuget.Mobile.ViewModels
             CodeBudget = code;
             Title = $"Liste des exécutions du budget {CodeBudget}";
             _ = LoadLigneBudgetaireAsync(CodeBudget, "");
+            var buget = await _service.GetBudgetByCode(CodeBudget);
+            if (buget != null && buget.StatutBudget == StatutBudgetConst.Cloture)
+                ActionPossible = false;
         }
     }
 }

@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SuiviBuget.Mobile.Views.ExecutionBudgetaireManageDetailView"
              xmlns:viewModels="clr-namespace:SuiviBuget.Mobile.ViewModels;assembly=SuiviBuget.Mobile"
-             Title="{Binding Title}">
+             Title="{Binding Title}" x:Name="ExecutionPage">
 
     <!-- Liaison du ViewModel à la page -->
     <ContentPage.BindingContext>
@@ -120,18 +120,19 @@
 
                                 <!-- Bouton Actions modernisé (menu ⋮) -->
                                 <Button Grid.Column="1" Grid.Row="0"
-                            Text="⋮"
-                            FontSize="20"
-                            BackgroundColor="Transparent"
-                            TextColor="#4682B4"
-                            WidthRequest="40"
-                            HeightRequest="40"
-                            CornerRadius="20"
-                            BorderColor="#4682B4"
-                            BorderWidth="1"
-                            Clicked="Button_Clicked"
-                            HorizontalOptions="End"
-                            VerticalOptions="Center"/>
+                                 IsVisible="{Binding Source={x:Reference ExecutionPage},Path=BindingContext.ActionPossible}"
+                                 Text="⋮"
+                                FontSize="20"
+                                BackgroundColor="Transparent"
+                                TextColor="#4682B4"
+                                WidthRequest="40"
+                                HeightRequest="40"
+                                CornerRadius="20"
+                                BorderColor="#4682B4"
+                                BorderWidth="1"
+                                Clicked="Button_Clicked"
+                                HorizontalOptions="End"
+                                VerticalOptions="Center"/>
                             </Grid>
                         </Border>
                     </DataTemplate>
@@ -140,6 +141,7 @@
 
             <!-- Bouton "+" flottant -->
             <Button Text="+"  x:Name="btnAjouter2"
+               IsVisible="{Binding ActionPossible}"
                 BackgroundColor="#FF7F50"
                 TextColor="White"
                 FontSize="30"

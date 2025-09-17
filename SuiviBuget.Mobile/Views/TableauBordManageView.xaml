@@ -29,7 +29,7 @@
                                        FontAttributes="Bold" 
                                        TextColor="#C0392B"/>
                                                 <Label Text="{Binding LibelleBudget}" 
-                                       FontSize="12" 
+                                       FontSize="12" FontAttributes="Italic"
                                        TextColor="#E74C3C"/>
                                             </VerticalStackLayout>
 
@@ -61,7 +61,7 @@
                                             <VerticalStackLayout Spacing="2">
                                                 <Label Text="{Binding LibelleLigneBudgetaire}"  FontAttributes="Bold" TextColor="#2C3E50"/>
                                                 <Label Text="{Binding Description}"  TextColor="#7F8C8D" LineBreakMode="WordWrap"/>
-                                                <Label Text="{Binding LibelleBudget}"  TextColor="#95A5A6"/>
+                                                <Label Text="{Binding LibelleBudget}"  TextColor="#95A5A6" FontAttributes="Italic"/>
                                             </VerticalStackLayout>
                                             <Label Grid.Column="1" Text="{Binding Montant, StringFormat='{0:N0} FCFA'}" TextColor="#27AE60"  FontAttributes="Bold" FontSize="16"   VerticalOptions="Center"/>
                                                

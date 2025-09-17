@@ -24,7 +24,7 @@ namespace SuiviBuget.Mobile.Services
                     break;
                 case "ModePaiementManageView":
                     await Shell.Current.GoToAsync(nameof(ModePaiementManageView));
-                    break;               
+                    break;
                 case "ModePaiementView":
                     await Shell.Current.GoToAsync($"{nameof(ModePaiementView)}?Code={code}&&Action={action}");
                     break;
@@ -43,12 +43,12 @@ namespace SuiviBuget.Mobile.Services
                 case "ExecutionBudgetaireDetailView":
                     await Shell.Current.GoToAsync($"{nameof(ExecutionBudgetaireDetailView)}?Code={code}&&Action={action}");
                     break;
-                    
+
                 default:
                     break;
             }
         }
-        public async Task GoBackAsync()
+        public async Task GoBackAsync(string code = "")
         {
             await Shell.Current.GoToAsync("..");
         }

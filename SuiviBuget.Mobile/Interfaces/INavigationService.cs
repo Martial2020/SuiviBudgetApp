@@ -9,7 +9,7 @@ namespace SuiviBudget.Mobile.Interfaces
 {
     public interface INavigationService
     {
-        Task NavigateToAsync(string pageName, string code="",string action=GlobalConst.Add);
-        Task GoBackAsync();
+        Task NavigateToAsync(string pageName, string code = "", string action = GlobalConst.Add);
+        Task GoBackAsync(string code = "");
     }
 }
