@@ -40,59 +40,59 @@
             <Button
                 Grid.Column="0"
                 BackgroundColor="{Binding TousBackground}"
-                BorderColor="#FF7F50"
-                BorderWidth="1.5"
+                BorderColor="LightGray"
+                BorderWidth="0.5"
                 Command="{Binding FilterStatutCommand}"
                 CommandParameter="{x:Static local:StatutBudgetConst.Tous}"
                 CornerRadius="8"
+                FontSize="12"
                 HeightRequest="35"
                 HorizontalOptions="FillAndExpand"
-                Text="Tous"
+                Text="{Binding TousLabel}"
                 TextColor="Black"
                 VerticalOptions="Center" />
-
             <Button
                 Grid.Column="1"
                 BackgroundColor="{Binding OuvertBackground}"
-                BorderColor="#FF7F50"
-                BorderWidth="1.5"
+                BorderColor="LightGray"
+                BorderWidth="0.5"
                 Command="{Binding FilterStatutCommand}"
                 CommandParameter="{x:Static local:StatutBudgetConst.Ouvert}"
                 CornerRadius="8"
+                FontSize="12"
                 HeightRequest="35"
                 HorizontalOptions="FillAndExpand"
-                Text="Ouvert"
+                Text="{Binding OuvertLabel}"
                 TextColor="Black"
                 VerticalOptions="Center" />
-
             <Button
                 Grid.Column="2"
                 BackgroundColor="{Binding EnCoursBackground}"
-                BorderColor="#FF7F50"
-                BorderWidth="1.5"
+                BorderColor="LightGray"
+                BorderWidth="0.5"
                 Command="{Binding FilterStatutCommand}"
                 CommandParameter="{x:Static local:StatutBudgetConst.Encours}"
                 CornerRadius="8"
+                FontSize="12"
                 HeightRequest="35"
                 HorizontalOptions="FillAndExpand"
-                Text="En cours"
+                Text="{Binding EnCoursLabel}"
                 TextColor="Black"
                 VerticalOptions="Center" />
-
             <Button
                 Grid.Column="3"
                 BackgroundColor="{Binding ClotureBackground}"
-                BorderColor="#FF7F50"
-                BorderWidth="1.5"
+                BorderColor="LightGray"
+                BorderWidth="0.5"
                 Command="{Binding FilterStatutCommand}"
                 CommandParameter="{x:Static local:StatutBudgetConst.Cloture}"
                 CornerRadius="8"
+                FontSize="12"
                 HeightRequest="35"
                 HorizontalOptions="FillAndExpand"
-                Text="Clôturé"
+                Text="{Binding ClotureLabel}"
                 TextColor="Black"
                 VerticalOptions="Center" />
-
         </Grid>
 
         <!--  Contenu  -->
@@ -108,15 +108,12 @@
 
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Border
+                        <Frame
                             Margin="10"
                             Padding="10"
                             BackgroundColor="AliceBlue"
-                            Stroke="LightGray"
-                            StrokeThickness="1">
-                            <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="10" />
-                            </Border.StrokeShape>
+                            CornerRadius="10"
+                            HasShadow="True">
 
                             <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
 
@@ -131,7 +128,7 @@
 
                                 <!--  Bouton Actions modernisé (menu ⋮)  -->
                                 <Button
-                                    Grid.Row="0"
+                                    Grid.RowSpan="2"
                                     Grid.Column="1"
                                     Margin="0"
                                     BackgroundColor="Transparent"
@@ -198,7 +195,7 @@
 
                             </Grid>
 
-                        </Border>
+                        </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>

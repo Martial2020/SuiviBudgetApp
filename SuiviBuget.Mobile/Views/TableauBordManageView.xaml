@@ -23,7 +23,7 @@
                     <VerticalStackLayout Spacing="10">
                         <Label
                             FontAttributes="Bold"
-                            FontSize="20"
+                            FontSize="14"
                             Text="⚠ Dépassements du jour"
                             TextColor="Red" />
 
@@ -46,9 +46,9 @@
                                                     Text="{Binding LibelleLigneBudgetaire}"
                                                     TextColor="#C0392B" />
                                                 <Label
-                                                    FontAttributes="Italic"
+                                                    FontAttributes="Bold"
                                                     FontSize="12"
-                                                    Text="{Binding LibelleBudget}"
+                                                    Text="{Binding LibelleBudget, StringFormat='Budget : {0}'}"
                                                     TextColor="#E74C3C" />
                                             </VerticalStackLayout>
 
@@ -79,7 +79,7 @@
                     <VerticalStackLayout Spacing="10">
                         <Label
                             FontAttributes="Bold"
-                            FontSize="20"
+                            FontSize="14"
                             Text="📅 Dépenses du jour"
                             TextColor="#2C3E50" />
                         <CollectionView ItemsSource="{Binding ExecutionBudgetaireItems}">
@@ -95,15 +95,16 @@
                                                 <Label
                                                     FontAttributes="Bold"
                                                     Text="{Binding LibelleLigneBudgetaire}"
-                                                    TextColor="#2C3E50" />
+                                                    TextColor="Black" />
                                                 <Label
-                                                    LineBreakMode="WordWrap"
+                                                    FontAttributes="Italic"
                                                     Text="{Binding Description}"
                                                     TextColor="#7F8C8D" />
                                                 <Label
-                                                    FontAttributes="Italic"
-                                                    Text="{Binding LibelleBudget}"
-                                                    TextColor="#95A5A6" />
+                                                    FontAttributes="Bold"
+                                                    Text="{Binding LibelleBudget, StringFormat='Budget : {0}'}"
+                                                    TextColor="#2C3E50" />
+
                                             </VerticalStackLayout>
                                             <Label
                                                 Grid.Column="1"

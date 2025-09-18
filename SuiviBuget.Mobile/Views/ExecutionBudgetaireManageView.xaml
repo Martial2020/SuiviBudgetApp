@@ -40,15 +40,13 @@
 
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Border
+                        <Frame
                             Margin="10"
                             Padding="12"
                             BackgroundColor="AliceBlue"
-                            Stroke="LightGray"
-                            StrokeThickness="1">
-                            <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="10" />
-                            </Border.StrokeShape>
+                            CornerRadius="10"
+                            HasShadow="True">
+
 
                             <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
 
@@ -63,7 +61,7 @@
 
                                 <!--  Bouton Actions modernisé (menu ⋮)  -->
                                 <Button
-                                    Grid.Row="0"
+                                    Grid.RowSpan="2"
                                     Grid.Column="1"
                                     BackgroundColor="Transparent"
                                     BorderColor="#4682B4"
@@ -130,7 +128,7 @@
 
                             </Grid>
 
-                        </Border>
+                        </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>

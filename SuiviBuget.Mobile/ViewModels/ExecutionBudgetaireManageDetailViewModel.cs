@@ -239,7 +239,7 @@ namespace SuiviBuget.Mobile.ViewModels
         {
             ExecutionBugetaireDetailItems = new ObservableCollection<ExecutionBudgetaireDetailManageModel>();
             IsBusy = true;
-            await Task.Delay(1000); // ⏳ attend 1,5 secondes (1500 ms)
+            //await Task.Delay(1000); // ⏳ attend 1,5 secondes (1500 ms)
             var executeItems = await _service.GetExecutionBudgetaireDetailsItems(codeBudget, ligne);
             ExecutionBugetaireDetailItems = new ObservableCollection<ExecutionBudgetaireDetailManageModel>(
                 executeItems.Select(x => new ExecutionBudgetaireDetailManageModel

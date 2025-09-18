@@ -113,7 +113,7 @@ namespace SuiviBuget.Mobile.ViewModels
         {
             BudgetItems = new ObservableCollection<BudgetManageModel>();
             IsBusy = true;
-            await Task.Delay(1000); // ⏳ attend 1,5 secondes (1500 ms)
+            //await Task.Delay(1000); // ⏳ attend 1,5 secondes (1500 ms)
             var statutList = new List<string> { StatutBudgetConst.Encours, StatutBudgetConst.Cloture };     
             var budgets = await service.GetBudgetItemsByStatus(searchText, statutList);
             BudgetItems = new ObservableCollection<BudgetManageModel>(
