@@ -40,7 +40,7 @@ namespace SuiviBuget.Mobile.ViewModels
                 {
                     _searchText = value;
                     OnPropertyChanged();
-                    _ = LoadBudgetAsync(_searchText); // Charge la liste initialement
+                    _ = LoadBudgetAsync(SelectedFilter, _searchText); // Charge la liste initialement
                 }
             }
         }
@@ -65,12 +65,58 @@ namespace SuiviBuget.Mobile.ViewModels
 
         #endregion
 
+        #region Background Color Statut
+
+        [ObservableProperty]
+        public Color tousBackground = Colors.White;
+
+        [ObservableProperty]
+        public Color ouvertBackground = Colors.White;
+
+        [ObservableProperty]
+        public Color enCoursBackground = Colors.White;
+        [ObservableProperty]
+        public Color clotureBackground = Colors.White;
+
+        private string _selectedFilter;
+        public string SelectedFilter
+        {
+            get => _selectedFilter;
+            set
+            {
+                if (_selectedFilter != value)
+                {
+                    _selectedFilter = value;
+                    OnPropertyChanged(nameof(SelectedFilter));
+                    TousBackground = Colors.White;
+                    OuvertBackground = Colors.White;
+                    EnCoursBackground = Colors.White;
+                    ClotureBackground = Colors.White;
+
+                    if (_selectedFilter == StatutBudgetConst.Encours)
+                        EnCoursBackground = Color.FromArgb("#FF7F50");
+                    if (_selectedFilter == StatutBudgetConst.Cloture)
+                        ClotureBackground = Color.FromArgb("#FF7F50");
+                    if (_selectedFilter == StatutBudgetConst.Ouvert)
+                        OuvertBackground = Color.FromArgb("#FF7F50");
+                    if (_selectedFilter == StatutBudgetConst.Tous)
+                        TousBackground = Color.FromArgb("#FF7F50");
+
+                    _ = LoadBudgetAsync(_selectedFilter, SearchText);
+                }
+            }
+        }
+
+
+
+        #endregion
         public ICommand AddBugetCommand { get; }
         public ICommand EditCommand { get; }
         public ICommand DeleteCommand { get; }
         public ICommand BudgetDetailCommand { get; }
         public ICommand CloturerCommand { get; }
         public ICommand EncoursCommand { get; }
+        public ICommand FilterStatutCommand { get; }
 
         public BudgetManageViewModel()
         {
@@ -78,7 +124,9 @@ namespace SuiviBuget.Mobile.ViewModels
             service = new Services.Services(dbPath);
             _alertService = new AlertService();
             RegisterMessenger(); // Enregistre l'écoute du message
-            _ = LoadBudgetAsync(SearchText); // Charge la liste initialement
+            ResetAppMessage();
+            SelectedFilter = StatutBudgetConst.Tous;
+            //_ = LoadBudgetAsync(SelectedFilter, SearchText); // Charge la liste initialement
             _navigationService = new NavigationService();
             AddBugetCommand = new RelayCommand(OnAddBugetCommand);
             EditCommand = new RelayCommand<BudgetManageModel>(OnEdit);
@@ -86,7 +134,11 @@ namespace SuiviBuget.Mobile.ViewModels
             BudgetDetailCommand = new RelayCommand<BudgetManageModel>(OnBudgetDetailCommand);
             CloturerCommand = new RelayCommand<BudgetManageModel>(OnCloturerCommand);
             EncoursCommand = new RelayCommand<BudgetManageModel>(OnEncoursCommand);
+            FilterStatutCommand = new RelayCommand<string>(OnFilterStatutCommand);
         }
+
+        private void OnFilterStatutCommand(string statut) => SelectedFilter = statut;
+
         private async void OnEncoursCommand(BudgetManageModel budget)
         {
             var confirm = await Shell.Current.CurrentPage.DisplayAlert("Confirmation", $"Changer le statut du budget [{budget.CodeBudget}] ?", "Oui", "Non");
@@ -100,7 +152,7 @@ namespace SuiviBuget.Mobile.ViewModels
                 }
                 if (getBudget.NbreLigneBudgetaire <= 0)
                 {
-                    await _alertService.ShowAlertAsync("Information", "Impossible de mettre en cours car il ne contient pas de ligne budgetaire.");
+                    await _alertService.ShowAlertAsync("Information", "Impossible de mettre en cours car il ne contient pas de type de dépense.");
                     return;
                 }
 
@@ -200,21 +252,36 @@ namespace SuiviBuget.Mobile.ViewModels
             }
         }
 
+        private void ResetAppMessage()
+        {
+            WeakReferenceMessenger.Default.Register<ResetAppMessage>(this, (r, m) =>
+            {
+                BudgetItems.Clear();
+            });
+        }
         private void RegisterMessenger()
         {
             WeakReferenceMessenger.Default.Register<RefreshList>(this, async (r, m) =>
             {
-                await LoadBudgetAsync(SearchText); // Rafraîchit la liste si un ajout est effectué
+                await LoadBudgetAsync(SelectedFilter, SearchText); // Rafraîchit la liste si un ajout est effectué
             });
         }
 
-        private async Task LoadBudgetAsync(string searchText)
+        private async Task LoadBudgetAsync(string statut, string searchText)
         {
-            BudgetItems = null;
+            List<string> statuts = new List<string>();
+            if (string.IsNullOrEmpty(statut) || statut == StatutBudgetConst.Tous)
+            {
+                statuts = new List<string> { StatutBudgetConst.Ouvert, StatutBudgetConst.Encours, StatutBudgetConst.Cloture };
+            }
+            else
+            {
+                statuts.Add(statut);
+            }
+
+            BudgetItems = new ObservableCollection<BudgetManageModel>();
             IsBusy = true;
-            //await Task.Delay(1000); // Simule un temps de chargement
-            // Reset la sélection
-            var budgets = await service.GetBudgetItems(searchText);
+            var budgets = await service.GetBudgetItemsByStatus(searchText, statuts);
             BudgetItems = new ObservableCollection<BudgetManageModel>(
                 budgets.Select(x => new BudgetManageModel
                 {

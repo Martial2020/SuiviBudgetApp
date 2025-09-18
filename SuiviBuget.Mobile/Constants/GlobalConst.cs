@@ -21,6 +21,7 @@ namespace SuiviBudget.Mobile.Constants
         public const string Ouvert = "Ouvert";
         public const string Cloture = "Clôturé";
         public const string Encours = "En cours";
+        public const string Tous = "Tous";
     }
 
     public static class ParametreCompteurConst

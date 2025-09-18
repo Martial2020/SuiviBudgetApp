@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SuiviBuget.Mobile.Views.ReinitialiserView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewModels="clr-namespace:SuiviBuget.Mobile.ViewModels;assembly=SuiviBuget.Mobile"
+    Title="Réinitilisation de l'application">
+
+    <ContentPage.BindingContext>
+        <viewModels:ReinitialiserViewModel />
+    </ContentPage.BindingContext>
+
+    <VerticalStackLayout Padding="20" Spacing="25">
+
+        <!--  Message d'avertissement  -->
+        <Label
+            FontSize="20"
+            HorizontalOptions="Center"
+            Text="⚠️ Réinitialisation de l’application"
+            TextColor="Red" />
+
+        <Label
+            FontSize="14"
+            HorizontalOptions="Center"
+            HorizontalTextAlignment="Center"
+            Text="En réinitialisant, toutes vos données seront supprimées définitivement. Cette action ne peut pas être annulée."
+            TextColor="Gray" />
+
+        <!--  Impacts listés  -->
+        <VerticalStackLayout Padding="10,20,10,20" Spacing="10">
+            <Label
+                FontSize="14"
+                Text="✅ Budgets : tous vos budgets définis seront effacés."
+                TextColor="Black" />
+            <Label
+                FontSize="14"
+                Text="✅ Dépenses : toutes vos dépenses enregistrées seront supprimées."
+                TextColor="Black" />
+            <Label
+                FontSize="14"
+                Text="✅ Statistiques : vos graphiques et historiques seront remis à zéro."
+                TextColor="Black" />
+            <Label
+                FontSize="14"
+                Text="✅ Paramètres : vos préférences seront réinitialisées."
+                TextColor="Black" />
+            <Label
+                FontSize="14"
+                Text="✅ Retour automatique à l’accueil après réinitialisation."
+                TextColor="Black" />
+        </VerticalStackLayout>
+
+        <!--  Loader  -->
+        <ActivityIndicator
+            HeightRequest="40"
+            HorizontalOptions="Center"
+            IsRunning="{Binding IsBusy}"
+            IsVisible="{Binding IsBusy}"
+            VerticalOptions="Center"
+            WidthRequest="40"
+            Color="Red" />
+
+        <!--  Bouton de réinitialisation  -->
+        <Button
+            BackgroundColor="Red"
+            Command="{Binding ReinitialiserCommand}"
+            CornerRadius="10"
+            FontAttributes="Bold"
+            HeightRequest="50"
+            IsEnabled="{Binding IsNotBusy}"
+            Text="🔄 Réinitialiser mon application"
+            TextColor="White" />
+
+
+    </VerticalStackLayout>
+
+</ContentPage>

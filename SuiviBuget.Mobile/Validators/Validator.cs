@@ -25,14 +25,14 @@ namespace SuiviBudge.Validators
         public static async Task<(bool isSuccess, string message)> ValidateLigneBugetaireCreate(LigneBudgetaireModel ligneBugetaire)
         {
             if (ligneBugetaire == null)
-                return (false, "Aucune donnée disponible pour la creation de la ligne budgetaire");
+                return (false, "Aucune donnée disponible pour le type de dépense");
 
             if (string.IsNullOrEmpty(ligneBugetaire.CodeLigneBudgetaire) || string.IsNullOrEmpty(ligneBugetaire.LibelleLigneBudgetaire))
-                return (false, "Veuillez saisir obligatoirement le code ou libellé de la ligne budgetaire");
+                return (false, "Veuillez saisir obligatoirement le code ou libellé du type de dépense");
 
             var getLigne = await adminService.GetLigneBudgetaireByCode(ligneBugetaire.CodeLigneBudgetaire);
             if (getLigne != null)
-                return (false, $"La ligne budgetaire [{ligneBugetaire.CodeLigneBudgetaire}] existe dejà dans notre base de donnée");
+                return (false, $"Le type de dépense [{ligneBugetaire.CodeLigneBudgetaire}] existe dejà dans notre base de donnée");
 
             return (true, string.Empty);
         }
@@ -40,29 +40,29 @@ namespace SuiviBudge.Validators
         {
 
             if (ligneBugetaire == null)
-                return (false, "Aucune donnée disponible pour la creation de la ligne budgetaire");
+                return (false, "Aucune donnée disponible pour la modification du type de dépense");
 
             if (string.IsNullOrEmpty(ligneBugetaire.CodeLigneBudgetaire) || string.IsNullOrEmpty(ligneBugetaire.LibelleLigneBudgetaire))
-                return (false, "Veuillez saisir obligatoirement le code ou libellé de la ligne budgetaire");
+                return (false, "Veuillez saisir obligatoirement le code ou libellé du type de dépense");
 
             var getLigne = await adminService.GetLigneBudgetaireByCode(ligneBugetaire.CodeLigneBudgetaire);
             if (getLigne == null)
-                return (false, "La ligne budgetaire à modifier n'existe pas dans la base de donnée");
+                return (false, "Le type de dépense à modifier n'existe pas dans la base de donnée");
 
             return (true, string.Empty);
         }
         public static async Task<(bool isSuccess, string message)> ValidateLigneBugetaireDelete(LigneBudgetaireModel ligneBugetaire)
         {
             if (ligneBugetaire == null)
-                return (false, "Aucune donnée disponible pour la suppression de la ligne budgetaire");
+                return (false, "Aucune donnée disponible pour la suppression du type de dépense");
 
             var getLigne = await adminService.GetLigneBudgetaireByCode(ligneBugetaire.CodeLigneBudgetaire);
             if (getLigne == null)
-                return (false, "La ligne budgetaire à supprimer n'existe pas dans la base de donnée");
+                return (false, "Le type de dépense à supprimer n'existe pas dans la base de donnée");
 
             var executionLigne = await adminService.GetBudgetDetailByCodeLigneBudgetaire(ligneBugetaire.CodeLigneBudgetaire);
             if (executionLigne != null)
-                return (false, "Impossible de supprimer cette ligne budgetaire , car elle appartient dejà a un budget.");
+                return (false, "Impossible de supprimer ce type de dépense , car il appartient dejà a un budget.");
 
 
             return (true, string.Empty);
@@ -110,7 +110,7 @@ namespace SuiviBudge.Validators
         public static (bool isSuccess, string message) ValidateBudgeteDelete(BudgetManageModel budget)
         {
             if (budget == null)
-                return (false, "Aucune donnée disponible pour la suppression de la ligne budgetaire");
+                return (false, "Aucune donnée disponible pour la suppression du budget");
 
             var getBudget = adminService.GetBudgetByCode(budget.CodeBudget);
             if (getBudget == null)
@@ -129,34 +129,34 @@ namespace SuiviBudge.Validators
         public static async Task<(bool isSuccess, string message)> ValidateBudgetDetailCreate(BudgetDetailModel ligneBugetaire)
         {
             if (ligneBugetaire == null)
-                return (false, "Aucune donnée disponible pour la creation de la ligne budgetaire du budget");
+                return (false, "Aucune donnée disponible pour l'ajout des allocations budgétaire'");
 
             if (string.IsNullOrEmpty(ligneBugetaire.CodeLigneBudgetaire))
-                return (false, "Veuillez selectionner la ligne budgetaire du budget");
+                return (false, "Veuillez selectionner le type de dépense");
 
             if (ligneBugetaire.Montant <= 0)
                 return (false, "Veuillez saisir un montant valide");
 
             var getLigne = await adminService.GetBudgetDetailByCode(ligneBugetaire.BudgetDetailID);
             if (getLigne != null)
-                return (false, $"La ligne budgetaire [{ligneBugetaire.CodeLigneBudgetaire}] existe dejà dans notre base de donnée pour ce budget");
+                return (false, $"Le type de dépense [{ligneBugetaire.CodeLigneBudgetaire}] existe dejà dans notre base de donnée pour ce budget");
 
             return (true, string.Empty);
         }
         public static async Task<(bool isSuccess, string message)> ValidateBudgetDetailUpdate(BudgetDetailModel ligneBugetaire)
         {
             if (ligneBugetaire == null)
-                return (false, "Aucune donnée disponible pour la creation de la ligne budgetaire du budget");
+                return (false, "Aucune donnée disponible pour la modification de l'allocation budgétaire");
 
             if (string.IsNullOrEmpty(ligneBugetaire.CodeLigneBudgetaire))
-                return (false, "Veuillez selectionner la ligne budgetaire du budget");
+                return (false, "Veuillez selectionner le type de dépense du budget");
 
             if (ligneBugetaire.Montant <= 0)
                 return (false, "Veuillez saisir un montant valide");
 
             var getLigne = await adminService.GetBudgetDetailByCode(ligneBugetaire.BudgetDetailID);
             if (getLigne == null)
-                return (false, $"Modification impossible.La ligne budgetaire [{ligneBugetaire.CodeLigneBudgetaire}] existe pas;");
+                return (false, $"Modification impossible.Le type de dépense[{ligneBugetaire.CodeLigneBudgetaire}] existe pas;");
 
             return (true, string.Empty);
         }
@@ -164,7 +164,7 @@ namespace SuiviBudge.Validators
         public static async Task<(bool isSuccess, string message)> ValidateBudgetDetailDelete(BudgetDetailManageModel ligneBugetaire)
         {
             if (ligneBugetaire == null)
-                return (false, "Aucune donnée disponible pour la suppression de la ligne budgetaire du budget");
+                return (false, "Aucune donnée disponible pour la suppression de l'allocation du budgétaire");
 
 
             var getLigne = await adminService.GetExecutionBudgetaireDetailsByBudgetDetail(ligneBugetaire.CodeBudget,ligneBugetaire.CodeLigneBudgetaire);
@@ -187,7 +187,7 @@ namespace SuiviBudge.Validators
 
             var getLigne = await adminService.GetModePaiementByCode(paiement.CodeModePaiement);
             if (getLigne != null)
-                return (false, $"La ligne budgetaire [{paiement.CodeModePaiement}] existe dejà dans notre base de donnée");
+                return (false, $"Le mode de paiement [{paiement.CodeModePaiement}] existe dejà dans notre base de donnée");
 
             return (true, string.Empty);
         }
@@ -234,7 +234,7 @@ namespace SuiviBudge.Validators
                 return (false, "Veuillez choisir un budget");
 
             if (string.IsNullOrEmpty(execution.CodeLigneBudgetaire))
-                return (false, "Veuillez choisir une ligne budgetaire");
+                return (false, "Veuillez choisir un type de dépense");
 
             if (string.IsNullOrEmpty(execution.CodeModePaiement))
                 return (false, "Veuillez choisir un mode de paiement");

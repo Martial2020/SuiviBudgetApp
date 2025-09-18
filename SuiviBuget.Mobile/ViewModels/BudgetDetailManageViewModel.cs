@@ -108,6 +108,7 @@ namespace SuiviBuget.Mobile.ViewModels
             EditCommand = new RelayCommand<BudgetDetailManageModel>(OnEdit);
 
             RegisterMessenger(); // Enregistre l'écoute du message
+            ResetAppMessage();
 
         }
         private async void OnEdit(BudgetDetailManageModel item)
@@ -139,7 +140,7 @@ namespace SuiviBuget.Mobile.ViewModels
                     return;
                 }
 
-                await _alertService.ShowAlertAsync("Information", $"Ligne budgetaire [{item.LibelleLigneBudgetaire}] a été supprimée avec succès");
+                await _alertService.ShowAlertAsync("Information", $"L'allocation budgétaire[{item.LibelleLigneBudgetaire}] a été supprimée avec succès");
                 WeakReferenceMessenger.Default.Send(new RefreshList());
             }
         }
@@ -150,9 +151,17 @@ namespace SuiviBuget.Mobile.ViewModels
                 await LoadBudgetDetailsAsync(SearchText); // Rafraîchit la liste si un ajout est effectué
             });
         }
+
+        private void ResetAppMessage()
+        {
+            WeakReferenceMessenger.Default.Register<ResetAppMessage>(this, (r, m) =>
+            {
+                BudgetDetailsItems.Clear();
+            });
+        }
         private async Task LoadBudgetDetailsAsync(string searchText)
         {
-            BudgetDetailsItems = null;
+            BudgetDetailsItems = new ObservableCollection<BudgetDetailManageModel>();
             IsBusy = true;
             var details = await service.GetBudgetDetailItems(CodeBudget, searchText);
             BudgetDetailsItems = new ObservableCollection<BudgetDetailManageModel>(

@@ -19,23 +19,24 @@ public partial class BudgetManageView : ContentPage
             var options = new List<string>();
             if (item.StatutBudget == StatutBudgetConst.Ouvert)
             {
-
                 options.Add("Modifier");
-                options.Add("Supprimer");              
-                options.Add("Mettre en cours le budget");               
+                options.Add("Supprimer");
+                options.Add("Allocation budgétaire");
+                options.Add("Mettre en cours le budget");
                 // Ne pas ajouter "Clôturer"
             }
             else if (item.StatutBudget == StatutBudgetConst.Encours)
             {
                 options.Add("Modifier");
                 options.Add("Supprimer");
-                options.Add("Clôturer le budget");            
-            }
+                options.Add("Allocation budgétaire");
+                options.Add("Clôturer le budget");
+            }else
+                options.Add("Allocation budgétaire");
             //else
             //{
             //    options.Add("Supprimer");
             //}
-            options.Add("Allocation budgétaire");
 
             // Affiche l'ActionSheet
             if (options.Count == 0)

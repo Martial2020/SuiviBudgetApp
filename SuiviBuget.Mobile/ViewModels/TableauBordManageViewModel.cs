@@ -47,6 +47,15 @@ namespace SuiviBuget.Mobile.ViewModels
             RegisterMessenger();
             // Dans le constructeur ou avant l'utilisation
             DepassementItems ??= new ObservableCollection<ExecutionBudgetaireDetailManageModel>();
+            ResetAppMessage();
+        }
+        private void ResetAppMessage()
+        {
+            WeakReferenceMessenger.Default.Register<ResetAppMessage>(this, (r, m) =>
+            {
+                ExecutionBudgetaireItems.Clear();
+                DepassementItems.Clear();
+            });
         }
         private void RegisterMessenger()
         {

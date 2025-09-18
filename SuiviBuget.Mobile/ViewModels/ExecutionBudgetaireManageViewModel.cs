@@ -79,10 +79,18 @@ namespace SuiviBuget.Mobile.ViewModels
             _alertService = new AlertService();
             ExecutionBudgetDetailCommand = new RelayCommand<BudgetManageModel>(OnExecutionBudgetDetailCommand);
             RegisterMessenger();
+            ResetAppMessage();
             // Charger au démarrage
             Task.Run(() => LoadBudgetAsync(string.Empty));
         }
 
+        private void ResetAppMessage()
+        {
+            WeakReferenceMessenger.Default.Register<ResetAppMessage>(this, (r, m) =>
+            {
+                BudgetItems.Clear();
+            });
+        }
         private async void OnExecutionBudgetDetailCommand(BudgetManageModel budget)
         {
             if (budget == null)

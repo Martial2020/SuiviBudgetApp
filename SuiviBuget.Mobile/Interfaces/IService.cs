@@ -11,6 +11,7 @@ namespace SuiviBudget.Mobile.Interfaces
 {
     public interface IServices
     {
+        void ReinitialiseApp();
         Task<string> GetNumeroForCodeEntityAsync(string codeParametre);
         #region Ligne budgetaire
         Task<List<LigneBudgetaireModel>> GetLigneBudgetaireItems(string searchText);

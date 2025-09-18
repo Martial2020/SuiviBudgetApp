@@ -53,8 +53,16 @@ namespace SuiviBuget.Mobile.ViewModels
             AddModePaiementCommand = new RelayCommand(OnAddModePaiementCommand);
             EditCommand = new RelayCommand<ModePaiementManageModel>(OnEdit);
             DeleteCommand = new RelayCommand<ModePaiementManageModel>(OnDelete);
+            ResetAppMessage();
         }
 
+        private void ResetAppMessage()
+        {
+            WeakReferenceMessenger.Default.Register<ResetAppMessage>(this, (r, m) =>
+            {
+                ModePaiementItems.Clear();
+            });
+        }
         private async void OnAddModePaiementCommand()
         {
             await _navigationService.NavigateToAsync("ModePaiementView");
@@ -92,7 +100,7 @@ namespace SuiviBuget.Mobile.ViewModels
                     return;
                 }
 
-                await _alertService.ShowAlertAsync("Information", $"Ligne budgetaire [{entity.LibelleModePaiement}] a été supprimée avec succès");
+                await _alertService.ShowAlertAsync("Information", $"Le mode de paiement[{entity.LibelleModePaiement}] a été supprimé avec succès");
                 WeakReferenceMessenger.Default.Send(new RefreshList());
             }
         }

@@ -35,61 +35,19 @@ namespace SuiviBuget.Mobile.ViewModels
 
         private async void OnReinitialiser()
         {
-            var confirm = await Shell.Current.CurrentPage.DisplayAlert(
-              "Réinitialisation",
-              "Êtes-vous sur(e) de vouloir réinitialiser votre application ?\nToutes vos données seront perdues.",
-              "Oui", "Non");
-
-            if (confirm)
-            {
-                var dbPath = Helper.GetDatabaseFullPath();
-                if (File.Exists(dbPath))
-                    File.Delete(dbPath);
-
-                // Supprimer les Preferences locales
-                Preferences.Clear();
-
-
-                //#if ANDROID
-                //                RestartAppAndroid();
-                //#else
-                //        //ResetAppUI();
-                //#endif
-
-
-
-
-
-                ClosePopupAction?.Invoke(); // Ferme le popup                                        
-                Application.Current.MainPage = new AppShell();
-
-            }
+            ClosePopupAction?.Invoke(); // Ferme le popup
+            await _navigationService.NavigateToAsync("ReinitialiserView");         
         }
-
-        //private void RestartAppAndroid()
-        //{
-        //    var context = Android.App.Application.Context;
-        //    Intent intent = new Intent(context, typeof(MainActivity));
-        //    int pendingIntentId = 123456;
-        //    PendingIntent pendingIntent = PendingIntent.GetActivity(context, pendingIntentId, intent, PendingIntentFlags.CancelCurrent);
-        //    AlarmManager mgr = (AlarmManager)context.GetSystemService(Context.AlarmService);
-        //    mgr.Set(AlarmType.Rtc, Java.Lang.JavaSystem.CurrentTimeMillis() + 100, pendingIntent);
-
-        //    // Ferme l'application
-        //    Android.OS.Process.KillProcess(Android.OS.Process.MyPid());
-        //}
 
         private async void OnLigneBudget()
         {
             ClosePopupAction?.Invoke(); // Ferme le popup
-            // Navigation vers la page LigneBudgetPage
             await _navigationService.NavigateToAsync("LigneBudgetaireManageView");
         }
 
         private async void OnModePaiement()
         {
             ClosePopupAction?.Invoke(); // Ferme le popup
-            // Navigation vers la page LigneBudgetPage
             await _navigationService.NavigateToAsync("ModePaiementManageView");
         }
 

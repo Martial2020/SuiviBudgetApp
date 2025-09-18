@@ -37,7 +37,7 @@ namespace SuiviBuget.Mobile.Services
             try
             {
                 if (ligne == null || string.IsNullOrEmpty(ligne.CodeLigneBudgetaire))
-                    throw new ArgumentException("Code de la ligne budgétaire est requis");
+                    throw new ArgumentException("Code de type de dépense est invalide");
 
                 var newLigne = new LigneBudgetaire
                 {
@@ -391,9 +391,9 @@ namespace SuiviBuget.Mobile.Services
                 var isSearchEmpty = string.IsNullOrWhiteSpace(search);
                 var ligneBudgetaires = await _db.Table<Budget>()
                     .Where(l => (isSearchEmpty
-                        || l.CodeBudget.ToLower().Contains(searchText)
-                        || l.LibelleBudget.ToLower().Contains(searchText)
-                        || l.StatutBudget.ToLower().Contains(searchText))
+                        || l.CodeBudget.ToLower().Contains(search)
+                        || l.LibelleBudget.ToLower().Contains(search)
+                        || l.StatutBudget.ToLower().Contains(search))
                         && statuts.Contains(l.StatutBudget)).ToListAsync();
 
                 return ligneBudgetaires
@@ -586,7 +586,7 @@ namespace SuiviBuget.Mobile.Services
             try
             {
                 await _db.InsertAsync(execution);
-                 MisAjourBudget(execution.CodeBudget);
+                MisAjourBudget(execution.CodeBudget);
                 return true;
             }
             catch (Exception ex)
@@ -630,7 +630,7 @@ namespace SuiviBuget.Mobile.Services
                                  CodeLigneBudgetaire = l.CodeLigneBudgetaire,
                                  CodeBudget = e.CodeBudget,
                                  Description = e.Description
-                             }).ToList();
+                             }).OrderByDescending(e => e.DateExecution).ToList();
 
                 return query;
             }
@@ -774,6 +774,16 @@ namespace SuiviBuget.Mobile.Services
         #endregion
 
         #region Other Functions
+
+        public async void ReinitialiseApp()
+        {
+            await _db.DeleteAllAsync<ExecutionBudgetaire>();
+            await _db.DeleteAllAsync<BudgetDetail>();
+            await _db.DeleteAllAsync<Budget>();
+            await _db.DeleteAllAsync<LigneBudgetaire>();
+            await _db.DeleteAllAsync<ModePaiement>();
+            await _db.DeleteAllAsync<ParametreCompteur>();
+        }
         private async void MisAjourBudget(string codeBudget)
         {
             decimal montantBudget = 0;

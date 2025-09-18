@@ -51,8 +51,15 @@ namespace SuiviBuget.Mobile.ViewModels
             AddLigneBugetaireCommand = new RelayCommand(OnAddLigneBugetaireCommand);
             EditCommand = new RelayCommand<LigneBudgetaireManageModel>(OnEdit);
             DeleteCommand = new RelayCommand<LigneBudgetaireManageModel>(OnDelete);
+            ResetAppMessage();
         }
-
+        private void ResetAppMessage()
+        {
+            WeakReferenceMessenger.Default.Register<ResetAppMessage>(this, (r, m) =>
+            {
+                LigneBudgetaireItems.Clear();
+            });
+        }
         private async void OnAddLigneBugetaireCommand()
         {
             await _navigationService.NavigateToAsync("LigneBudgetaireView");
@@ -84,7 +91,7 @@ namespace SuiviBuget.Mobile.ViewModels
                     return;
                 }
 
-                await _alertService.ShowAlertAsync("Information", $"Ligne budgetaire [{entity.LibelleLigneBudgetaire}] a été supprimée avec succès");
+                await _alertService.ShowAlertAsync("Information", $"Le type de dépense[{entity.LibelleLigneBudgetaire}] a été supprimé avec succès");
                 WeakReferenceMessenger.Default.Send(new RefreshList());
             }
         }

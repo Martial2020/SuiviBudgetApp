@@ -12,7 +12,7 @@
 
     <Grid RowDefinitions="Auto,Auto, *">
         <!-- ComboBox (Picker dans MAUI) -->
-        <Picker Title="Sélectionnez une ligne budgetaire" Grid.Row="0"
+        <Picker Title="Sélectionnez un type de dépense" Grid.Row="0"
                Margin="10,0,10,10" HorizontalOptions="FillAndExpand"  VerticalOptions="Start"
                HeightRequest="50" VerticalTextAlignment="Center" 
                ItemsSource="{Binding LigneBudgetaireItems,Mode=TwoWay}" 

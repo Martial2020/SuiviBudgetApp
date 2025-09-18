@@ -188,9 +188,18 @@ namespace SuiviBuget.Mobile.ViewModels
             string dbPath = Helper.GetDatabaseFullPath();
             _service = new Services.Services(dbPath);
             RegisterMessenger(); // Enregistre l'écoute du message
+            ResetAppMessage();
 
         }
 
+        private void ResetAppMessage()
+        {
+            WeakReferenceMessenger.Default.Register<ResetAppMessage>(this, (r, m) =>
+            {
+                LigneBudgetaireItems.Clear();
+                ExecutionBugetaireDetailItems.Clear();
+            });
+        }
         private async void ActualiserMontants(string codeBudget, string ligne)
         {
             var detail = await _service.GetBudgetDetailByBudgetLigne(codeBudget, ligne);
@@ -268,7 +277,7 @@ namespace SuiviBuget.Mobile.ViewModels
                     return;
                 }
 
-                await _alertService.ShowAlertAsync("Information", $"Ligne budgetaire [{model.LibelleLigneBudgetaire}] a été supprimée avec succès");
+                await _alertService.ShowAlertAsync("Information", $"La dépense a été supprimée avec succès");
                 WeakReferenceMessenger.Default.Send(new RefreshList());
             }
         }

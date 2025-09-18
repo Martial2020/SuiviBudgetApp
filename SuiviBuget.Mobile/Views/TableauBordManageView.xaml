@@ -1,45 +1,66 @@
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="SuiviBuget.Mobile.Views.TableauBordManageView"
-               xmlns:viewModels="clr-namespace:SuiviBuget.Mobile.ViewModels;assembly=SuiviBuget.Mobile"
-             Title="Tableau de bord">
+<ContentPage
+    x:Class="SuiviBuget.Mobile.Views.TableauBordManageView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewModels="clr-namespace:SuiviBuget.Mobile.ViewModels;assembly=SuiviBuget.Mobile"
+    Title="Tableau de bord">
 
-    <!-- Liaison du ViewModel à la page -->
+    <!--  Liaison du ViewModel à la page  -->
     <ContentPage.BindingContext>
         <viewModels:TableauBordManageViewModel />
     </ContentPage.BindingContext>
 
     <Grid>
-        <!-- Contenu principal -->
+        <!--  Contenu principal  -->
         <ScrollView>
             <VerticalStackLayout Padding="20" Spacing="25">
-                <!-- Section Dépassements -->
-                <Frame BackgroundColor="White" CornerRadius="15" Padding="15" HasShadow="True">
+                <!--  Section Dépassements  -->
+                <Frame
+                    Padding="15"
+                    BackgroundColor="White"
+                    CornerRadius="15"
+                    HasShadow="True">
                     <VerticalStackLayout Spacing="10">
-                        <Label Text="⚠ Dépassements du jour" FontSize="20" FontAttributes="Bold" TextColor="Red" />
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="20"
+                            Text="⚠ Dépassements du jour"
+                            TextColor="Red" />
 
                         <CollectionView ItemsSource="{Binding DepassementItems}">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
-                                    <Frame BackgroundColor="#FFEAEA" CornerRadius="10" Padding="10" Margin="0,5">
+                                    <Frame
+                                        Margin="0,5"
+                                        Padding="10"
+                                        BackgroundColor="#FFEAEA"
+                                        CornerRadius="10">
                                         <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
-                                            <!-- Colonne libellé et budget -->
-                                            <VerticalStackLayout Grid.Column="0" Grid.Row="0" Spacing="2">
-                                                <Label Text="{Binding LibelleLigneBudgetaire}" 
-                                       FontAttributes="Bold" 
-                                       TextColor="#C0392B"/>
-                                                <Label Text="{Binding LibelleBudget}" 
-                                       FontSize="12" FontAttributes="Italic"
-                                       TextColor="#E74C3C"/>
+                                            <!--  Colonne libellé et budget  -->
+                                            <VerticalStackLayout
+                                                Grid.Row="0"
+                                                Grid.Column="0"
+                                                Spacing="2">
+                                                <Label
+                                                    FontAttributes="Bold"
+                                                    Text="{Binding LibelleLigneBudgetaire}"
+                                                    TextColor="#C0392B" />
+                                                <Label
+                                                    FontAttributes="Italic"
+                                                    FontSize="12"
+                                                    Text="{Binding LibelleBudget}"
+                                                    TextColor="#E74C3C" />
                                             </VerticalStackLayout>
 
-                                            <!-- Montant à droite -->
-                                            <Label Grid.Column="1" Grid.Row="0" 
-                                   Text="{Binding Montant, StringFormat='{0:N0} FCFA'}" 
-                                   TextColor="#E74C3C" 
-                                   FontAttributes="Bold" 
-                                   FontSize="16" 
-                                   VerticalOptions="Center"/>
+                                            <!--  Montant à droite  -->
+                                            <Label
+                                                Grid.Row="0"
+                                                Grid.Column="1"
+                                                FontAttributes="Bold"
+                                                FontSize="16"
+                                                Text="{Binding Montant, StringFormat='{0:N0} FCFA'}"
+                                                TextColor="#E74C3C"
+                                                VerticalOptions="Center" />
                                         </Grid>
                                     </Frame>
                                 </DataTemplate>
@@ -49,22 +70,49 @@
                 </Frame>
 
 
-                <!-- Section Dépenses du jour -->
-                <Frame BackgroundColor="White" CornerRadius="15" Padding="15" HasShadow="True">
+                <!--  Section Dépenses du jour  -->
+                <Frame
+                    Padding="15"
+                    BackgroundColor="White"
+                    CornerRadius="15"
+                    HasShadow="True">
                     <VerticalStackLayout Spacing="10">
-                        <Label Text="📅 Dépenses du jour" FontSize="20" FontAttributes="Bold" TextColor="#2C3E50" />
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="20"
+                            Text="📅 Dépenses du jour"
+                            TextColor="#2C3E50" />
                         <CollectionView ItemsSource="{Binding ExecutionBudgetaireItems}">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
-                                    <Frame BackgroundColor="#ECF0F1" CornerRadius="10" Padding="10" Margin="0,5">
+                                    <Frame
+                                        Margin="0,5"
+                                        Padding="10"
+                                        BackgroundColor="#ECF0F1"
+                                        CornerRadius="10">
                                         <Grid ColumnDefinitions="*,Auto,Auto">
                                             <VerticalStackLayout Spacing="2">
-                                                <Label Text="{Binding LibelleLigneBudgetaire}"  FontAttributes="Bold" TextColor="#2C3E50"/>
-                                                <Label Text="{Binding Description}"  TextColor="#7F8C8D" LineBreakMode="WordWrap"/>
-                                                <Label Text="{Binding LibelleBudget}"  TextColor="#95A5A6" FontAttributes="Italic"/>
+                                                <Label
+                                                    FontAttributes="Bold"
+                                                    Text="{Binding LibelleLigneBudgetaire}"
+                                                    TextColor="#2C3E50" />
+                                                <Label
+                                                    LineBreakMode="WordWrap"
+                                                    Text="{Binding Description}"
+                                                    TextColor="#7F8C8D" />
+                                                <Label
+                                                    FontAttributes="Italic"
+                                                    Text="{Binding LibelleBudget}"
+                                                    TextColor="#95A5A6" />
                                             </VerticalStackLayout>
-                                            <Label Grid.Column="1" Text="{Binding Montant, StringFormat='{0:N0} FCFA'}" TextColor="#27AE60"  FontAttributes="Bold" FontSize="16"   VerticalOptions="Center"/>
-                                               
+                                            <Label
+                                                Grid.Column="1"
+                                                FontAttributes="Bold"
+                                                FontSize="16"
+                                                Text="{Binding Montant, StringFormat='{0:N0} FCFA'}"
+                                                TextColor="#27AE60"
+                                                VerticalOptions="Center" />
+
                                         </Grid>
                                     </Frame>
                                 </DataTemplate>
@@ -75,13 +123,16 @@
             </VerticalStackLayout>
         </ScrollView>
 
-        <!-- Loader centré -->
-        <ActivityIndicator IsRunning="{Binding IsBusy}" 
-                       IsVisible="{Binding IsBusy}" 
-                       Color="#4682B4" 
-                       VerticalOptions="CenterAndExpand" 
-                       HorizontalOptions="CenterAndExpand" 
-                       Scale="1.5"/>
+        <!--  Loader centré  -->
+        <ActivityIndicator
+            HeightRequest="40"
+            HorizontalOptions="CenterAndExpand"
+            IsRunning="{Binding IsBusy}"
+            IsVisible="{Binding IsBusy}"
+            VerticalOptions="CenterAndExpand"
+            WidthRequest="40"
+            Color="#4682B4" />
+
     </Grid>
 
 </ContentPage>

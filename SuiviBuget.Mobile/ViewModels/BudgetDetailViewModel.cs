@@ -182,7 +182,7 @@ namespace SuiviBuget.Mobile.ViewModels
                     return;
                 }
 
-                await _alertService.ShowAlertAsync("Information", $"Ligne budgetaire [{DataItem.CodeLigneBudgetaire}] a été Ajoutée au budget [{DataItem.CodeBudget}] avec succès");
+                await _alertService.ShowAlertAsync("Information", $"L'allocation budgétaire[{DataItem.CodeLigneBudgetaire}] a été Ajoutée au budget [{DataItem.CodeBudget}] avec succès");
 
                 WeakReferenceMessenger.Default.Send(new RefreshList());
                 await _navigationService.GoBackAsync();
@@ -211,7 +211,7 @@ namespace SuiviBuget.Mobile.ViewModels
                     await _alertService.ShowAlertAsync("Erreur", "Nous rencontrons une erreur lors de l'enregistrement"); return;
                 }
 
-                await _alertService.ShowAlertAsync("Information", $"Ligne budgetaire [{DataItem.CodeLigneBudgetaire}] a été modifiée  avec succès");
+                await _alertService.ShowAlertAsync("Information", $"L'allocation budgétaire[{DataItem.CodeLigneBudgetaire}] a été modifiée  avec succès");
                 WeakReferenceMessenger.Default.Send(new RefreshList());
                 await _navigationService.GoBackAsync();
             }

@@ -27,7 +27,7 @@ namespace SuiviBuget.Mobile.ViewModels
         private ModePaiementModel dataItem = new();
 
         [ObservableProperty]
-        private string title = "Ajouter une ligne budgetaire";
+        private string title = "Ajouter un mode de paiement";
 
         [ObservableProperty]
         private string labelButton = "Ajouter";

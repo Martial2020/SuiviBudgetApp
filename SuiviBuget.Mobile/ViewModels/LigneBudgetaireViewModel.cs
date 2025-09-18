@@ -144,7 +144,7 @@ namespace SuiviBuget.Mobile.ViewModels
                     return;
                 }
 
-                await _alertService.ShowAlertAsync("Information", $"Ligne budgetaire [{dataEntity.LibelleLigneBudgetaire}] a été créée avec succès");
+                await _alertService.ShowAlertAsync("Information", $"Le type de dépense[{dataEntity.LibelleLigneBudgetaire}] a été créé avec succès");
                 WeakReferenceMessenger.Default.Send(new RefreshList());
                 await _navigationService.GoBackAsync();
             }
@@ -179,7 +179,7 @@ namespace SuiviBuget.Mobile.ViewModels
                     return;
                 }
 
-                await _alertService.ShowAlertAsync("Information", $"Ligne budgetaire [{dataEntity.CodeLigneBudgetaire}] a été modifiée avec succès");
+                await _alertService.ShowAlertAsync("Information", $"Le type de dépense[{dataEntity.CodeLigneBudgetaire}] a été modifié avec succès");
                 WeakReferenceMessenger.Default.Send(new RefreshList());
                 await _navigationService.GoBackAsync();
             }

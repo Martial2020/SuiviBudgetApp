@@ -214,7 +214,7 @@ namespace SuiviBuget.Mobile.ViewModels
                     return;
                 }
 
-                await _alertService.ShowAlertAsync("Information", $"Execution effectuée sur la ligne budgetaire [{DataItem.CodeLigneBudgetaire}] avec succès");
+                await _alertService.ShowAlertAsync("Information", "Depense ajoutée avec succès");
                 WeakReferenceMessenger.Default.Send(new RefreshList());
                 await _navigationService.GoBackAsync(DataItem.CodeBudget);
             }

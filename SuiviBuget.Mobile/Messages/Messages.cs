@@ -9,5 +9,6 @@ namespace SuiviBuget.Mobile.Messages
     internal class Messages
     {
         public record RefreshList;
+        public record ResetAppMessage;
     }
 }

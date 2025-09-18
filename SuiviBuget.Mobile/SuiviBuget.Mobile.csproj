@@ -108,6 +108,9 @@
 	  <Compile Update="Views\ParametreManageView.xaml.cs">
 	    <DependentUpon>ParametreManageView.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="Views\ReinitilaiserView.xaml.cs">
+	    <DependentUpon>ReinitilaiserView.xaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -148,6 +151,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\PopUpMenuView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\ReinitilaiserView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\StatistiqueManageView.xaml">

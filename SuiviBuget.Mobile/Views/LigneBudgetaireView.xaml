@@ -16,7 +16,7 @@
         <Entry x:Name="CodeEntry" Text="{Binding DataItem.CodeLigneBudgetaire, Mode=TwoWay}" 
                IsEnabled="{Binding CodeLigneBudgetaireIsEnabled, Mode=TwoWay}" Placeholder="Entrez le code d'une ligne budgetaire" />
         <Label Text="Libellé :" FontAttributes="Bold"/>
-        <Entry x:Name="LibelleEntry" Text="{Binding DataItem.LibelleLigneBudgetaire, Mode=TwoWay}" Placeholder="Entrez le libellé d'une ligne budgetaire" />
+        <Entry x:Name="LibelleEntry" Text="{Binding DataItem.LibelleLigneBudgetaire, Mode=TwoWay}" Placeholder="Entrez le libellé d'un type de dépense" />
         <Button 
             Text="{Binding LabelButton}"
             BackgroundColor="#FF7F50"
