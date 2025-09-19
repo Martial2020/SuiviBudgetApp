@@ -240,7 +240,8 @@ namespace SuiviBuget.Mobile.Services
                     LibelleBudget = budget.LibelleBudget,
                     MontantBudget = budget.MontantBudget,
                     NbreLigneBudgetaire = budget.NbreLigneBudgetaire,
-                    StatutBudget = budget.StatutBudget
+                    StatutBudget = budget.StatutBudget,
+                    DateCreation = DateTime.Now
                 };
 
                 await _db.InsertAsync(newLigne);
@@ -353,7 +354,7 @@ namespace SuiviBuget.Mobile.Services
                     .Where(l => isSearchEmpty
                         || l.CodeBudget.ToLower().Contains(searchText)
                         || l.LibelleBudget.ToLower().Contains(searchText)
-                        || l.StatutBudget.ToLower().Contains(searchText))
+                        || l.StatutBudget.ToLower().Contains(searchText)).OrderByDescending(l => l.DateCreation)
                     .ToListAsync();
 
                 return ligneBudgetaires
@@ -619,7 +620,7 @@ namespace SuiviBuget.Mobile.Services
                 var query = (from e in executions
                              join l in lignes on e.CodeLigneBudgetaire equals l.CodeLigneBudgetaire
                              join m in paiement on e.CodeModePaiement equals m.CodeModePaiement
-                             where e.CodeBudget == codeBudget
+                             where e.CodeBudget == codeBudget orderby e.DateCreation descending
                              select new ExecutionBudgetaireDetailManageModel
                              {
                                  DateExecution = e.DateExecution,
@@ -630,7 +631,7 @@ namespace SuiviBuget.Mobile.Services
                                  CodeLigneBudgetaire = l.CodeLigneBudgetaire,
                                  CodeBudget = e.CodeBudget,
                                  Description = e.Description
-                             }).OrderByDescending(e => e.DateExecution).ToList();
+                             }).ToList();
 
                 return query;
             }

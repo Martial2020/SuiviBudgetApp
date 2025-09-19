@@ -1,70 +1,66 @@
-<toolkit:Popup 
+<toolkit:Popup
+    x:Class="SuiviBuget.Mobile.Views.Popups.PopUpMenuView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    x:Class="SuiviBuget.Mobile.Views.Popups.PopUpMenuView"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-    Size="300,220"
     CanBeDismissedByTappingOutsideOfPopup="True"
-    VerticalOptions="Center"
-    HorizontalOptions="Center">
+    HorizontalOptions="Center"
+    Size="300,220"
+    VerticalOptions="Center">
 
-    <!-- Frame principal avec fond blanc et ombre -->
+    <!--  Frame principal avec fond blanc et ombre  -->
     <Frame
-    BackgroundColor="White"
-    HasShadow="True"
-    Padding="10"
-    Margin="20">
+        Margin="20"
+        Padding="10"
+        BackgroundColor="White"
+        HasShadow="True">
 
         <VerticalStackLayout Spacing="10">
 
-            <!-- Titre de la popup -->
+            <!--  Titre de la popup  -->
             <Label
-            Text="Configurations"
-            FontSize="15"
-            FontAttributes="Bold"
-            TextColor="Black"
-            HorizontalOptions="Center" />
+                FontAttributes="Bold"
+                HorizontalOptions="Center"
+                Text="⚙️ Configurations"
+                TextColor="Black" />
 
-            <!-- Ligne Budgétaire -->
-            <Button 
-            Text="Type de depense" 
-            FontSize="12" 
-            TextColor="Black" 
-            BackgroundColor="Transparent"
-            Padding="10"
-            HorizontalOptions="Fill"
-            BorderColor="LightBlue"
-            BorderWidth="0.5">
+            <!--  Ligne Budgétaire  -->
+            <Button
+                Padding="10"
+                BackgroundColor="Transparent"
+                BorderColor="LightBlue"
+                BorderWidth="0.5"
+                HorizontalOptions="Fill"
+                Text="Type de depense"
+                TextColor="Black">
                 <Button.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding LigneBudgetCommand}" />
                 </Button.GestureRecognizers>
             </Button>
 
-            <!-- Paramètre -->
-            <Button 
-            Text="Mode de paiement" 
-            FontSize="12" 
-            TextColor="Black" 
-            BackgroundColor="Transparent"
-            Padding="10"
-            HorizontalOptions="Fill"
-            BorderColor="LightBlue"
-            BorderWidth="0.5">
+            <!--  Paramètre  -->
+            <Button
+                Padding="10"
+                BackgroundColor="Transparent"
+                BorderColor="LightBlue"
+                BorderWidth="0.5"
+                HorizontalOptions="Fill"
+                Text="Mode de paiement"
+                TextColor="Black">
                 <Button.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding ModePaiementCommand}" />
                 </Button.GestureRecognizers>
             </Button>
 
-            <!-- À propos -->
-            <Button 
-            Text="Réinitialiser" 
-            FontSize="12" 
-            TextColor="Black" 
-            BackgroundColor="Transparent"
-            Padding="10"
-            HorizontalOptions="Fill"
-            BorderColor="LightBlue"
-            BorderWidth="0.5">
+            <!--  À propos  -->
+            <Button
+                Padding="10"
+                BackgroundColor="Transparent"
+                BorderColor="LightBlue"
+                BorderWidth="0.5"
+                HorizontalOptions="Fill"
+                Text="Réinitialiser"
+                TextColor="Black">
                 <Button.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding ReinitialiserCommand}" />
                 </Button.GestureRecognizers>

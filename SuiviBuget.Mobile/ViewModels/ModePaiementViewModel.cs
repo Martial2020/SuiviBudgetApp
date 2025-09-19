@@ -30,7 +30,7 @@ namespace SuiviBuget.Mobile.ViewModels
         private string title = "Ajouter un mode de paiement";
 
         [ObservableProperty]
-        private string labelButton = "Ajouter";
+        private string labelButton = "+ AjouterAjouter";
 
         private string _action;
         public string Action
@@ -105,7 +105,7 @@ namespace SuiviBuget.Mobile.ViewModels
                     break;
                 case GlobalConst.Edit:
                     Title = "Modifier un mode de paiement";
-                    LabelButton = "Modifier";
+                    LabelButton = "✎ Modifier";
                     var modePaiement = await adminService.GetModePaiementByCode(code);
                     if (modePaiement == null) { return; }
                     DataItem.CodeModePaiement = modePaiement.CodeModePaiement;

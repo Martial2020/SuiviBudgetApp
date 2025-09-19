@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Maui.Controls.Shapes;
+using SuiviBudget.Mobile.Constants;
 using SuiviBudget.Mobile.Interfaces;
 using SuiviBuget.Mobile.Helpers;
 using SuiviBuget.Mobile.Models;
@@ -23,6 +24,9 @@ namespace SuiviBuget.Mobile.ViewModels
 
         [ObservableProperty]
         private ObservableCollection<ExecutionBudgetaireDetailManageModel> depassementItems;
+
+        [ObservableProperty]
+        public ObservableCollection<BudgetManageModel> budgetItems;
 
         private bool _isBusy = false;
         public bool IsBusy
@@ -69,8 +73,31 @@ namespace SuiviBuget.Mobile.ViewModels
             ExecutionBudgetaireItems = new ObservableCollection<ExecutionBudgetaireDetailManageModel>();
             IsBusy = true;
             await Task.Delay(1000); // ⏳ attend 1,5 secondes (1500 ms)
+            LoadBudgetAsync();
             DepensesDuJourItems(date);
+        }
 
+        private async void LoadBudgetAsync()
+        {
+
+            List<string> statuts = new List<string> {  StatutBudgetConst.Encours }; ;
+            BudgetItems = new ObservableCollection<BudgetManageModel>();
+            var budgets = await _service.GetBudgetItemsByStatus("", statuts);
+            BudgetItems = new ObservableCollection<BudgetManageModel>(
+                budgets.Select(x => new BudgetManageModel
+                {
+                    CodeBudget = x.CodeBudget,
+                    DateCreationBudget = x.DateCreationBudget,
+                    DateDebutBudget = x.DateDebutBudget,
+                    DateFinBudget = x.DateFinBudget,
+                    DescriptionBudget = x.DescriptionBudget,
+                    LibelleBudget = $"{x.CodeBudget} - {x.LibelleBudget}",
+                    MontantBudget = x.MontantBudget,
+                    NbreLigneBudgetaire = x.NbreLigneBudgetaire,
+                    StatutBudget = x.StatutBudget,
+                    MontantUtilise = x.MontantUtilise,
+                    MontantRestant = x.MontantRestant
+                }));
         }
 
         private async void DepensesDuJourItems(DateTime date)
@@ -99,7 +126,7 @@ namespace SuiviBuget.Mobile.ViewModels
 
                 throw ex;
             }
-        
+
         }
         private async void DepassementDuJourItems(ObservableCollection<ExecutionBudgetaireDetailManageModel> datas)
         {

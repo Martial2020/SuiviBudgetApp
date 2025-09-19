@@ -1,4 +1,4 @@
-using Microsoft.Maui.Controls;
+﻿using Microsoft.Maui.Controls;
 using SuiviBudget.Mobile.Constants;
 using SuiviBuget.Mobile.Models;
 using SuiviBuget.Mobile.ViewModels;
@@ -15,24 +15,27 @@ public partial class BudgetManageView : ContentPage
     {
         if (sender is Button btn && btn.BindingContext is BudgetManageModel item)
         {
-            // Cr�e la liste des options dynamiquement
+            // Crée la liste des options dynamiquement
             var options = new List<string>();
             if (item.StatutBudget == StatutBudgetConst.Ouvert)
             {
-                options.Add("Modifier");
-                options.Add("Supprimer");
-                options.Add("Allocation budg�taire");
-                options.Add("Mettre en cours le budget");
-                // Ne pas ajouter "Cl�turer"
+                //options.Add("🔄 Réinitialiser");     // flèche circulaire pour réinitialiser
+                //options.Add("📂 Type de dépense");    // dossier pour type
+                //options.Add("💳 Mode de paiement");   // carte pour paiement
+                options.Add("✎ Modifier");   // stylo
+                options.Add("🗑 Supprimer"); // poubelle
+                options.Add("💰 Allocation budgétaire");
+                options.Add("⏳ Mettre en cours");
             }
             else if (item.StatutBudget == StatutBudgetConst.Encours)
             {
-                options.Add("Modifier");
-                options.Add("Supprimer");
-                options.Add("Allocation budg�taire");
-                options.Add("Cl�turer le budget");
+                options.Add("✎ Modifier");   // stylo
+                options.Add("🗑 Supprimer"); // poubelle
+                options.Add("💰 Allocation budgétaire");
+                options.Add("⏳ Mettre en cours");
+                options.Add("🔒 Clôturer");
             }else
-                options.Add("Allocation budg�taire");
+                options.Add("💰 Allocation budgétaire");
             //else
             //{
             //    options.Add("Supprimer");
@@ -45,7 +48,7 @@ public partial class BudgetManageView : ContentPage
                    "Actions sur le budget",
                    "Fermer",
                    null,
-                   "Aucune action n'est possible car il est cl�tur�."
+                   "Aucune action n'est possible car il est clôturé."
                );
                 return;
             }
@@ -59,19 +62,19 @@ public partial class BudgetManageView : ContentPage
             {
                 switch (action)
                 {
-                    case "Modifier":
+                    case "✎ Modifier":
                         vm.EditCommand.Execute(item);
                         break;
-                    case "Supprimer":
+                    case "🗑 Supprimer":
                         vm.DeleteCommand.Execute(item);
                         break;
-                    case "Cl�turer le budget":
+                    case "🔒 Clôturer":
                         vm.CloturerCommand.Execute(item);
                         break;
-                    case "Mettre en cours le budget":
+                    case "⏳ Mettre en cours":
                         vm.EncoursCommand.Execute(item);
                         break;
-                    case "Allocation budg�taire":
+                    case "💰 Allocation budgétaire":
                         vm.BudgetDetailCommand.Execute(item);
                         break;
                 }

@@ -14,6 +14,51 @@
         <!--  Contenu principal  -->
         <ScrollView>
             <VerticalStackLayout Padding="20" Spacing="25">
+
+                <!--  Section Dépassements  -->
+                <Frame
+                    Padding="15"
+                    BackgroundColor="White"
+                    CornerRadius="15"
+                    HasShadow="True">
+                    <VerticalStackLayout Spacing="10">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="14"
+                            Text="🗂 Budget en cours d'utilisation"
+                            TextColor="Green" />
+
+                        <CollectionView ItemsSource="{Binding BudgetItems}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Frame
+                                        Margin="0,5"
+                                        Padding="10"
+                                        BackgroundColor="AliceBlue"
+                                        CornerRadius="10">
+                                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                                            <!--  Colonne libellé et budget  -->
+                                            <VerticalStackLayout
+                                                Grid.Row="0"
+                                                Grid.Column="0"
+                                                Spacing="2">
+                                                <Label
+                                                    FontAttributes="Bold"
+                                                    Text="{Binding LibelleBudget}"
+                                                    TextColor="Black" />
+                                                <Label Text="{Binding MontantBudget, StringFormat='Solde : {0:N0} FCFA'}" TextColor="#1E3A8A" />
+                                                <Label Text="{Binding MontantUtilise, StringFormat='Utilisé : {0:N0} FCFA'}" TextColor="#F59E0B" />
+                                                <Label Text="{Binding MontantRestant, StringFormat='Restant : {0:N0} FCFA'}" TextColor="#16A34A" />
+                                            </VerticalStackLayout>
+
+
+                                        </Grid>
+                                    </Frame>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+                </Frame>
                 <!--  Section Dépassements  -->
                 <Frame
                     Padding="15"
@@ -45,11 +90,7 @@
                                                     FontAttributes="Bold"
                                                     Text="{Binding LibelleLigneBudgetaire}"
                                                     TextColor="#C0392B" />
-                                                <Label
-                                                    FontAttributes="Bold"
-                                                    FontSize="12"
-                                                    Text="{Binding LibelleBudget, StringFormat='Budget : {0}'}"
-                                                    TextColor="#E74C3C" />
+                                                <Label Text="{Binding LibelleBudget, StringFormat='Budget : {0}'}" TextColor="#E74C3C" />
                                             </VerticalStackLayout>
 
                                             <!--  Montant à droite  -->
@@ -57,7 +98,6 @@
                                                 Grid.Row="0"
                                                 Grid.Column="1"
                                                 FontAttributes="Bold"
-                                                FontSize="16"
                                                 Text="{Binding Montant, StringFormat='{0:N0} FCFA'}"
                                                 TextColor="#E74C3C"
                                                 VerticalOptions="Center" />
@@ -68,7 +108,6 @@
                         </CollectionView>
                     </VerticalStackLayout>
                 </Frame>
-
 
                 <!--  Section Dépenses du jour  -->
                 <Frame
@@ -100,16 +139,12 @@
                                                     FontAttributes="Italic"
                                                     Text="{Binding Description}"
                                                     TextColor="#7F8C8D" />
-                                                <Label
-                                                    FontAttributes="Bold"
-                                                    Text="{Binding LibelleBudget, StringFormat='Budget : {0}'}"
-                                                    TextColor="#2C3E50" />
+                                                <Label Text="{Binding LibelleBudget, StringFormat='Budget : {0}'}" TextColor="#2C3E50" />
 
                                             </VerticalStackLayout>
                                             <Label
                                                 Grid.Column="1"
                                                 FontAttributes="Bold"
-                                                FontSize="16"
                                                 Text="{Binding Montant, StringFormat='{0:N0} FCFA'}"
                                                 TextColor="#27AE60"
                                                 VerticalOptions="Center" />

@@ -18,7 +18,6 @@
             Grid.Row="0"
             Margin="10,20,10,0"
             BackgroundColor="White"
-            FontSize="16"
             HeightRequest="50"
             HorizontalOptions="FillAndExpand"
             Placeholder="Rechercher d'une dépense..."
@@ -52,8 +51,8 @@
                                     Grid.Row="0"
                                     Grid.Column="0"
                                     Spacing="4">
-                                    <Label FontAttributes="Bold" Text="{Binding CodeLigneBudgetaire}" />
-                                    <Label Text="{Binding LibelleLigneBudgetaire}" />
+                                    <Label Text="{Binding CodeLigneBudgetaire}" />
+                                    <Label FontAttributes="Bold" Text="{Binding LibelleLigneBudgetaire}" />
                                     <Label Text="{Binding Montant, StringFormat='{0:N0} FCFA'}" />
                                 </VerticalStackLayout>
 

@@ -52,7 +52,7 @@
 
                 <!--  Deuxième ligne : Utilisé et Restant  -->
                 <Grid
-                    Padding="5,0"
+                    Padding="3,0"
                     ColumnDefinitions="*,*"
                     VerticalOptions="Center">
                     <Label
@@ -71,6 +71,21 @@
                         Text="{Binding MontantRestant, StringFormat='Restant : {0:N0} FCFA'}"
                         TextColor="#D32F2F" />
                 </Grid>
+                <!--  Barre de progression  -->
+                <VerticalStackLayout>
+                    <!--  Barre de progression  -->
+                    <ProgressBar
+                        HeightRequest="30"
+                        Progress="{Binding ProgressValue}"
+                        ProgressColor="{Binding ProgressColor}" />
+
+                    <!--  Pourcentage affiché  -->
+                    <Label
+                        FontAttributes="Bold"
+                        HorizontalOptions="Center"
+                        Text="{Binding ProgressText}"
+                        TextColor="{Binding ProgressColor}" />
+                </VerticalStackLayout>
 
             </VerticalStackLayout>
         </Frame>
@@ -109,9 +124,9 @@
 
                                     <!--  Libelle ligne budgetaire  -->
                                     <Label
-                                        FontSize="16"
+                                        FontAttributes="Bold"
                                         Text="{Binding LibelleLigneBudgetaire}"
-                                        TextColor="#34495E" />
+                                        TextColor="Black" />
 
 
                                     <!--  Mode paiement + montant  -->
@@ -126,7 +141,6 @@
                                     <!--  ✅ Description ajoutée  -->
                                     <Label
                                         FontAttributes="Italic"
-                                        FontSize="14"
                                         LineBreakMode="WordWrap"
                                         Text="{Binding Description}"
                                         TextColor="#7F8C8D" />

@@ -172,6 +172,28 @@ namespace SuiviBuget.Mobile.ViewModels
             }
         }
 
+
+        #region Progress Bar
+        private double _progressValue;
+        public double ProgressValue
+        {
+            get => _progressValue;
+            set { _progressValue = value; OnPropertyChanged(); }
+        }
+        private Color _progressColor = Colors.Green;
+        public Color ProgressColor
+        {
+            get => _progressColor;
+            set { _progressColor = value; OnPropertyChanged(); }
+        }
+
+        private string _progressText;
+        public string ProgressText
+        {
+            get => _progressText;
+            set { _progressText = value; OnPropertyChanged(); }
+        }
+        #endregion
         public ICommand AddCommand { get; }
         public ICommand DescriptionCommand { get; }
         public ICommand DeleteCommand { get; }
@@ -192,6 +214,10 @@ namespace SuiviBuget.Mobile.ViewModels
 
         }
 
+        private void ProgressBarResult()
+        {
+
+        }
         private void ResetAppMessage()
         {
             WeakReferenceMessenger.Default.Register<ResetAppMessage>(this, (r, m) =>
@@ -206,7 +232,11 @@ namespace SuiviBuget.Mobile.ViewModels
             MontantBudget = detail == null ? 0 : detail.Montant;
             MontantUtilise = ExecutionBugetaireDetailItems?.Sum(x => x.Montant) ?? 0;
             MontantRestant = MontantBudget - MontantUtilise;
-            IsVisibleBadgeFrame = true;
+
+            var ratio = MontantBudget == 0 ? 0 : (double)(MontantUtilise / MontantBudget);
+            ProgressValue = Math.Min(ratio, 1); // ProgressBar = 0.16 (16%)
+            ProgressText = $"{(ratio <= 1 ? ratio : 1) * 100:0}%"; // Affiche "16%"
+            ProgressColor = ratio <= 1 ? Colors.Green : Colors.Red;
 
         }
         private void RegisterMessenger()
@@ -239,6 +269,7 @@ namespace SuiviBuget.Mobile.ViewModels
         {
             ExecutionBugetaireDetailItems = new ObservableCollection<ExecutionBudgetaireDetailManageModel>();
             IsBusy = true;
+            IsVisibleBadgeFrame = true;
             //await Task.Delay(1000); // ⏳ attend 1,5 secondes (1500 ms)
             var executeItems = await _service.GetExecutionBudgetaireDetailsItems(codeBudget, ligne);
             ExecutionBugetaireDetailItems = new ObservableCollection<ExecutionBudgetaireDetailManageModel>(
@@ -255,6 +286,7 @@ namespace SuiviBuget.Mobile.ViewModels
                 })
             );
             ActualiserMontants(codeBudget, ligne);
+
             IsBusy = false;
         }
 

@@ -29,7 +29,7 @@ namespace SuiviBuget.Mobile.ViewModels
         private string title = "Ajouter un budget";
 
         [ObservableProperty]
-        private string labelButton = "Ajouter";
+        private string labelButton = "+ Ajouter";
 
         private string _action;
         public string Action
@@ -93,7 +93,7 @@ namespace SuiviBuget.Mobile.ViewModels
                     break;
                 case GlobalConst.Edit:
                     Title = "Modifier un budget";
-                    LabelButton = "Modifier";
+                    LabelButton = "✎ Modifier";
                     var budget = await adminService.GetBudgetByCode(code);
                     if (budget == null) { return; }
                     DataItem.CodeBudget = budget.CodeBudget;

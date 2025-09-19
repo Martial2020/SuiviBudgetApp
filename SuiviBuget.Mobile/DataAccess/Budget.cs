@@ -21,5 +21,7 @@ namespace SuiviBudget.Services.DataAccess
         public DateTime DateFinBudget{ get; set; }
         public string StatutBudget{ get; set; }
         public int  NbreLigneBudgetaire{ get; set; }
+        public DateTime DateCreation { get; set; }
+
     }
 }

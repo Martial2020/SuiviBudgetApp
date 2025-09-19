@@ -1,4 +1,4 @@
-using SuiviBuget.Mobile.Models;
+﻿using SuiviBuget.Mobile.Models;
 using SuiviBuget.Mobile.ViewModels;
 
 namespace SuiviBuget.Mobile.Views;
@@ -13,10 +13,10 @@ public partial class ModePaiementManageView : ContentPage
     {
         if (sender is Button btn && btn.BindingContext is ModePaiementManageModel item)
         {
-            // Cr�e la liste des options dynamiquement
+            // Crée la liste des options dynamiquement
             var options = new List<string>();
-            options.Add("Modifier");
-            options.Add("Supprimer");
+            options.Add("✎ Modifier");   // stylo
+            options.Add("🗑 Supprimer"); // poubelle
 
             // Affiche l'ActionSheet
             if (options.Count == 0)
@@ -25,7 +25,7 @@ public partial class ModePaiementManageView : ContentPage
                    "Actions",
                    "Fermer",
                    null,
-                   "Aucune action n'est possible car il est cl�tur�."
+                   "Aucune action n'est possible car il est clôturé."
                );
                 return;
             }
@@ -39,10 +39,10 @@ public partial class ModePaiementManageView : ContentPage
             {
                 switch (action)
                 {
-                    case "Modifier":
+                    case "✎ Modifier":
                         vm.EditCommand.Execute(item);
                         break;
-                    case "Supprimer":
+                    case "🗑 Supprimer":
                         vm.DeleteCommand.Execute(item);
                         break;
                 }

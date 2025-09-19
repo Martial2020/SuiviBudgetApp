@@ -64,7 +64,7 @@ namespace SuiviBuget.Mobile.ViewModels
         private string title;
 
         [ObservableProperty]
-        private string labelButton = "Ajouter";
+        private string labelButton = "+ Ajouter";
 
         private string _action;
         public string Action
@@ -205,7 +205,8 @@ namespace SuiviBuget.Mobile.ViewModels
                     CodeModePaiement = DataItem.CodeModePaiement,
                     Montant = DataItem.Montant,
                     Description = DataItem.Description,
-                    ExecutionBudgetaireID = DataItem.ExecutionBudgetaireID
+                    ExecutionBudgetaireID = DataItem.ExecutionBudgetaireID,
+                    DateCreation = DateTime.Now
                 };
                 var isOk = await adminService.AddExecutionBudgetaireDetailAsync(data);
                 if (!isOk)

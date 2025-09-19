@@ -17,5 +17,6 @@ namespace SuiviBuget.Mobile.DataAccess
         public string Description { get; set; }
         public decimal Montant { get; set; }
         public DateTime DateExecution { get; set; }
+        public DateTime DateCreation { get; set; }
     }
 }

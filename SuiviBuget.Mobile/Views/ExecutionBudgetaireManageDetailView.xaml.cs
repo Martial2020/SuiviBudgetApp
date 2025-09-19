@@ -1,4 +1,4 @@
-using SuiviBuget.Mobile.Models;
+﻿using SuiviBuget.Mobile.Models;
 using SuiviBuget.Mobile.ViewModels;
 
 namespace SuiviBuget.Mobile.Views;
@@ -25,10 +25,10 @@ public partial class ExecutionBudgetaireManageDetailView : ContentPage, IQueryAt
   
         if (sender is Button btn && btn.BindingContext is ExecutionBudgetaireDetailManageModel item)
         {
-            // Cr�e la liste des options dynamiquement
+            // Crée la liste des options dynamiquement
             var options = new List<string>();
             //options.Add("Description");
-            options.Add("Supprimer");
+            options.Add("🗑 Supprimer");          // poubelle
 
             // Affiche l'ActionSheet
             if (options.Count == 0)
@@ -37,7 +37,7 @@ public partial class ExecutionBudgetaireManageDetailView : ContentPage, IQueryAt
                    "Actions",
                    "Fermer",
                    null,
-                   "Aucune action n'est possible car il est cl�tur�."
+                   "Aucune action n'est possible car il est clôturé."
                );
                 return;
             }
@@ -54,7 +54,7 @@ public partial class ExecutionBudgetaireManageDetailView : ContentPage, IQueryAt
                     case "Description":
                         vm.DescriptionCommand.Execute(item);
                         break;
-                    case "Supprimer":
+                    case "🗑 Supprimer":
                         vm.DeleteCommand.Execute(item);
                         break;
                 }
