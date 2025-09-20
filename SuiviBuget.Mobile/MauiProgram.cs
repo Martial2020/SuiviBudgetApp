@@ -1,10 +1,11 @@
 ﻿using CommunityToolkit.Maui;
+using Microcharts.Maui;
 using Microsoft.Extensions.Logging;
 using SuiviBudget.Mobile.Interfaces;
-using SuiviBuget.Mobile.Services;
-using SuiviBuget.Mobile.ViewModels;
 using SuiviBudget.Services;
 using SuiviBuget.Mobile.Interfaces;
+using SuiviBuget.Mobile.Services;
+using SuiviBuget.Mobile.ViewModels;
 using AlertService = SuiviBuget.Mobile.Services.AlertService;
 
 namespace SuiviBuget.Mobile
@@ -16,15 +17,24 @@ namespace SuiviBuget.Mobile
             var builder = MauiApp.CreateBuilder();
 
             SQLitePCL.Batteries_V2.Init(); // <=== Initialisation SQLite
-                                           // Utilisation du toolkit MAUI
+
+            // Utilisation du toolkit MAUI
             builder
+
                 .UseMauiApp<App>()
                 .UseMauiCommunityToolkit()
+                 .UseMicrocharts()  // <-- c'est cette ligne qui manquait
+
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
+
+            // autres configurations...
+
+
+
 
             // Enregistrement des services ou ViewModels
             builder.Services.AddSingleton<AppShellViewModel>();

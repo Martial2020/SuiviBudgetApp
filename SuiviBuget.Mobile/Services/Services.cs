@@ -620,7 +620,8 @@ namespace SuiviBuget.Mobile.Services
                 var query = (from e in executions
                              join l in lignes on e.CodeLigneBudgetaire equals l.CodeLigneBudgetaire
                              join m in paiement on e.CodeModePaiement equals m.CodeModePaiement
-                             where e.CodeBudget == codeBudget orderby e.DateCreation descending
+                             where e.CodeBudget == codeBudget
+                             orderby e.DateCreation descending
                              select new ExecutionBudgetaireDetailManageModel
                              {
                                  DateExecution = e.DateExecution,
@@ -691,7 +692,7 @@ namespace SuiviBuget.Mobile.Services
         #endregion
 
         #region Tableau de bord
-        public async Task<List<ExecutionBudgetaireDetailManageModel>> GetDepenseItemsByDate(DateTime date)
+        public async Task<List<ExecutionBudgetaireDetailManageModel>> GetDepenseItemsByDate(DateTime date, string codeBudget)
         {
             try
             {
@@ -702,7 +703,9 @@ namespace SuiviBuget.Mobile.Services
                  .Where(x => x.DateExecution >= startDate && x.DateExecution < endDate).ToListAsync();
                 var lignes = await _db.Table<LigneBudgetaire>().ToListAsync();
                 var paiement = await _db.Table<ModePaiement>().ToListAsync();
-                var budget = await _db.Table<Budget>().ToListAsync();
+                var budget = await _db.Table<Budget>()
+                    .Where(b => b.CodeBudget == codeBudget).ToListAsync();
+
 
                 var query = (from e in executions
                              join l in lignes on e.CodeLigneBudgetaire equals l.CodeLigneBudgetaire

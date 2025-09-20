@@ -54,7 +54,7 @@ namespace SuiviBudget.Mobile.Interfaces
         #endregion
 
         #region Tableau de bord
-        Task<List<ExecutionBudgetaireDetailManageModel>> GetDepenseItemsByDate(DateTime date);
+        Task<List<ExecutionBudgetaireDetailManageModel>> GetDepenseItemsByDate(DateTime date,string codeBudget);
         #endregion
 
         #region Mode de paiement

@@ -6,13 +6,19 @@ using System.Text;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
+using Microcharts;
 using Microsoft.Maui.Controls.Shapes;
+using SkiaSharp;
 using SuiviBudget.Mobile.Constants;
 using SuiviBudget.Mobile.Interfaces;
+using SuiviBudget.Services.DataAccess;
 using SuiviBuget.Mobile.Helpers;
 using SuiviBuget.Mobile.Models;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using static SuiviBuget.Mobile.Messages.Messages;
+using Microcharts.Maui;
+using SkiaSharp;
+
 
 namespace SuiviBuget.Mobile.ViewModels
 {
@@ -27,6 +33,32 @@ namespace SuiviBuget.Mobile.ViewModels
 
         [ObservableProperty]
         public ObservableCollection<BudgetManageModel> budgetItems;
+
+
+
+        [ObservableProperty]
+        public ChartEntry[] entries;
+
+        [ObservableProperty]
+        public Chart chart;
+
+        private BudgetManageModel _selectedBudget;
+        public BudgetManageModel SelectedBudget
+        {
+            get => _selectedBudget;
+            set
+            {
+                _selectedBudget = value;
+                OnPropertyChanged();
+                if (_selectedBudget != null)
+                {
+                    Task.Run(() => ChargerGraphesAsync(_selectedBudget));
+                }
+
+
+            }
+        }
+
 
         private bool _isBusy = false;
         public bool IsBusy
@@ -47,12 +79,49 @@ namespace SuiviBuget.Mobile.ViewModels
         {
             string dbPath = Helper.GetDatabaseFullPath();
             _service = new Services.Services(dbPath);
-            LoadDashbordByDate(DateTime.Now);
+            //LoadDashbordByDate(DateTime.Now);
             RegisterMessenger();
             // Dans le constructeur ou avant l'utilisation
             DepassementItems ??= new ObservableCollection<ExecutionBudgetaireDetailManageModel>();
             ResetAppMessage();
+            LoadBudgetAsync();
+
         }
+
+        public async Task ChargerGraphesAsync(BudgetManageModel budget)
+        {
+
+            if (budget == null) return;
+
+            // Charger les données de façon asynchrone
+            var ligneBudgetaire = await _service.GetBudgetDetailItems(budget.CodeBudget, "");
+
+            // Créer un tableau ChartEntry à partir de la liste
+            Entries = ligneBudgetaire.Select(l => new ChartEntry((float)l.Montant)
+            {
+                Label = l.LibelleLigneBudgetaire, // ou l.CodeLigneBudgetaire selon ton besoin
+                //ValueLabel = $"{Math.Round((l.Montant / budget.MontantBudget) * 100)}%",
+                ValueLabel = "",
+                //Color = SKColor.Parse("#FF0000")
+                Color = SKColor.Parse("#FF6347")
+
+            }).ToArray();
+
+            //// Créer le graphique
+            Chart = new BarChart
+            {
+                Entries = entries,
+                LabelTextSize = 26,
+                ValueLabelOrientation = Orientation.Horizontal,
+                BackgroundColor = SKColors.White
+            };
+
+            await DepensesDuJourItems(DateTime.Now, budget.CodeBudget);
+
+
+        }
+
+
         private void ResetAppMessage()
         {
             WeakReferenceMessenger.Default.Register<ResetAppMessage>(this, (r, m) =>
@@ -74,15 +143,16 @@ namespace SuiviBuget.Mobile.ViewModels
             IsBusy = true;
             await Task.Delay(1000); // ⏳ attend 1,5 secondes (1500 ms)
             LoadBudgetAsync();
-            DepensesDuJourItems(date);
+            //DepensesDuJourItems(date);
         }
 
         private async void LoadBudgetAsync()
         {
-
-            List<string> statuts = new List<string> {  StatutBudgetConst.Encours }; ;
+            List<string> statuts = new List<string> { StatutBudgetConst.Encours }; ;
             BudgetItems = new ObservableCollection<BudgetManageModel>();
+            BudgetItems.Clear();
             var budgets = await _service.GetBudgetItemsByStatus("", statuts);
+
             BudgetItems = new ObservableCollection<BudgetManageModel>(
                 budgets.Select(x => new BudgetManageModel
                 {
@@ -98,13 +168,19 @@ namespace SuiviBuget.Mobile.ViewModels
                     MontantUtilise = x.MontantUtilise,
                     MontantRestant = x.MontantRestant
                 }));
+
+            if (BudgetItems.Count() > 0)
+                SelectedBudget = BudgetItems.FirstOrDefault();
+
         }
 
-        private async void DepensesDuJourItems(DateTime date)
+        private async Task DepensesDuJourItems(DateTime date, string codeBudget)
         {
+            ExecutionBudgetaireItems = new ObservableCollection<ExecutionBudgetaireDetailManageModel>();
+            ExecutionBudgetaireItems.Clear();
             try
             {
-                var executeItems = await _service.GetDepenseItemsByDate(date);
+                var executeItems = await _service.GetDepenseItemsByDate(date, codeBudget);
                 ExecutionBudgetaireItems = new ObservableCollection<ExecutionBudgetaireDetailManageModel>(
                     executeItems.Select(x => new ExecutionBudgetaireDetailManageModel
                     {
@@ -119,7 +195,7 @@ namespace SuiviBuget.Mobile.ViewModels
                         LibelleBudget = x.LibelleBudget
                     })
                 );
-                DepassementDuJourItems(ExecutionBudgetaireItems);
+                await DepassementDuJourItems(ExecutionBudgetaireItems);
             }
             catch (Exception ex)
             {
@@ -128,10 +204,13 @@ namespace SuiviBuget.Mobile.ViewModels
             }
 
         }
-        private async void DepassementDuJourItems(ObservableCollection<ExecutionBudgetaireDetailManageModel> datas)
+        private async Task DepassementDuJourItems(ObservableCollection<ExecutionBudgetaireDetailManageModel> datas)
         {
+
             try
             {
+                DepassementItems = new ObservableCollection<ExecutionBudgetaireDetailManageModel>();
+                DepassementItems.Clear();
                 var groupedItems = datas
             .GroupBy(x => new { x.CodeLigneBudgetaire, x.LibelleLigneBudgetaire, x.CodeBudget, x.LibelleBudget })
                     .Select(g => new
@@ -148,24 +227,32 @@ namespace SuiviBuget.Mobile.ViewModels
                     var detail = await _service.GetBudgetDetailByBudgetLigne(item.CodeBudget, item.CodeLigneBudgetaire);
                     if (detail != null)
                     {
-                        var difference = detail.Montant - item.MontantTotal;
-                        if (difference < 0)
+                        var depense = await _service.GetExecutionBudgetaireDetailsItems(item.CodeBudget, item.CodeLigneBudgetaire);
+
+                        if (depense != null)
                         {
-                            var nouvelItem = new ExecutionBudgetaireDetailManageModel
+                            decimal montantTotal = 0;
+                            montantTotal = depense.Sum(d => d.Montant);
+                            var difference = detail.Montant - montantTotal;
+                            if (difference < 0)
                             {
-                                DateExecution = DateTime.Now,
-                                ExecutionBudgetaireID = Guid.NewGuid(),
-                                LibelleLigneBudgetaire = item.LibelleLigneBudgetaire,
-                                ModePaiement = "Cash",
-                                Montant = Math.Abs(difference),
-                                CodeBudget = item.CodeBudget,
-                                CodeLigneBudgetaire = item.CodeLigneBudgetaire,
-                                Description = "Dépassement transport",
-                                LibelleBudget = item.LibelleBudget,
-                            };
-                            // Ajouter à la collection
-                            DepassementItems.Add(nouvelItem);
+                                var nouvelItem = new ExecutionBudgetaireDetailManageModel
+                                {
+                                    DateExecution = DateTime.Now,
+                                    ExecutionBudgetaireID = Guid.NewGuid(),
+                                    LibelleLigneBudgetaire = item.LibelleLigneBudgetaire,
+                                    ModePaiement = "Cash",
+                                    Montant = Math.Abs(difference),
+                                    CodeBudget = item.CodeBudget,
+                                    CodeLigneBudgetaire = item.CodeLigneBudgetaire,
+                                    Description = "Dépassement transport",
+                                    LibelleBudget = item.LibelleBudget,
+                                };
+                                // Ajouter à la collection
+                                DepassementItems.Add(nouvelItem);
+                            }
                         }
+
                     }
                 }
 

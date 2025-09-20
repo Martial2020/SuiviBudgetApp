@@ -8,6 +8,8 @@ using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Microcharts;
+using SkiaSharp;
 using SuiviBudge.Validators;
 using SuiviBudget.Mobile.Constants;
 using SuiviBudget.Mobile.Interfaces;
@@ -110,6 +112,7 @@ namespace SuiviBuget.Mobile.ViewModels
             _alertService = new AlertService();
             SubmitCommand = new RelayCommand(OnSubmitCommand);
         }
+
         private async Task LoadLigneBudgetaireAsync(string codeBudget, string searchText = "")
         {
             var ligneItems = await adminService.GetBudgetDetailItems(DataItem.CodeBudget, searchText);

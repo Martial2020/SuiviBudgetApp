@@ -4,33 +4,36 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:SuiviBuget.Mobile.Views"
-    Shell.TabBarBackgroundColor="White" 
     xmlns:viewmodels="clr-namespace:SuiviBuget.Mobile.ViewModels"
-    Title="SuiviBuget.Mobile"> 
-   
-    <!--Shell.FlyoutBehavior="Flyout"-->
+    Title="SuiviBuget.Mobile"
+    Shell.TabBarBackgroundColor="White">
+
+    <!--  Shell.FlyoutBehavior="Flyout"  -->
 
     <Shell.BindingContext>
         <viewmodels:AppShellViewModel />
     </Shell.BindingContext>
-    
-    <!-- Header avec les 3 points -->
-    <Shell.ToolbarItems >
-        <ToolbarItem  IconImageSource="setting.png" Command="{Binding ShowMenuCommand}"  />
+
+    <!--  Header avec les 3 points  -->
+    <Shell.ToolbarItems>
+        <ToolbarItem Command="{Binding ShowMenuCommand}" IconImageSource="setting.png" />
     </Shell.ToolbarItems>
 
-    <!-- Barre d'onglets -->
-    <TabBar >
-        <Tab Title="Accueil" Icon="accueil.png" x:Name="AccueilTab">
+    <!--  Barre d'onglets  -->
+    <TabBar>
+        <Tab
+            x:Name="AccueilTab"
+            Title="Accueil"
+            Icon="accueil.png">
             <ShellContent ContentTemplate="{DataTemplate local:TableauBordManageView}" />
         </Tab>
-        <Tab Title="Budgets" Icon="budget.png" >
+        <Tab Title="Budgets" Icon="budget.png">
             <ShellContent ContentTemplate="{DataTemplate local:BudgetManageView}" />
         </Tab>
         <Tab Title="Dépenses" Icon="execution.png">
             <ShellContent ContentTemplate="{DataTemplate local:ExecutionBudgetaireManageView}" />
         </Tab>
-        <Tab Title="Statistiques" Icon="report.png" >
+        <Tab Title="Statistiques" Icon="report.png">
             <ShellContent ContentTemplate="{DataTemplate local:StatistiqueManageView}" />
         </Tab>
     </TabBar>

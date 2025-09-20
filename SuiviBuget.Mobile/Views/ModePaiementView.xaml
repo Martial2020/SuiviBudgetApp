@@ -1,29 +1,36 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="SuiviBuget.Mobile.Views.ModePaiementView"
-             xmlns:viewModels="clr-namespace:SuiviBuget.Mobile.ViewModels;assembly=SuiviBuget.Mobile"
-             Title="{Binding Title}"
-             BackgroundColor="White">
+<ContentPage
+    x:Class="SuiviBuget.Mobile.Views.ModePaiementView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewModels="clr-namespace:SuiviBuget.Mobile.ViewModels;assembly=SuiviBuget.Mobile"
+    Title="{Binding Title}"
+    BackgroundColor="White">
 
-    <!-- Liaison du ViewModel à la page -->
+    <!--  Liaison du ViewModel à la page  -->
     <ContentPage.BindingContext>
         <viewModels:ModePaiementViewModel />
     </ContentPage.BindingContext>
 
     <VerticalStackLayout Padding="20" Spacing="5">
-        <Label Text="Code :" FontAttributes="Bold"/>
-        <Entry x:Name="CodeEntry" Text="{Binding DataItem.CodeModePaiement, Mode=TwoWay}" 
-               IsEnabled="{Binding IsEnabled, Mode=TwoWay}" Placeholder="Entrez le code du mode de paiement" />
-        <Label Text="Libellé :" FontAttributes="Bold"/>
-        <Entry x:Name="LibelleEntry" Text="{Binding DataItem.LibelleModePaiement, Mode=TwoWay}" Placeholder="Entrez le libellé du mode de paiement" />
-        <Button 
-            Text="{Binding LabelButton}"
+        <Label FontAttributes="Bold" Text="Code :" />
+        <Entry
+            x:Name="CodeEntry"
+            IsEnabled="{Binding IsEnabled, Mode=TwoWay}"
+            Placeholder="Entrez le code du mode de paiement"
+            Text="{Binding DataItem.CodeModePaiement, Mode=TwoWay}" />
+        <Label FontAttributes="Bold" Text="Libellé :" />
+        <Entry
+            x:Name="LibelleEntry"
+            Placeholder="Entrez le libellé du mode de paiement"
+            Text="{Binding DataItem.LibelleModePaiement, Mode=TwoWay}" />
+        <Button
             BackgroundColor="#FF7F50"
-            TextColor="White"
-            CornerRadius="8"  
-             Command="{Binding SubmitCommand}"/>
-    
-         
+            Command="{Binding SubmitCommand}"
+            CornerRadius="8"
+            Text="{Binding LabelButton}"
+            TextColor="White" />
+
+
     </VerticalStackLayout>
 </ContentPage>

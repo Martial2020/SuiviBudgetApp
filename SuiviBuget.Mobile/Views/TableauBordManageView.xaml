@@ -2,6 +2,7 @@
     x:Class="SuiviBuget.Mobile.Views.TableauBordManageView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:microcharts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
     xmlns:viewModels="clr-namespace:SuiviBuget.Mobile.ViewModels;assembly=SuiviBuget.Mobile"
     Title="Tableau de bord">
 
@@ -13,7 +14,44 @@
     <Grid>
         <!--  Contenu principal  -->
         <ScrollView>
-            <VerticalStackLayout Padding="20" Spacing="25">
+            <VerticalStackLayout Padding="10" Spacing="25">
+                <Picker
+                    Title="Sélectionnez un budget"
+                    ItemDisplayBinding="{Binding LibelleBudget, Mode=TwoWay}"
+                    ItemsSource="{Binding BudgetItems, Mode=TwoWay}"
+                    SelectedItem="{Binding SelectedBudget, Mode=TwoWay}" />
+
+                <HorizontalStackLayout Padding="5" Spacing="8">
+
+                    <!--  Badge Montant  -->
+                    <Frame
+                        Padding="8,4"
+                        BackgroundColor="AliceBlue"
+                        CornerRadius="12"
+                        HasShadow="True">
+                        <Label
+                            FontAttributes="Bold"
+                            Text="{Binding SelectedBudget.MontantBudget, StringFormat='💰 Budget : {0:N0} CFA'}"
+                            TextColor="Black" />
+                    </Frame>
+
+                    <!--  Badge Période  -->
+                    <Frame
+                        Padding="8,4"
+                        BackgroundColor="AliceBlue"
+                        CornerRadius="12"
+                        HasShadow="True">
+                        <HorizontalStackLayout
+                            Grid.Row="1"
+                            Grid.ColumnSpan="2"
+                            HorizontalOptions="Center"
+                            Spacing="4">
+                            <Label Text="{Binding SelectedBudget.DateDebutBudget, StringFormat='📅 {0:dd/MM/yyyy}'}" TextColor="Black" />
+                            <Label Text="{Binding SelectedBudget.DateFinBudget, StringFormat=' - {0:dd/MM/yyyy}'}" TextColor="Black" />
+                        </HorizontalStackLayout>
+                    </Frame>
+
+                </HorizontalStackLayout>
 
                 <!--  Section Dépassements  -->
                 <Frame
@@ -24,39 +62,10 @@
                     <VerticalStackLayout Spacing="10">
                         <Label
                             FontAttributes="Bold"
-                            FontSize="14"
-                            Text="🗂 Budget en cours d'utilisation"
-                            TextColor="Green" />
-
-                        <CollectionView ItemsSource="{Binding BudgetItems}">
-                            <CollectionView.ItemTemplate>
-                                <DataTemplate>
-                                    <Frame
-                                        Margin="0,5"
-                                        Padding="10"
-                                        BackgroundColor="AliceBlue"
-                                        CornerRadius="10">
-                                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
-                                            <!--  Colonne libellé et budget  -->
-                                            <VerticalStackLayout
-                                                Grid.Row="0"
-                                                Grid.Column="0"
-                                                Spacing="2">
-                                                <Label
-                                                    FontAttributes="Bold"
-                                                    Text="{Binding LibelleBudget}"
-                                                    TextColor="Black" />
-                                                <Label Text="{Binding MontantBudget, StringFormat='Solde : {0:N0} FCFA'}" TextColor="#1E3A8A" />
-                                                <Label Text="{Binding MontantUtilise, StringFormat='Utilisé : {0:N0} FCFA'}" TextColor="#F59E0B" />
-                                                <Label Text="{Binding MontantRestant, StringFormat='Restant : {0:N0} FCFA'}" TextColor="#16A34A" />
-                                            </VerticalStackLayout>
-
-
-                                        </Grid>
-                                    </Frame>
-                                </DataTemplate>
-                            </CollectionView.ItemTemplate>
-                        </CollectionView>
+                            Text="🧾 Lignes budgetaires"
+                            TextColor="#2C3E50" />
+                        <!--  Graphique  -->
+                        <microcharts:ChartView Chart="{Binding Chart}" HeightRequest="300" />
                     </VerticalStackLayout>
                 </Frame>
                 <!--  Section Dépassements  -->
@@ -120,14 +129,14 @@
                             FontAttributes="Bold"
                             FontSize="14"
                             Text="📅 Dépenses du jour"
-                            TextColor="#2C3E50" />
+                            TextColor="Black" />
                         <CollectionView ItemsSource="{Binding ExecutionBudgetaireItems}">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
                                     <Frame
                                         Margin="0,5"
                                         Padding="10"
-                                        BackgroundColor="#ECF0F1"
+                                        BackgroundColor="AliceBlue"
                                         CornerRadius="10">
                                         <Grid ColumnDefinitions="*,Auto,Auto">
                                             <VerticalStackLayout Spacing="2">

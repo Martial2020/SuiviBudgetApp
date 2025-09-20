@@ -1,51 +1,61 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="SuiviBuget.Mobile.Views.ExecutionBudgetaireDetailView"
-             xmlns:viewModels="clr-namespace:SuiviBuget.Mobile.ViewModels;assembly=SuiviBuget.Mobile"
-             Title="{Binding  Title}">
+<ContentPage
+    x:Class="SuiviBuget.Mobile.Views.ExecutionBudgetaireDetailView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewModels="clr-namespace:SuiviBuget.Mobile.ViewModels;assembly=SuiviBuget.Mobile"
+    Title="{Binding Title}">
 
-    <!-- Liaison du ViewModel à la page -->
+    <!--  Liaison du ViewModel à la page  -->
     <ContentPage.BindingContext>
         <viewModels:ExecutionBudgetaireDetailViewModel />
     </ContentPage.BindingContext>
 
     <VerticalStackLayout Padding="20" Spacing="5">
-        <!-- ComboBox (Picker dans MAUI) -->
-        <Label Text="Type de dépense :" FontAttributes="Bold"/>
-        <Picker Title="Sélectionnez un type de dépense"
-          ItemsSource="{Binding LigneBudgetaireItems,Mode=TwoWay}" 
-          ItemDisplayBinding="{Binding LibelleLigneBudgetaire, Mode=TwoWay}" 
-          SelectedItem="{Binding SelectedLigneBudgetaire, Mode=TwoWay}"
-          IsEnabled="{Binding CodeLigneBudgetaireIsEnabled,Mode=TwoWay}"/>
+        <!--  ComboBox (Picker dans MAUI)  -->
+        <Label FontAttributes="Bold" Text="Type de dépense :" />
+        <Picker
+            Title="Sélectionnez un type de dépense"
+            IsEnabled="{Binding CodeLigneBudgetaireIsEnabled, Mode=TwoWay}"
+            ItemDisplayBinding="{Binding LibelleLigneBudgetaire, Mode=TwoWay}"
+            ItemsSource="{Binding LigneBudgetaireItems, Mode=TwoWay}"
+            SelectedItem="{Binding SelectedLigneBudgetaire, Mode=TwoWay}" />
 
-        <!-- Champ Montant -->
-        <Label Text="Montant :" FontAttributes="Bold"/>
-        <Entry x:Name="MontantEntry"
-           Text="{Binding DataItem.Montant, Mode=TwoWay}" 
-           Placeholder="Entrez le montant"   Keyboard="Numeric" />
+        <!--  Champ Montant  -->
+        <Label FontAttributes="Bold" Text="Montant :" />
+        <Entry
+            x:Name="MontantEntry"
+            Keyboard="Numeric"
+            Placeholder="Entrez le montant"
+            Text="{Binding DataItem.Montant, Mode=TwoWay}" />
 
-        <Label Text="Mode de paiement :" FontAttributes="Bold"/>
-        <Picker Title="Sélectionnez un mode de paiement"
-           ItemsSource="{Binding ModePaiementItems,Mode=TwoWay}" 
-           ItemDisplayBinding="{Binding LibelleModePaiement, Mode=TwoWay}" 
-           SelectedItem="{Binding SelectedModePaiement, Mode=TwoWay}"   />
-    
-        <Label Text="Date:" FontAttributes="Bold" />
-        <DatePicker x:Name="DatePickerDebut"  Format="dd/MM/yyyy" 
-          Date="{Binding DataItem.DateExecution, Mode=TwoWay}"/>
+        <Label FontAttributes="Bold" Text="Mode de paiement :" />
+        <Picker
+            Title="Sélectionnez un mode de paiement"
+            ItemDisplayBinding="{Binding LibelleModePaiement, Mode=TwoWay}"
+            ItemsSource="{Binding ModePaiementItems, Mode=TwoWay}"
+            SelectedItem="{Binding SelectedModePaiement, Mode=TwoWay}" />
 
-        <!-- Nouveau champ : Description -->
-        <Editor Placeholder="Veuillez saisir le détail en quelques lignes"  Text="{Binding DataItem.Description}"  AutoSize="TextChanges" 
-            HeightRequest="100"/>
+        <Label FontAttributes="Bold" Text="Date:" />
+        <DatePicker
+            x:Name="DatePickerDebut"
+            Date="{Binding DataItem.DateExecution, Mode=TwoWay}"
+            Format="dd/MM/yyyy" />
+
+        <!--  Nouveau champ : Description  -->
+        <Editor
+            AutoSize="TextChanges"
+            HeightRequest="100"
+            Placeholder="Veuillez saisir le détail en quelques lignes"
+            Text="{Binding DataItem.Description}" />
 
 
-        <Button 
-          Text="{Binding LabelButton}"
-          BackgroundColor="#FF7F50"
-          TextColor="White"
-          CornerRadius="8"  
-           Command="{Binding SubmitCommand}"/>
+        <Button
+            BackgroundColor="#FF7F50"
+            Command="{Binding SubmitCommand}"
+            CornerRadius="8"
+            Text="{Binding LabelButton}"
+            TextColor="White" />
 
 
     </VerticalStackLayout>

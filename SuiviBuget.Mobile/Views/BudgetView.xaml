@@ -1,38 +1,48 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="SuiviBuget.Mobile.Views.BudgetView"
-             xmlns:viewModels="clr-namespace:SuiviBuget.Mobile.ViewModels;assembly=SuiviBuget.Mobile"
-             Title="{Binding Title}">
-    <!-- Liaison du ViewModel à la page -->
+<ContentPage
+    x:Class="SuiviBuget.Mobile.Views.BudgetView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewModels="clr-namespace:SuiviBuget.Mobile.ViewModels;assembly=SuiviBuget.Mobile"
+    Title="{Binding Title}">
+    <!--  Liaison du ViewModel à la page  -->
     <ContentPage.BindingContext>
         <viewModels:BudgetViewModel />
     </ContentPage.BindingContext>
 
     <VerticalStackLayout Padding="20" Spacing="5">
-        <Label Text="Code :" FontAttributes="Bold"/>
-        <Entry x:Name="CodeEntry" Text="{Binding DataItem.CodeBudget, Mode=TwoWay}" 
-               IsEnabled="False"  Placeholder="Code du budget" />
+        <Label FontAttributes="Bold" Text="Code :" />
+        <Entry
+            x:Name="CodeEntry"
+            IsEnabled="False"
+            Placeholder="Code du budget"
+            Text="{Binding DataItem.CodeBudget, Mode=TwoWay}" />
 
 
-        <Label Text="Libellé :" FontAttributes="Bold"/>
-        <Entry x:Name="LibelleEntry" Text="{Binding DataItem.LibelleBudget, Mode=TwoWay}"
-           Placeholder="Entrez le libellé du budget" />
+        <Label FontAttributes="Bold" Text="Libellé :" />
+        <Entry
+            x:Name="LibelleEntry"
+            Placeholder="Entrez le libellé du budget"
+            Text="{Binding DataItem.LibelleBudget, Mode=TwoWay}" />
 
-        <Label Text="Date début:" FontAttributes="Bold" />
-        <DatePicker x:Name="DatePickerDebut"  Format="dd/MM/yyyy" 
-        Date="{Binding DataItem.DateDebutBudget, Mode=TwoWay}"/>
+        <Label FontAttributes="Bold" Text="Date début:" />
+        <DatePicker
+            x:Name="DatePickerDebut"
+            Date="{Binding DataItem.DateDebutBudget, Mode=TwoWay}"
+            Format="dd/MM/yyyy" />
 
-        <Label Text="Date fin:" FontAttributes="Bold" />
-        <DatePicker x:Name="DatePickerFin"  Format="dd/MM/yyyy" 
-         Date="{Binding DataItem.DateFinBudget, Mode=TwoWay}"/>
+        <Label FontAttributes="Bold" Text="Date fin:" />
+        <DatePicker
+            x:Name="DatePickerFin"
+            Date="{Binding DataItem.DateFinBudget, Mode=TwoWay}"
+            Format="dd/MM/yyyy" />
 
-        <Button 
-            Text="{Binding LabelButton}"
+        <Button
             BackgroundColor="#FF7F50"
-            TextColor="White"
-            CornerRadius="8"  
-             Command="{Binding SubmitCommand}"/>
+            Command="{Binding SubmitCommand}"
+            CornerRadius="8"
+            Text="{Binding LabelButton}"
+            TextColor="White" />
 
     </VerticalStackLayout>
 </ContentPage>
