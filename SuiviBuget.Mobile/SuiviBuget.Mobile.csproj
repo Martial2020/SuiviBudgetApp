@@ -59,6 +59,8 @@
 	  <AndroidSigningStorePass>1994</AndroidSigningStorePass>
 	  <AndroidSigningKeyAlias>bleu</AndroidSigningKeyAlias>
 	  <AndroidSigningKeyPass>1994</AndroidSigningKeyPass>
+		<!-- Désactive le linker pour éviter que SkiaSharp soit supprimé -->
+		<LinkerBehavior>None</LinkerBehavior>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -98,6 +100,7 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
 		<PackageReference Include="Refractored.MvvmHelpers" Version="1.6.2" />
 		<PackageReference Include="SkiaSharp" Version="3.119.0" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="3.119.0" />
 		<PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
 		<PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.11" />
 	</ItemGroup>

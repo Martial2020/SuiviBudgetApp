@@ -42,7 +42,8 @@
                             Margin="5"
                             Padding="5"
                             BackgroundColor="AliceBlue"
-                            CornerRadius="10">
+                            CornerRadius="10"
+                            HasShadow="True">
 
 
                             <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
