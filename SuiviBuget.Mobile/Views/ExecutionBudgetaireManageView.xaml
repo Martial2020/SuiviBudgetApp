@@ -3,6 +3,7 @@
     x:Class="SuiviBuget.Mobile.Views.ExecutionBudgetaireManageView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:SuiviBudget.Mobile.Constants"
     xmlns:viewModels="clr-namespace:SuiviBuget.Mobile.ViewModels;assembly=SuiviBuget.Mobile"
     Title="Gestion des dépenses">
 
@@ -12,7 +13,7 @@
     </ContentPage.BindingContext>
 
 
-    <Grid RowDefinitions="Auto,*">
+    <Grid RowDefinitions="Auto,Auto,*">
 
         <!--  SearchBar  -->
         <SearchBar
@@ -27,8 +28,62 @@
             TextColor="Black"
             VerticalOptions="Start" />
 
+        <!--  Boutons de filtre rectangulaires  -->
+        <Grid
+            Grid.Row="1"
+            Margin="10,10,10,10"
+            ColumnSpacing="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Button
+                Grid.Column="0"
+                BackgroundColor="{Binding TousBackground}"
+                BorderColor="LightGray"
+                BorderWidth="0.5"
+                Command="{Binding FilterStatutCommand}"
+                CommandParameter="{x:Static local:StatutBudgetConst.Tous}"
+                CornerRadius="8"
+                FontSize="12"
+                HeightRequest="35"
+                HorizontalOptions="FillAndExpand"
+                Text="{Binding TousLabel}"
+                TextColor="Black"
+                VerticalOptions="Center" />
+            <Button
+                Grid.Column="1"
+                BackgroundColor="{Binding EnCoursBackground}"
+                BorderColor="LightGray"
+                BorderWidth="0.5"
+                Command="{Binding FilterStatutCommand}"
+                CommandParameter="{x:Static local:StatutBudgetConst.Encours}"
+                CornerRadius="8"
+                FontSize="12"
+                HeightRequest="35"
+                HorizontalOptions="FillAndExpand"
+                Text="{Binding EnCoursLabel}"
+                TextColor="Black"
+                VerticalOptions="Center" />
+            <Button
+                Grid.Column="2"
+                BackgroundColor="{Binding ClotureBackground}"
+                BorderColor="LightGray"
+                BorderWidth="0.5"
+                Command="{Binding FilterStatutCommand}"
+                CommandParameter="{x:Static local:StatutBudgetConst.Cloture}"
+                CornerRadius="8"
+                FontSize="12"
+                HeightRequest="35"
+                HorizontalOptions="FillAndExpand"
+                Text="{Binding ClotureLabel}"
+                TextColor="Black"
+                VerticalOptions="Center" />
+        </Grid>
         <!--  Contenu  -->
-        <AbsoluteLayout Grid.Row="1">
+        <AbsoluteLayout Grid.Row="2">
 
             <!--  CollectionView  -->
             <CollectionView
@@ -120,10 +175,19 @@
                                     Grid.ColumnSpan="2"
                                     HorizontalOptions="End"
                                     Spacing="15">
-                                    <Label
+                                    <Frame
+                                        Padding="8"
+                                        BackgroundColor="{Binding BackgroundColorStatut}"
+                                        CornerRadius="15">
+                                        <Label
+                                            FontAttributes="Bold"
+                                            Text="{Binding StatutBudget}"
+                                            TextColor="White" />
+                                    </Frame>
+                                    <!--<Label
                                         FontAttributes="Italic"
                                         Text="{Binding StatutBudget}"
-                                        TextColor="Red" />
+                                        TextColor="Red" />-->
                                 </HorizontalStackLayout>
 
                             </Grid>

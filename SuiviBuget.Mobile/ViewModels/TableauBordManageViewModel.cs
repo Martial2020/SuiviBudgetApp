@@ -34,8 +34,6 @@ namespace SuiviBuget.Mobile.ViewModels
         [ObservableProperty]
         public ObservableCollection<BudgetManageModel> budgetItems;
 
-
-
         [ObservableProperty]
         public ChartEntry[] entries;
 
@@ -51,14 +49,9 @@ namespace SuiviBuget.Mobile.ViewModels
                 _selectedBudget = value;
                 OnPropertyChanged();
                 if (_selectedBudget != null)
-                {
-                    Task.Run(() => ChargerGraphesAsync(_selectedBudget));
-                }
-
-
+                    _ = ChargerGraphesAsync(_selectedBudget);
             }
         }
-
 
         private bool _isBusy = false;
         public bool IsBusy
@@ -82,10 +75,8 @@ namespace SuiviBuget.Mobile.ViewModels
             //LoadDashbordByDate(DateTime.Now);
             RegisterMessenger();
             // Dans le constructeur ou avant l'utilisation
-            DepassementItems ??= new ObservableCollection<ExecutionBudgetaireDetailManageModel>();
             ResetAppMessage();
             LoadBudgetAsync();
-
         }
 
         public async Task ChargerGraphesAsync(BudgetManageModel budget)
@@ -104,7 +95,6 @@ namespace SuiviBuget.Mobile.ViewModels
                 ValueLabel = "",
                 //Color = SKColor.Parse("#FF0000")
                 Color = SKColor.Parse("#FF6347")
-
             }).ToArray();
 
             //// Créer le graphique
@@ -206,7 +196,6 @@ namespace SuiviBuget.Mobile.ViewModels
         }
         private async Task DepassementDuJourItems(ObservableCollection<ExecutionBudgetaireDetailManageModel> datas)
         {
-
             try
             {
                 DepassementItems = new ObservableCollection<ExecutionBudgetaireDetailManageModel>();
@@ -255,6 +244,8 @@ namespace SuiviBuget.Mobile.ViewModels
 
                     }
                 }
+                DepassementItems = new ObservableCollection<ExecutionBudgetaireDetailManageModel>(
+    DepassementItems.GroupBy(x => new { x.CodeBudget, x.CodeLigneBudgetaire }).Select(g => g.First()));
 
             }
             catch (Exception ex)

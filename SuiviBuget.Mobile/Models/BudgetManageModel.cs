@@ -19,5 +19,6 @@ namespace SuiviBuget.Mobile.Models
         public DateTime DateFinBudget { get; set; }
         public string StatutBudget { get; set; }
         public int NbreLigneBudgetaire { get; set; }
+        public Color BackgroundColorStatut { get; set; }
     }
 }

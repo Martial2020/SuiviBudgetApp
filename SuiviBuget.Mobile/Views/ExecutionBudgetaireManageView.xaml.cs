@@ -12,13 +12,6 @@ public partial class ExecutionBudgetaireManageView : ContentPage
        vm = new ExecutionBudgetaireManageViewModel();
     }
 
-    protected override void OnAppearing()
-    {
-        base.OnAppearing();
-
-        // Recharger la liste
-        _=vm.LoadBudgetAsync("");
-    }
-
+   
 
 }

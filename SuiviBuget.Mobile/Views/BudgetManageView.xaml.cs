@@ -32,7 +32,6 @@ public partial class BudgetManageView : ContentPage
                 options.Add("✎ Modifier");   // stylo
                 options.Add("🗑 Supprimer"); // poubelle
                 options.Add("💰 Allocation budgétaire");
-                options.Add("⏳ Mettre en cours");
                 options.Add("🔒 Clôturer");
             }else
                 options.Add("💰 Allocation budgétaire");

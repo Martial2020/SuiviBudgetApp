@@ -9,6 +9,7 @@ using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Intuit.Ipp.Data;
 using SuiviBudge.Validators;
 using SuiviBudget.Mobile.Constants;
 using SuiviBudget.Mobile.Interfaces;
@@ -47,7 +48,7 @@ namespace SuiviBuget.Mobile.ViewModels
                 {
                     _searchText = value;
                     OnPropertyChanged();
-                    _ = LoadBudgetAsync(_searchText); // Charge la liste initialement
+                     LoadBudgetAsync(SelectedFilter,_searchText); // Charge la liste initialement
                 }
             }
         }
@@ -64,8 +65,66 @@ namespace SuiviBuget.Mobile.ViewModels
                 }
             }
         }
+        #region Background Color Statut
+
+        [ObservableProperty]
+        public Color tousBackground = Colors.White;
+
+        [ObservableProperty]
+        public Color ouvertBackground = Colors.White;
+        [ObservableProperty]
+        public Color enCoursBackground = Colors.White;
+        [ObservableProperty]
+        public Color clotureBackground = Colors.White;
+
+
+        [ObservableProperty]
+        public string tousLabel = "Tous";
+
+        [ObservableProperty]
+        public string ouvertLabel = "Ouvert";
+
+        [ObservableProperty]
+        public string enCoursLabel = "En cours";
+        [ObservableProperty]
+        public string clotureLabel = "Clôturé";
+
+        private string _selectedFilter;
+        public string SelectedFilter
+        {
+            get => _selectedFilter;
+            set
+            {
+                //Color.FromArgb("#FF7F50");
+                if (_selectedFilter != value)
+                {
+                    _selectedFilter = value;
+                    OnPropertyChanged(nameof(SelectedFilter));
+                    TousBackground = Colors.White;
+                    OuvertBackground = Colors.White;
+                    EnCoursBackground = Colors.White;
+                    ClotureBackground = Colors.White;
+
+                    if (_selectedFilter == StatutBudgetConst.Encours)
+                        EnCoursBackground = Colors.AliceBlue;
+                    if (_selectedFilter == StatutBudgetConst.Cloture)
+                        ClotureBackground = Colors.AliceBlue;
+                    if (_selectedFilter == StatutBudgetConst.Ouvert)
+                        OuvertBackground = Colors.AliceBlue;
+                    if (_selectedFilter == StatutBudgetConst.Tous)
+                        TousBackground = Colors.AliceBlue;
+
+                    LoadBudgetAsync(_selectedFilter, SearchText);
+
+                }
+            }
+        }
+
+        #endregion
         #region Interfaces
         private readonly IServices service;
+        public ICommand FilterStatutCommand { get; }
+
         public ICommand ExecutionBudgetDetailCommand { get; }
         private readonly INavigationService _navigationService;
         private readonly IAlertService _alertService;
@@ -78,11 +137,68 @@ namespace SuiviBuget.Mobile.ViewModels
             _navigationService = new NavigationService();
             _alertService = new AlertService();
             ExecutionBudgetDetailCommand = new RelayCommand<BudgetManageModel>(OnExecutionBudgetDetailCommand);
+            SelectedFilter = StatutBudgetConst.Tous;
+
             RegisterMessenger();
             ResetAppMessage();
             // Charger au démarrage
-            Task.Run(() => LoadBudgetAsync(string.Empty));
+            FilterStatutCommand = new RelayCommand<string>(OnFilterStatutCommand);
+
         }
+
+        private async void LoadBudgetAsync(string statut, string searchText)
+        {
+
+            List<string> statuts = new List<string>();
+            BudgetItems = new ObservableCollection<BudgetManageModel>();
+            IsBusy = true;
+
+            if (string.IsNullOrEmpty(statut) || statut == StatutBudgetConst.Tous)
+                statuts = new List<string> { StatutBudgetConst.Encours, StatutBudgetConst.Cloture };
+            else
+                statuts.Add(statut);
+
+            var budgets = await service.GetBudgetItemsByStatus(searchText, statuts);
+            BudgetItems = new ObservableCollection<BudgetManageModel>(
+                budgets.Select(x => new BudgetManageModel
+                {
+                    CodeBudget = x.CodeBudget,
+                    DateCreationBudget = x.DateCreationBudget,
+                    DateDebutBudget = x.DateDebutBudget,
+                    DateFinBudget = x.DateFinBudget,
+                    DescriptionBudget = x.DescriptionBudget,
+                    LibelleBudget = x.LibelleBudget,
+                    MontantBudget = x.MontantBudget,
+                    NbreLigneBudgetaire = x.NbreLigneBudgetaire,
+                    StatutBudget = x.StatutBudget,
+                    MontantUtilise = x.MontantUtilise,
+                    MontantRestant = x.MontantRestant,
+                    BackgroundColorStatut = Helper.GetBackgroundColor(x.StatutBudget)
+                }));
+            ActualiserNombreBudget();
+            IsBusy = false;
+        }
+        private async void ActualiserNombreBudget()
+        {
+            var statuts = new List<string> { StatutBudgetConst.Encours, StatutBudgetConst.Cloture };
+            var budgets = await service.GetBudgetItemsByStatus(SearchText, statuts);
+
+            TousLabel = "Tous"; OuvertLabel = "Ouvert"; EnCoursLabel = "En cours"; ClotureLabel = "Clôturé";
+
+            if (budgets.Count > 0)
+                TousLabel = $"{TousLabel.Trim()} {budgets.Count()}";
+
+            if (budgets.Where(e => e.StatutBudget == StatutBudgetConst.Ouvert).Count() > 0)
+                OuvertLabel = $"{OuvertLabel.Trim()} {budgets.Where(e => e.StatutBudget == StatutBudgetConst.Ouvert).Count()}";
+
+            if (budgets.Where(e => e.StatutBudget == StatutBudgetConst.Encours).Count() > 0)
+                EnCoursLabel = $"{EnCoursLabel.Trim()} {budgets.Where(e => e.StatutBudget == StatutBudgetConst.Encours).Count()}";
+
+            if (budgets.Where(e => e.StatutBudget == StatutBudgetConst.Cloture).Count() > 0)
+                ClotureLabel = $"{ClotureLabel.Trim()} {budgets.Where(e => e.StatutBudget == StatutBudgetConst.Cloture).Count()}";
+        }
+
+        private void OnFilterStatutCommand(string statut) => SelectedFilter = statut;
 
         private void ResetAppMessage()
         {
@@ -109,36 +225,37 @@ namespace SuiviBuget.Mobile.ViewModels
             await _navigationService.NavigateToAsync("ExecutionBudgetaireManageDetailView", budget.CodeBudget);
 
         }
-        public async Task LoadBudgetAsync(string searchText)
-        {
-            BudgetItems = new ObservableCollection<BudgetManageModel>();
-            IsBusy = true;
-            //await Task.Delay(1000); // ⏳ attend 1,5 secondes (1500 ms)
-            var statutList = new List<string> { StatutBudgetConst.Encours, StatutBudgetConst.Cloture };     
-            var budgets = await service.GetBudgetItemsByStatus(searchText, statutList);
-            BudgetItems = new ObservableCollection<BudgetManageModel>(
-                budgets.Select(x => new BudgetManageModel
-                {
-                    CodeBudget = x.CodeBudget,
-                    DateCreationBudget = x.DateCreationBudget,
-                    DateDebutBudget = x.DateDebutBudget,
-                    DateFinBudget = x.DateFinBudget,
-                    DescriptionBudget = x.DescriptionBudget,
-                    LibelleBudget = x.LibelleBudget,
-                    MontantBudget = x.MontantBudget,
-                    NbreLigneBudgetaire = x.NbreLigneBudgetaire,
-                    StatutBudget = x.StatutBudget,
-                    MontantUtilise = x.MontantUtilise,
-                    MontantRestant = x.MontantRestant
-                }));
-            IsBusy = false;
-        }
+        //public async void LoadBudgetAsync(string searchText)
+        //{
+        //    BudgetItems = new ObservableCollection<BudgetManageModel>();
+        //    IsBusy = true;
+        //    //await Task.Delay(1000); // ⏳ attend 1,5 secondes (1500 ms)
+        //    var statutList = new List<string> { StatutBudgetConst.Encours, StatutBudgetConst.Cloture };
+        //    var budgets = await service.GetBudgetItemsByStatus(searchText, statutList);
+        //    BudgetItems = new ObservableCollection<BudgetManageModel>(
+        //        budgets.Select(x => new BudgetManageModel
+        //        {
+        //            CodeBudget = x.CodeBudget,
+        //            DateCreationBudget = x.DateCreationBudget,
+        //            DateDebutBudget = x.DateDebutBudget,
+        //            DateFinBudget = x.DateFinBudget,
+        //            DescriptionBudget = x.DescriptionBudget,
+        //            LibelleBudget = x.LibelleBudget,
+        //            MontantBudget = x.MontantBudget,
+        //            NbreLigneBudgetaire = x.NbreLigneBudgetaire,
+        //            StatutBudget = x.StatutBudget,
+        //            MontantUtilise = x.MontantUtilise,
+        //            MontantRestant = x.MontantRestant,
+        //            BackgroundColorStatut = Helper.GetBackgroundColor(x.StatutBudget)
+        //        }));
+        //    IsBusy = false;
+        //}
 
         private void RegisterMessenger()
         {
             WeakReferenceMessenger.Default.Register<RefreshList>(this, async (r, m) =>
             {
-                await LoadBudgetAsync(SearchText); // Rafraîchit la liste si un ajout est effectué
+                 LoadBudgetAsync(SelectedFilter,SearchText); // Rafraîchit la liste si un ajout est effectué
             });
         }
         public event PropertyChangedEventHandler PropertyChanged;

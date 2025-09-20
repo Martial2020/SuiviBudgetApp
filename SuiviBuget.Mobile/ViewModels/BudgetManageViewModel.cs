@@ -109,7 +109,7 @@ namespace SuiviBuget.Mobile.ViewModels
                     ClotureBackground = Colors.White;
 
                     if (_selectedFilter == StatutBudgetConst.Encours)
-                        EnCoursBackground = Colors.AliceBlue ;
+                        EnCoursBackground = Colors.AliceBlue;
                     if (_selectedFilter == StatutBudgetConst.Cloture)
                         ClotureBackground = Colors.AliceBlue;
                     if (_selectedFilter == StatutBudgetConst.Ouvert)
@@ -117,7 +117,7 @@ namespace SuiviBuget.Mobile.ViewModels
                     if (_selectedFilter == StatutBudgetConst.Tous)
                         TousBackground = Colors.AliceBlue;
 
-                   
+
                     LoadBudgetAsync(_selectedFilter, SearchText);
                 }
             }
@@ -324,7 +324,8 @@ namespace SuiviBuget.Mobile.ViewModels
                     NbreLigneBudgetaire = x.NbreLigneBudgetaire,
                     StatutBudget = x.StatutBudget,
                     MontantUtilise = x.MontantUtilise,
-                    MontantRestant = x.MontantRestant
+                    MontantRestant = x.MontantRestant,
+                    BackgroundColorStatut = Helper.GetBackgroundColor(x.StatutBudget)
                 }));
             ActualiserNombreBudget();
             IsBusy = false;

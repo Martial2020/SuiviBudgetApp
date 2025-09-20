@@ -187,10 +187,21 @@
                                     Grid.ColumnSpan="2"
                                     HorizontalOptions="End"
                                     Spacing="15">
-                                    <Label
+
+                                    <Frame
+                                        Padding="8"
+                                        BackgroundColor="{Binding BackgroundColorStatut}"
+                                        CornerRadius="15">
+                                        <Label
+                                            FontAttributes="Bold"
+                                            Text="{Binding StatutBudget}"
+                                            TextColor="White" />
+                                    </Frame>
+
+                                    <!--<Label
                                         FontAttributes="Italic"
                                         Text="{Binding StatutBudget}"
-                                        TextColor="Red" />
+                                        TextColor="Red" />-->
                                 </HorizontalStackLayout>
 
                             </Grid>

@@ -141,6 +141,10 @@ namespace SuiviBudge.Validators
             if (getLigne != null)
                 return (false, $"Le type de dépense [{ligneBugetaire.CodeLigneBudgetaire}] existe dejà dans notre base de donnée pour ce budget");
 
+            var typeDepense = await adminService.GetExecutionBudgetaireDetailsByBudgetDetail(ligneBugetaire.CodeBudget, ligneBugetaire.CodeLigneBudgetaire);
+            if (typeDepense != null)
+                return (false, $"Le type de dépense [{ligneBugetaire.CodeLigneBudgetaire}] existe dejà dans notre base de donnée pour ce budget");
+
             return (true, string.Empty);
         }
         public static async Task<(bool isSuccess, string message)> ValidateBudgetDetailUpdate(BudgetDetailModel ligneBugetaire)
