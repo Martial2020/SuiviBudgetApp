@@ -10,5 +10,6 @@ namespace SuiviBuget.Mobile.Messages
     {
         public record RefreshList;
         public record ResetAppMessage;
+        public record BudgetCloturerMessage;
     }
 }

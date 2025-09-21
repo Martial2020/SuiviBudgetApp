@@ -50,7 +50,7 @@ namespace SuiviBuget.Mobile.ViewModels
 
             if (!confirm) return;
             IsBusy = true;
-            await Task.Delay(5); // Simule un temps de chargement          
+            await Task.Delay(5); // Simule un temps de chargement
             service.ReinitialiseApp();
             //// Prévenir tous les ViewModels
             WeakReferenceMessenger.Default.Send(new ResetAppMessage());

@@ -21,7 +21,10 @@
                     ItemsSource="{Binding BudgetItems, Mode=TwoWay}"
                     SelectedItem="{Binding SelectedBudget, Mode=TwoWay}" />
 
-                <HorizontalStackLayout Padding="5" Spacing="8">
+                <HorizontalStackLayout
+                    Padding="5"
+                    IsVisible="{Binding IsVisibleBudgetDetail}"
+                    Spacing="8">
 
                     <!--  Badge Montant  -->
                     <Frame
@@ -29,10 +32,7 @@
                         BackgroundColor="AliceBlue"
                         CornerRadius="12"
                         HasShadow="True">
-                        <Label
-                            FontAttributes="Bold"
-                            Text="{Binding SelectedBudget.MontantBudget, StringFormat='💰 Budget : {0:N0} CFA'}"
-                            TextColor="Black" />
+                        <Label Text="{Binding SelectedBudget.MontantBudget, StringFormat='💰 Budget : {0:N0} CFA'}" TextColor="Black" />
                     </Frame>
 
                     <!--  Badge Période  -->
@@ -62,7 +62,7 @@
                     <VerticalStackLayout Spacing="10">
                         <Label
                             FontAttributes="Bold"
-                            Text="🧾 Lignes budgetaires"
+                            Text="🧾 Répartition des types de dépenses"
                             TextColor="#2C3E50" />
                         <!--  Graphique  -->
                         <microcharts:ChartView Chart="{Binding Chart}" HeightRequest="300" />
@@ -78,7 +78,7 @@
                         <Label
                             FontAttributes="Bold"
                             FontSize="14"
-                            Text="⚠ Dépassements du jour"
+                            Text="⚠ Dépassements"
                             TextColor="Red" />
 
                         <CollectionView ItemsSource="{Binding DepassementItems}">
@@ -99,7 +99,6 @@
                                                     FontAttributes="Bold"
                                                     Text="{Binding LibelleLigneBudgetaire}"
                                                     TextColor="#C0392B" />
-                                                <Label Text="{Binding LibelleBudget, StringFormat='Budget : {0}'}" TextColor="#E74C3C" />
                                             </VerticalStackLayout>
 
                                             <!--  Montant à droite  -->
@@ -148,7 +147,6 @@
                                                     FontAttributes="Italic"
                                                     Text="{Binding Description}"
                                                     TextColor="#7F8C8D" />
-                                                <Label Text="{Binding LibelleBudget, StringFormat='Budget : {0}'}" TextColor="#2C3E50" />
 
                                             </VerticalStackLayout>
                                             <Label

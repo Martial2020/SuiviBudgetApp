@@ -15,12 +15,14 @@ namespace SuiviBuget.Mobile.Services
 {
     public class Services : IServices
     {
+        #region propriete
         private readonly SQLiteAsyncConnection _db;
+
+        #endregion
 
         #region Constructeur
         public Services(string dbPath)
         {
-
             _db = new SQLiteAsyncConnection(dbPath);
             _db.CreateTableAsync<ModePaiement>().Wait();
             _db.CreateTableAsync<LigneBudgetaire>().Wait();
@@ -538,14 +540,15 @@ namespace SuiviBuget.Mobile.Services
             try
             {
                 var isSearchEmpty = string.IsNullOrWhiteSpace(searchText?.ToLower() ?? "");
-                var budgetDetails = await _db.Table<BudgetDetail>().ToListAsync();
                 var lignes = await _db.Table<LigneBudgetaire>().ToListAsync();
+                var budgetDetails = await _db.Table<BudgetDetail>()
+                    .Where(b => b.CodeBudget == codeBudget)
+                    .ToListAsync();
 
                 var query = (from b in budgetDetails
                              join l in lignes on b.CodeLigneBudgetaire equals l.CodeLigneBudgetaire
                              where (string.IsNullOrEmpty(searchText)
                                     || l.LibelleLigneBudgetaire.ToLower().Contains(searchText.ToLower()))
-                                   && b.CodeBudget == codeBudget
                              select new BudgetDetailManageModel
                              {
                                  BudgetDetailID = b.BudgetDetailID,
@@ -778,15 +781,32 @@ namespace SuiviBuget.Mobile.Services
         #endregion
 
         #region Other Functions
-
         public async void ReinitialiseApp()
         {
-            await _db.DeleteAllAsync<ExecutionBudgetaire>();
-            await _db.DeleteAllAsync<BudgetDetail>();
-            await _db.DeleteAllAsync<Budget>();
-            await _db.DeleteAllAsync<LigneBudgetaire>();
-            await _db.DeleteAllAsync<ModePaiement>();
-            await _db.DeleteAllAsync<ParametreCompteur>();
+            try
+            {
+                //_db.CreateTableAsync<ModePaiement>().Wait();
+                //_db.CreateTableAsync<LigneBudgetaire>().Wait();
+                //_db.CreateTableAsync<Budget>().Wait();
+                //_db.CreateTableAsync<ParametreCompteur>().Wait();
+                //_db.CreateTableAsync<BudgetDetail>().Wait();
+                //_db.CreateTableAsync<ExecutionBudgetaire>().Wait();
+
+                _db.DeleteAllAsync<ExecutionBudgetaire>().Wait();
+                _db.DeleteAllAsync<BudgetDetail>().Wait();
+                _db.DeleteAllAsync<BudgetDetail>().Wait();
+                _db.DeleteAllAsync<Budget>().Wait();
+                _db.DeleteAllAsync<LigneBudgetaire>().Wait();
+                _db.DeleteAllAsync<ModePaiement>().Wait();
+                _db.DeleteAllAsync<ParametreCompteur>().Wait();
+
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+
         }
         private async void MisAjourBudget(string codeBudget)
         {

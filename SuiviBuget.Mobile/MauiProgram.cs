@@ -17,14 +17,11 @@ namespace SuiviBuget.Mobile
             var builder = MauiApp.CreateBuilder();
 
             SQLitePCL.Batteries_V2.Init(); // <=== Initialisation SQLite
-
             // Utilisation du toolkit MAUI
             builder
-
                 .UseMauiApp<App>()
                 .UseMauiCommunityToolkit()
-                 .UseMicrocharts()  // <-- c'est cette ligne qui manquait
-
+                .UseMicrocharts()  // <-- c'est cette ligne qui manquait
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -32,9 +29,6 @@ namespace SuiviBuget.Mobile
                 });
 
             // autres configurations...
-
-
-
 
             // Enregistrement des services ou ViewModels
             builder.Services.AddSingleton<AppShellViewModel>();

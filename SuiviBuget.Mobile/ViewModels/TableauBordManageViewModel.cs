@@ -6,8 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
+using Intuit.Ipp.Data;
 using Microcharts;
+using Microcharts.Maui;
 using Microsoft.Maui.Controls.Shapes;
+using SkiaSharp;
 using SkiaSharp;
 using SuiviBudget.Mobile.Constants;
 using SuiviBudget.Mobile.Interfaces;
@@ -16,8 +19,6 @@ using SuiviBuget.Mobile.Helpers;
 using SuiviBuget.Mobile.Models;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using static SuiviBuget.Mobile.Messages.Messages;
-using Microcharts.Maui;
-using SkiaSharp;
 
 
 namespace SuiviBuget.Mobile.ViewModels
@@ -49,7 +50,11 @@ namespace SuiviBuget.Mobile.ViewModels
                 _selectedBudget = value;
                 OnPropertyChanged();
                 if (_selectedBudget != null)
-                    _ = ChargerGraphesAsync(_selectedBudget);
+                {
+                    ChargerGraphesAsync(_selectedBudget);
+                    DepensesDuJourItems(DateTime.Now, _selectedBudget.CodeBudget);
+                    DepassementDuJourItems();
+                }
             }
         }
 
@@ -67,19 +72,36 @@ namespace SuiviBuget.Mobile.ViewModels
             }
         }
 
+        private bool _isVisibleBudgetDetail = false;
+        public bool IsVisibleBudgetDetail
+        {
+            get => _isVisibleBudgetDetail;
+            set
+            {
+                if (_isVisibleBudgetDetail != value)
+                {
+                    _isVisibleBudgetDetail = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         IServices _service { get; set; }
         public TableauBordManageViewModel()
         {
             string dbPath = Helper.GetDatabaseFullPath();
             _service = new Services.Services(dbPath);
+            ExecutionBudgetaireItems = new ObservableCollection<ExecutionBudgetaireDetailManageModel>();
+            BudgetItems = new ObservableCollection<BudgetManageModel>();
+            DepassementItems = new ObservableCollection<ExecutionBudgetaireDetailManageModel>();
+            LoadBudgetAsync();
             //LoadDashbordByDate(DateTime.Now);
             RegisterMessenger();
             // Dans le constructeur ou avant l'utilisation
             ResetAppMessage();
-            LoadBudgetAsync();
         }
 
-        public async Task ChargerGraphesAsync(BudgetManageModel budget)
+        public async void ChargerGraphesAsync(BudgetManageModel budget)
         {
 
             if (budget == null) return;
@@ -105,36 +127,36 @@ namespace SuiviBuget.Mobile.ViewModels
                 ValueLabelOrientation = Orientation.Horizontal,
                 BackgroundColor = SKColors.White
             };
-
-            await DepensesDuJourItems(DateTime.Now, budget.CodeBudget);
-
-
         }
 
-
+       
+          
         private void ResetAppMessage()
         {
             WeakReferenceMessenger.Default.Register<ResetAppMessage>(this, (r, m) =>
             {
                 ExecutionBudgetaireItems.Clear();
                 DepassementItems.Clear();
+                IsVisibleBudgetDetail = false;
+                BudgetItems.Clear();
+                SelectedBudget = BudgetItems.FirstOrDefault();
             });
         }
-        private void RegisterMessenger()
+        private async void RegisterMessenger()
         {
             WeakReferenceMessenger.Default.Register<RefreshList>(this, async (r, m) =>
             {
-                LoadDashbordByDate(DateTime.Now);// Rafraîchit la liste si un ajout est effectué
+                LoadBudgetAsync();
             });
         }
-        private async void LoadDashbordByDate(DateTime date)
-        {
-            ExecutionBudgetaireItems = new ObservableCollection<ExecutionBudgetaireDetailManageModel>();
-            IsBusy = true;
-            await Task.Delay(1000); // ⏳ attend 1,5 secondes (1500 ms)
-            LoadBudgetAsync();
-            //DepensesDuJourItems(date);
-        }
+        //private async void LoadDashbordByDate(DateTime date)
+        //{
+        //    ExecutionBudgetaireItems = new ObservableCollection<ExecutionBudgetaireDetailManageModel>();
+        //    IsBusy = true;
+        //    //await Task.Delay(1000); // ⏳ attend 1,5 secondes (1500 ms)
+        //    LoadBudgetAsync();
+        //    //DepensesDuJourItems(date);
+        //}
 
         private async void LoadBudgetAsync()
         {
@@ -160,11 +182,20 @@ namespace SuiviBuget.Mobile.ViewModels
                 }));
 
             if (BudgetItems.Count() > 0)
+            {
                 SelectedBudget = BudgetItems.FirstOrDefault();
+                IsVisibleBudgetDetail = true;
+            }
+            else
+            {
+                IsVisibleBudgetDetail = false;
+                ExecutionBudgetaireItems.Clear();
+                DepassementItems.Clear();
+            }
 
         }
 
-        private async Task DepensesDuJourItems(DateTime date, string codeBudget)
+        private async void DepensesDuJourItems(DateTime date, string codeBudget)
         {
             ExecutionBudgetaireItems = new ObservableCollection<ExecutionBudgetaireDetailManageModel>();
             ExecutionBudgetaireItems.Clear();
@@ -185,7 +216,6 @@ namespace SuiviBuget.Mobile.ViewModels
                         LibelleBudget = x.LibelleBudget
                     })
                 );
-                await DepassementDuJourItems(ExecutionBudgetaireItems);
             }
             catch (Exception ex)
             {
@@ -194,58 +224,49 @@ namespace SuiviBuget.Mobile.ViewModels
             }
 
         }
-        private async Task DepassementDuJourItems(ObservableCollection<ExecutionBudgetaireDetailManageModel> datas)
+        private async void DepassementDuJourItems()
         {
             try
             {
                 DepassementItems = new ObservableCollection<ExecutionBudgetaireDetailManageModel>();
                 DepassementItems.Clear();
-                var groupedItems = datas
-            .GroupBy(x => new { x.CodeLigneBudgetaire, x.LibelleLigneBudgetaire, x.CodeBudget, x.LibelleBudget })
-                    .Select(g => new
-                    {
-                        g.Key.CodeLigneBudgetaire,
-                        g.Key.LibelleLigneBudgetaire,
-                        g.Key.LibelleBudget,
-                        g.Key.CodeBudget,
-                        MontantTotal = g.Sum(x => x.Montant)
-                    }).ToList();
 
-                foreach (var item in groupedItems)
+
+                var budgetDetails = await _service.GetBudgetDetailItems(SelectedBudget.CodeBudget, string.Empty);
+
+                foreach (var item in budgetDetails)
                 {
-                    var detail = await _service.GetBudgetDetailByBudgetLigne(item.CodeBudget, item.CodeLigneBudgetaire);
-                    if (detail != null)
+
+                    var depense = await _service.GetExecutionBudgetaireDetailsItems(item.CodeBudget, item.CodeLigneBudgetaire);
+
+                    if (depense != null)
                     {
-                        var depense = await _service.GetExecutionBudgetaireDetailsItems(item.CodeBudget, item.CodeLigneBudgetaire);
-
-                        if (depense != null)
+                        decimal montantTotal = depense.Sum(d => d.Montant);
+                        var difference = item.Montant - montantTotal;
+                        if (difference < 0)
                         {
-                            decimal montantTotal = 0;
-                            montantTotal = depense.Sum(d => d.Montant);
-                            var difference = detail.Montant - montantTotal;
-                            if (difference < 0)
+                            var nouvelItem = new ExecutionBudgetaireDetailManageModel
                             {
-                                var nouvelItem = new ExecutionBudgetaireDetailManageModel
-                                {
-                                    DateExecution = DateTime.Now,
-                                    ExecutionBudgetaireID = Guid.NewGuid(),
-                                    LibelleLigneBudgetaire = item.LibelleLigneBudgetaire,
-                                    ModePaiement = "Cash",
-                                    Montant = Math.Abs(difference),
-                                    CodeBudget = item.CodeBudget,
-                                    CodeLigneBudgetaire = item.CodeLigneBudgetaire,
-                                    Description = "Dépassement transport",
-                                    LibelleBudget = item.LibelleBudget,
-                                };
-                                // Ajouter à la collection
-                                DepassementItems.Add(nouvelItem);
-                            }
+                                DateExecution = DateTime.Now,
+                                ExecutionBudgetaireID = Guid.NewGuid(),
+                                LibelleLigneBudgetaire = item.LibelleLigneBudgetaire,
+                                ModePaiement = "Cash",
+                                Montant = Math.Abs(difference),
+                                CodeBudget = item.CodeBudget,
+                                CodeLigneBudgetaire = item.CodeLigneBudgetaire,
+                                Description = "Dépassement transport",
+                                LibelleBudget = "",
+                            };
+                            // Ajouter à la collection
+                            DepassementItems.Add(nouvelItem);
                         }
-
                     }
+
+
+
                 }
                 DepassementItems = new ObservableCollection<ExecutionBudgetaireDetailManageModel>(
-    DepassementItems.GroupBy(x => new { x.CodeBudget, x.CodeLigneBudgetaire }).Select(g => g.First()));
+  DepassementItems.GroupBy(x => new { x.CodeBudget, x.CodeLigneBudgetaire }).Select(g => g.First()));
 
             }
             catch (Exception ex)

@@ -27,7 +27,7 @@ namespace SuiviBudget.Mobile.Constants
     public static class ParametreCompteurConst
     {
         public const string BG = "BG";
-        public const string LB = "LB";
+        public const string LB = "TD";
         public const string MP = "MP";
     }
 

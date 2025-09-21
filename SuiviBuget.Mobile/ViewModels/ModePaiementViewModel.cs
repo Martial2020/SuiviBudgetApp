@@ -30,7 +30,7 @@ namespace SuiviBuget.Mobile.ViewModels
         private string title = "Ajouter un mode de paiement";
 
         [ObservableProperty]
-        private string labelButton = "+ AjouterAjouter";
+        private string labelButton = "+ Ajouter";
 
         private string _action;
         public string Action
