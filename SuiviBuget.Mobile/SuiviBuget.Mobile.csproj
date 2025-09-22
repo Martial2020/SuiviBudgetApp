@@ -36,7 +36,7 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">15.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
-		
+
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
@@ -45,20 +45,22 @@
 		<!--Nouvelle ligne ajoute par moi-->
 		<AndroidMinSdkVersion>21</AndroidMinSdkVersion>
 		<AndroidTargetSdkVersion>33</AndroidTargetSdkVersion>
+		<AndroidSupportedAbis>armeabi-v7a;arm64-v8a;x86;x86_64</AndroidSupportedAbis>
+
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-android|AnyCPU'">
-	  <AndroidKeyStore>False</AndroidKeyStore>
-	  <AndroidSigningStorePass>1994</AndroidSigningStorePass>
-	  <AndroidSigningKeyAlias>bleu</AndroidSigningKeyAlias>
-	  <AndroidSigningKeyPass>1994</AndroidSigningKeyPass>
+		<AndroidKeyStore>False</AndroidKeyStore>
+		<AndroidSigningStorePass>1994</AndroidSigningStorePass>
+		<AndroidSigningKeyAlias>bleu</AndroidSigningKeyAlias>
+		<AndroidSigningKeyPass>1994</AndroidSigningKeyPass>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-android|AnyCPU'">
-	  <AndroidKeyStore>False</AndroidKeyStore>
-	  <AndroidSigningStorePass>1994</AndroidSigningStorePass>
-	  <AndroidSigningKeyAlias>bleu</AndroidSigningKeyAlias>
-	  <AndroidSigningKeyPass>1994</AndroidSigningKeyPass>
+		<AndroidKeyStore>False</AndroidKeyStore>
+		<AndroidSigningStorePass>1994</AndroidSigningStorePass>
+		<AndroidSigningKeyAlias>bleu</AndroidSigningKeyAlias>
+		<AndroidSigningKeyPass>1994</AndroidSigningKeyPass>
 		<!-- Désactive le linker pour éviter que SkiaSharp soit supprimé -->
 		<LinkerBehavior>None</LinkerBehavior>
 	</PropertyGroup>
@@ -79,16 +81,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="Resources\AppIcon\appicon.png" />
-	  <None Remove="Resources\Splash\splash.png" />
+		<None Remove="Resources\AppIcon\appicon.png" />
+		<None Remove="Resources\Splash\splash.png" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiIcon Include="Resources\AppIcon\appicon.png" />
+		<MauiIcon Include="Resources\AppIcon\appicon.png" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiSplashScreen Include="Resources\Splash\splash.png" />
+		<MauiSplashScreen Include="Resources\Splash\splash.png" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -106,72 +108,72 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="Views\BudgetDetailManageView.xaml.cs">
-	    <DependentUpon>BudgetDetailManageView.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="Views\BudgetDetailView.xaml.cs">
-	    <DependentUpon>BudgetDetailView.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="Views\ExecutionBudgetaireManageDetailView.xaml.cs">
-	    <DependentUpon>ExecutionBudgetaireManageDetailView.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="Views\ParametreManageView.xaml.cs">
-	    <DependentUpon>ParametreManageView.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="Views\ReinitilaiserView.xaml.cs">
-	    <DependentUpon>ReinitilaiserView.xaml</DependentUpon>
-	  </Compile>
+		<Compile Update="Views\BudgetDetailManageView.xaml.cs">
+			<DependentUpon>BudgetDetailManageView.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\BudgetDetailView.xaml.cs">
+			<DependentUpon>BudgetDetailView.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\ExecutionBudgetaireManageDetailView.xaml.cs">
+			<DependentUpon>ExecutionBudgetaireManageDetailView.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\ParametreManageView.xaml.cs">
+			<DependentUpon>ParametreManageView.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\ReinitilaiserView.xaml.cs">
+			<DependentUpon>ReinitilaiserView.xaml</DependentUpon>
+		</Compile>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="Views\BudgetManageView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\BudgetView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\ExecutionBudgetaireDetailView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\ExecutionBudgetaireManageDetailView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\ExecutionBudgetaireManageView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\BudgetDetailManageView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\BudgetDetailView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\LigneBudgetaireManageView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\LigneBudgetaireView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\ModePaiementManageView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\ModePaiementView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\ParametreManageView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\PopUpMenuView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\ReinitilaiserView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\StatistiqueManageView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\TableauBordManageView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
+		<MauiXaml Update="Views\BudgetManageView.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\BudgetView.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\ExecutionBudgetaireDetailView.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\ExecutionBudgetaireManageDetailView.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\ExecutionBudgetaireManageView.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\BudgetDetailManageView.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\BudgetDetailView.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\LigneBudgetaireManageView.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\LigneBudgetaireView.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\ModePaiementManageView.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\ModePaiementView.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\ParametreManageView.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\PopUpMenuView.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\ReinitilaiserView.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\StatistiqueManageView.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\TableauBordManageView.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 	</ItemGroup>
 
 </Project>
