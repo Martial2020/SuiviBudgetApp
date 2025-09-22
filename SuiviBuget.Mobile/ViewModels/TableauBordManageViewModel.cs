@@ -109,14 +109,17 @@ namespace SuiviBuget.Mobile.ViewModels
             // Charger les données de façon asynchrone
             var ligneBudgetaire = await _service.GetBudgetDetailItems(budget.CodeBudget, "");
 
+            if (budget.MontantBudget == 0) return;
+            
             // Créer un tableau ChartEntry à partir de la liste
             Entries = ligneBudgetaire.Select(l => new ChartEntry((float)l.Montant)
             {
                 Label = l.LibelleLigneBudgetaire, // ou l.CodeLigneBudgetaire selon ton besoin
-                //ValueLabel = $"{Math.Round((l.Montant / budget.MontantBudget) * 100)}%",
-                ValueLabel = "",
+                ValueLabel = ligneBudgetaire.Count <= 15 ? $"{Math.Round((l.Montant / budget.MontantBudget) * 100)}%" : "",
+                //ValueLabel = "",
                 //Color = SKColor.Parse("#FF0000")
-                Color = SKColor.Parse("#FF6347")
+                Color = SKColor.Parse(Helper.GetNextColor())
+                //Color = SKColor.Parse("#FF6347")
             }).ToArray();
 
             //// Créer le graphique
@@ -129,8 +132,8 @@ namespace SuiviBuget.Mobile.ViewModels
             };
         }
 
-       
-          
+
+
         private void ResetAppMessage()
         {
             WeakReferenceMessenger.Default.Register<ResetAppMessage>(this, (r, m) =>

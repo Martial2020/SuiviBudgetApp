@@ -14,6 +14,8 @@ namespace SuiviBudget.Mobile.Constants
         public const string Edit = "Edit";
         public const string Delete = "Delete";
         public const string Read = "Read";
+        public const string CodeTousLesBudgets = "BG-000";
+        
     }
 
     public static class StatutBudgetConst

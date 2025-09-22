@@ -273,12 +273,12 @@ namespace SuiviBuget.Mobile.Services
                 if (getBudget == null)
                     return false; // Ligne non trouvée
                 getBudget.CodeBudget = budget.CodeBudget;
-                getBudget.DateCreationBudget = budget.DateCreationBudget;
+                //getBudget.DateCreationBudget = budget.DateCreationBudget;
                 getBudget.DateDebutBudget = budget.DateDebutBudget;
                 getBudget.DateFinBudget = budget.DateFinBudget;
                 getBudget.LibelleBudget = budget.LibelleBudget;
-                getBudget.MontantBudget = budget.MontantBudget;
-                getBudget.NbreLigneBudgetaire = budget.NbreLigneBudgetaire;
+                //getBudget.MontantBudget = budget.MontantBudget;
+                //getBudget.NbreLigneBudgetaire = budget.NbreLigneBudgetaire;
                 getBudget.StatutBudget = budget.StatutBudget;
                 await _db.UpdateAsync(getBudget);
                 return true;
@@ -375,7 +375,7 @@ namespace SuiviBuget.Mobile.Services
                         MontantRestant = budgetItem.MontantBudget - budgetItem.MontantUtilise
 
                     })
-                    .OrderBy(x => x.LibelleBudget)
+                    .OrderByDescending(x => x.DateCreationBudget)
                     .ToList();
             }
             catch (Exception ex)
@@ -414,7 +414,7 @@ namespace SuiviBuget.Mobile.Services
                         MontantUtilise = budgetItem.MontantUtilise,
                         MontantRestant = budgetItem.MontantRestant
                     })
-                    .OrderBy(x => x.LibelleBudget)
+                    .OrderByDescending(x => x.DateCreationBudget)
                     .ToList();
             }
             catch (Exception ex)
@@ -780,18 +780,124 @@ namespace SuiviBuget.Mobile.Services
         }
         #endregion
 
+        #region Statistiques
+        public async Task<List<GrapheModel>> GetConsommationByLigneBudgetaire(DateTime dateDebut, DateTime dateFin, string codeBudget)
+        {
+            List<Budget> budgets;
+            var startDate = dateDebut.Date;          // 00:00:00 du jour
+            var endDate = dateFin.Date.AddDays(1); // 00:00:00 du jour suivant
+            bool isAll = codeBudget == GlobalConst.CodeTousLesBudgets ? true : false;
+
+            if (!isAll) // si on a fourni un code
+                budgets = await _db.Table<Budget>().Where(x => x.CodeBudget == codeBudget).ToListAsync();
+
+            else // sinon on filtre par période
+                budgets = await _db.Table<Budget>().Where(x => x.DateDebutBudget >= startDate && x.DateDebutBudget < endDate).ToListAsync();
+
+
+            if (budgets.Count == 0) return null;
+
+            // recupere le code des budgets concerné
+            var budgetCodes = budgets.Select(b => b.CodeBudget).ToList();
+
+            var budgetDetails = await _db.Table<BudgetDetail>()
+                .Where(d => budgetCodes.Contains(d.CodeBudget)).ToListAsync();
+
+            // Groupement par ligne budgétaire 
+            var groupedDetails = budgetDetails
+                .GroupBy(d => new { d.CodeLigneBudgetaire })
+                .Select(g => new GrapheModel
+                {
+                    LigneBudgetaire = g.Key.CodeLigneBudgetaire,
+                    MontantLigneBudgetaire = (float)g.Sum(x => x.Montant),
+                }).ToList();
+
+            // Groupement par ligne budgétaire des depenses
+            var ligneCodes = groupedDetails.Select(b => b.LigneBudgetaire).ToList();
+
+            var depenses = await _db.Table<ExecutionBudgetaire>()
+           .Where(d => ligneCodes.Contains(d.CodeLigneBudgetaire) && budgetCodes.Contains(d.CodeBudget)).ToListAsync();
+
+            if (depenses.Count == 0) return null;
+
+            var groupedDepense = depenses
+               .GroupBy(d => new { d.CodeLigneBudgetaire })
+               .Select(g => new GrapheModel
+               {
+                   LigneBudgetaire = g.Key.CodeLigneBudgetaire,
+                   MontantLigneUtilise = (float)g.Sum(x => x.Montant),
+               }).ToList();
+
+            var ligneTable = await GetLigneBudgetaireItems("");
+
+            var result = (from d in groupedDetails
+                          join e in groupedDepense on d.LigneBudgetaire equals e.LigneBudgetaire
+                          join l in ligneTable on d.LigneBudgetaire equals l.CodeLigneBudgetaire
+
+                          select new GrapheModel
+                          {
+                              MontantLigneUtilise = e.MontantLigneUtilise,
+                              LigneBudgetaire = l.LibelleLigneBudgetaire,
+                              MontantLigneBudgetaire = d.MontantLigneBudgetaire
+                          })
+                          .ToList();
+
+            return result;
+        }
+        
+         public async Task<List<BudgetManageModel>> GetBudgetItems(DateTime dateDebut, DateTime dateFin, string codeBudget)
+        {
+            try
+            {
+                List<Budget> budgets;
+                var startDate = dateDebut.Date;          // 00:00:00 du jour
+                var endDate = dateFin.Date.AddDays(1); // 00:00:00 du jour suivant
+                bool isAll = codeBudget == GlobalConst.CodeTousLesBudgets ? true : false;
+
+                if (!isAll) // si on a fourni un code
+                    budgets = await _db.Table<Budget>().Where(x => x.CodeBudget == codeBudget).ToListAsync();
+
+                else // sinon on filtre par période
+                    budgets = await _db.Table<Budget>().Where(x => x.DateDebutBudget >= startDate && x.DateDebutBudget < endDate).ToListAsync();
+
+                // Sélectionner les 5 budgets les plus chers
+          
+                   
+                return budgets
+                    .Select(budgetItem => new BudgetManageModel
+                    {
+                        CodeBudget = budgetItem.CodeBudget,
+                        DateCreationBudget = budgetItem.DateCreationBudget,
+                        DateDebutBudget = budgetItem.DateDebutBudget,
+                        DateFinBudget = budgetItem.DateFinBudget,
+                        DescriptionBudget = budgetItem.DescriptionBudget,
+                        LibelleBudget = budgetItem.LibelleBudget,
+                        MontantBudget = budgetItem.MontantBudget,
+                        NbreLigneBudgetaire = budgetItem.NbreLigneBudgetaire,
+                        StatutBudget = budgetItem.StatutBudget,
+                        MontantUtilise = budgetItem.MontantUtilise,
+                        MontantRestant = budgetItem.MontantBudget - budgetItem.MontantUtilise
+
+                    }).Take(7).OrderByDescending(b => b.MontantBudget).ToList();
+
+
+
+            }
+            catch (Exception ex)
+            {
+                // Log erreur (peut-être un fichier ou un service de journalisation)
+                Console.WriteLine($"Erreur lors de la récupération des lignes budgétaires: {ex.Message}");
+                return new List<BudgetManageModel>();
+            }
+        }
+
+        #endregion
+
         #region Other Functions
         public async void ReinitialiseApp()
         {
             try
             {
-                //_db.CreateTableAsync<ModePaiement>().Wait();
-                //_db.CreateTableAsync<LigneBudgetaire>().Wait();
-                //_db.CreateTableAsync<Budget>().Wait();
-                //_db.CreateTableAsync<ParametreCompteur>().Wait();
-                //_db.CreateTableAsync<BudgetDetail>().Wait();
-                //_db.CreateTableAsync<ExecutionBudgetaire>().Wait();
-
                 _db.DeleteAllAsync<ExecutionBudgetaire>().Wait();
                 _db.DeleteAllAsync<BudgetDetail>().Wait();
                 _db.DeleteAllAsync<BudgetDetail>().Wait();
@@ -834,6 +940,7 @@ namespace SuiviBuget.Mobile.Services
             budget.NbreLigneBudgetaire = ligneBudgetaire.Count();
             var isUpdate = await UpdateBudgetAsync(budget);
         }
+
         #endregion
     }
 }

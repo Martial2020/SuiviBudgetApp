@@ -116,7 +116,7 @@ namespace SuiviBudge.Validators
             if (getBudget == null)
                 return (false, "Le budget à supprimer n'existe pas dans la base de donnée");
 
-            var execution = adminService.GetExecutionBudgetaireDetailsItems(budget.CodeBudget,string.Empty);
+            var execution = adminService.GetExecutionBudgetaireDetailsItems(budget.CodeBudget, string.Empty);
             if (execution != null)
                 return (false, "Impossible de supprimer car le budget est encours d'utilisation");
 
@@ -171,7 +171,7 @@ namespace SuiviBudge.Validators
                 return (false, "Aucune donnée disponible pour la suppression de l'allocation du budgétaire");
 
 
-            var getLigne = await adminService.GetExecutionBudgetaireDetailsByBudgetDetail(ligneBugetaire.CodeBudget,ligneBugetaire.CodeLigneBudgetaire);
+            var getLigne = await adminService.GetExecutionBudgetaireDetailsByBudgetDetail(ligneBugetaire.CodeBudget, ligneBugetaire.CodeLigneBudgetaire);
             if (getLigne != null)
                 return (false, $"Impossible de supprimer, ce detail du budget {ligneBugetaire.CodeBudget} a dejà fait l'objet d'une exécution budgetaire");
 
@@ -276,6 +276,20 @@ namespace SuiviBudge.Validators
                 return (false, "L'element à supprimer n'existe pas dans la base de donnée");
 
             return (true, string.Empty);
+        }
+        #endregion
+
+        #region Statistiques
+        public static async Task<(bool isSuccess, string message)> ValidateRechercheAsync(DateTime dateDebut, DateTime dateFin, BudgetManageModel budget)
+        {
+            if (dateDebut == DateTime.MinValue || dateFin == DateTime.MinValue)
+                return (false, "Date saisie est invalide.");
+
+            if (dateDebut > dateFin)
+                return (false, "Période definie est incorrecte.");
+
+            return (true, string.Empty);
+
         }
         #endregion
     }

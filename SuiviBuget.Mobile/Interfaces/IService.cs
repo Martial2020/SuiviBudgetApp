@@ -11,7 +11,9 @@ namespace SuiviBudget.Mobile.Interfaces
 {
     public interface IServices
     {
+        Task<List<GrapheModel>> GetConsommationByLigneBudgetaire(DateTime dateDebut, DateTime dateFin, string codeBudget);
         void ReinitialiseApp();
+        Task<List<BudgetManageModel>> GetBudgetItems(DateTime dateDebut, DateTime dateFin, string codeBudget);
         Task<string> GetNumeroForCodeEntityAsync(string codeParametre);
         #region Ligne budgetaire
         Task<List<LigneBudgetaireModel>> GetLigneBudgetaireItems(string searchText);

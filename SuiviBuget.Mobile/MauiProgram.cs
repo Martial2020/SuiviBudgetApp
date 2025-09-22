@@ -27,9 +27,7 @@ namespace SuiviBuget.Mobile
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
-
             // autres configurations...
-
             // Enregistrement des services ou ViewModels
             builder.Services.AddSingleton<AppShellViewModel>();
             builder.Services.AddSingleton<PopUpMenuViewModel>();

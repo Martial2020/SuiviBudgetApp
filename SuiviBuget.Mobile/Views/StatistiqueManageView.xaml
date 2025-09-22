@@ -3,17 +3,103 @@
     x:Class="SuiviBuget.Mobile.Views.StatistiqueManageView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:microcharts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
+    xmlns:viewModels="clr-namespace:SuiviBuget.Mobile.ViewModels;assembly=SuiviBuget.Mobile"
     Title="Statistiques">
-    <VerticalStackLayout VerticalOptions="Center">
-        <ActivityIndicator
-            AbsoluteLayout.LayoutBounds="0.5,0.5,50,50"
-            AbsoluteLayout.LayoutFlags="PositionProportional"
-            HeightRequest="50"
-            HorizontalOptions="Center"
-            IsRunning="True"
-            IsVisible="True"
-            VerticalOptions="Center"
-            WidthRequest="50"
-            Color="DodgerBlue" />
-    </VerticalStackLayout>
+
+    <!--  Liaison du ViewModel à la page  -->
+    <ContentPage.BindingContext>
+        <viewModels:StatistiqueManageViewModel />
+    </ContentPage.BindingContext>
+    <ScrollView>
+        <VerticalStackLayout Padding="15" Spacing="20">
+
+            <!--  Filtres par période et budget  -->
+            <!--  Filtres par période  -->
+            <Frame
+                Padding="10"
+                BorderColor="LightGray"
+                CornerRadius="10"
+                HasShadow="True">
+                <VerticalStackLayout>
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="Medium"
+                        Text="📅 Critères de recherche" />
+                    <DatePicker x:Name="StartDatePicker" Date="{Binding DateDebut, Mode=TwoWay}" />
+                    <DatePicker x:Name="EndDatePicker" Date="{Binding DateFin, Mode=TwoWay}" />
+                    <!--  Budget  -->
+                    <Picker
+                        Title="Sélectionnez un budget"
+                        ItemDisplayBinding="{Binding LibelleBudget, Mode=TwoWay}"
+                        ItemsSource="{Binding BudgetItems, Mode=TwoWay}"
+                        SelectedItem="{Binding SelectedBudget, Mode=TwoWay}" />
+                    <Button
+                        BackgroundColor="#FF7F50"
+                        Command="{Binding SubmitCommand}"
+                        CornerRadius="8"
+                        Text="🔍 Réchercher"
+                        TextColor="White" />
+
+                </VerticalStackLayout>
+
+            </Frame>
+
+            <!--  Bloc 3 : Courbe évolution  -->
+            <Frame
+                Padding="10"
+                BorderColor="LightGray"
+                CornerRadius="10"
+                HasShadow="True">
+                <VerticalStackLayout Spacing="10">
+                    <Label FontAttributes="Bold" Text="📈 Top 7 des budgets par valeurs en FCFA" />
+                    <!--  Graphique  -->
+                    <microcharts:ChartView Chart="{Binding Chart}" HeightRequest="300" />
+                </VerticalStackLayout>
+            </Frame>
+
+
+            <!--  Bloc : Consommation par ligne budgétaire  -->
+            <Frame
+                Padding="10"
+                BorderColor="LightGray"
+                CornerRadius="10">
+                <VerticalStackLayout>
+                    <Label FontAttributes="Bold" Text="📊 Consommation par type de depense" />
+                    <!--  DonutChart  -->
+                    <microcharts:ChartView Chart="{Binding TopDepensesChart}" HeightRequest="250" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!--  Bloc 2 : Dépassements  -->
+            <Frame
+                Padding="10"
+                BorderColor="LightGray"
+                CornerRadius="10"
+                HasShadow="True">
+                <VerticalStackLayout>
+                    <Label FontAttributes="Bold" Text="🚨 Dépassements par type" />
+
+                    <CollectionView Margin="10" ItemsSource="{Binding DepassementsItems}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid ColumnDefinitions="2*,1*,1*,1*">
+                                    <Label Text="{Binding LigneBudgetaire}" />
+                                    <Label Grid.Column="1" Text="{Binding MontantLigneBudgetaire}" />
+                                    <Label Grid.Column="2" Text="{Binding MontantLigneUtilise}" />
+                                    <Label
+                                        Grid.Column="3"
+                                        Text="{Binding Depassement}"
+                                        TextColor="Red" />
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                </VerticalStackLayout>
+            </Frame>
+
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
