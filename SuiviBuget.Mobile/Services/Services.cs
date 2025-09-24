@@ -270,7 +270,7 @@ namespace SuiviBuget.Mobile.Services
                 var getBudget = await _db.Table<Budget>()
                     .FirstOrDefaultAsync(x => x.CodeBudget == budget.CodeBudget);
 
-               if (getBudget == null)
+                if (getBudget == null)
                     return false; // Ligne non trouvée
                 getBudget.CodeBudget = budget.CodeBudget;
                 //getBudget.DateCreationBudget = budget.DateCreationBudget;
@@ -725,7 +725,7 @@ namespace SuiviBuget.Mobile.Services
                                  CodeBudget = e.CodeBudget,
                                  Description = e.Description,
                                  LibelleBudget = b.LibelleBudget
-                             }).OrderByDescending(x=>x.DateExecution).ToList();
+                             }).OrderByDescending(x => x.DateExecution).ToList();
                 return query;
             }
             catch (Exception ex)
@@ -780,21 +780,8 @@ namespace SuiviBuget.Mobile.Services
         #endregion
 
         #region Statistiques
-        public async Task<List<GrapheModel>> GetConsommationByLigneBudgetaire(DateTime dateDebut, DateTime dateFin, string codeBudget)
+        public async Task<List<GrapheModel>> GetConsommationByLigneBudgetaire(List<Budget> budgets)
         {
-            List<Budget> budgets;
-            var startDate = dateDebut.Date;          // 00:00:00 du jour
-            var endDate = dateFin.Date.AddDays(1); // 00:00:00 du jour suivant
-            bool isAll = codeBudget == GlobalConst.CodeTousLesBudgets ? true : false;
-
-            if (!isAll) // si on a fourni un code
-                budgets = await _db.Table<Budget>().Where(x => x.CodeBudget == codeBudget).ToListAsync();
-
-            else // sinon on filtre par période
-                budgets = await _db.Table<Budget>().Where(x => x.DateDebutBudget >= startDate && x.DateDebutBudget < endDate).ToListAsync();
-
-
-            if (budgets.Count == 0) return null;
 
             // recupere le code des budgets concerné
             var budgetCodes = budgets.Select(b => b.CodeBudget).ToList();
@@ -843,8 +830,8 @@ namespace SuiviBuget.Mobile.Services
 
             return result;
         }
-        
-         public async Task<List<BudgetManageModel>> GetBudgetItems(DateTime dateDebut, DateTime dateFin, string codeBudget)
+
+        public async Task<List<Budget>> GetBudgetItems(DateTime dateDebut, DateTime dateFin, string codeBudget)
         {
             try
             {
@@ -857,36 +844,17 @@ namespace SuiviBuget.Mobile.Services
                     budgets = await _db.Table<Budget>().Where(x => x.CodeBudget == codeBudget).ToListAsync();
 
                 else // sinon on filtre par période
-                    budgets = await _db.Table<Budget>().Where(x => x.DateDebutBudget >= startDate && x.DateDebutBudget < endDate).ToListAsync();
-
-                // Sélectionner les 5 budgets les plus chers
-          
-                   
-                return budgets
-                    .Select(budgetItem => new BudgetManageModel
-                    {
-                        CodeBudget = budgetItem.CodeBudget,
-                        DateCreationBudget = budgetItem.DateCreationBudget,
-                        DateDebutBudget = budgetItem.DateDebutBudget,
-                        DateFinBudget = budgetItem.DateFinBudget,
-                        DescriptionBudget = budgetItem.DescriptionBudget,
-                        LibelleBudget = budgetItem.LibelleBudget,
-                        MontantBudget = budgetItem.MontantBudget,
-                        NbreLigneBudgetaire = budgetItem.NbreLigneBudgetaire,
-                        StatutBudget = budgetItem.StatutBudget,
-                        MontantUtilise = budgetItem.MontantUtilise,
-                        MontantRestant = budgetItem.MontantBudget - budgetItem.MontantUtilise
-
-                    }).Take(7).OrderByDescending(b => b.MontantBudget).ToList();
+                    budgets = await _db.Table<Budget>().Where(x => x.DateDebutBudget >= startDate && x.DateDebutBudget < endDate && x.NbreLigneBudgetaire > 0).ToListAsync();
 
 
+                return budgets;
 
             }
             catch (Exception ex)
             {
                 // Log erreur (peut-être un fichier ou un service de journalisation)
                 Console.WriteLine($"Erreur lors de la récupération des lignes budgétaires: {ex.Message}");
-                return new List<BudgetManageModel>();
+                return new List<Budget>();
             }
         }
 

@@ -14,10 +14,12 @@ using SkiaSharp;
 using SuiviBudge.Validators;
 using SuiviBudget.Mobile.Constants;
 using SuiviBudget.Mobile.Interfaces;
+using SuiviBudget.Services.DataAccess;
 using SuiviBuget.Mobile.Helpers;
 using SuiviBuget.Mobile.Interfaces;
 using SuiviBuget.Mobile.Models;
 using SuiviBuget.Mobile.Services;
+using static SQLite.SQLite3;
 using static SuiviBuget.Mobile.Messages.Messages;
 
 namespace SuiviBuget.Mobile.ViewModels
@@ -41,6 +43,12 @@ namespace SuiviBuget.Mobile.ViewModels
 
         [ObservableProperty]
         public Chart chart;
+
+        [ObservableProperty]
+        private string rechercherLabel = "🔍 Réchercher";
+
+        [ObservableProperty]
+        private bool isEnabled = true; // génère public bool IsEnabled { get; set; }
 
 
         private BudgetManageModel _selectedBudget;
@@ -83,7 +91,7 @@ namespace SuiviBuget.Mobile.ViewModels
             string dbPath = Helper.GetDatabaseFullPath();
             _service = new Services.Services(dbPath);
             _alertService = new AlertService();
-            SubmitCommand = new RelayCommand(OnSubmitCommand);
+            SubmitCommand = new AsyncRelayCommand(OnSubmitCommand);
             LoadBudgetAsync();
             RegisterMessenger();
         }
@@ -102,6 +110,7 @@ namespace SuiviBuget.Mobile.ViewModels
             BudgetItems = new ObservableCollection<BudgetManageModel>();
             BudgetItems.Clear();
             var budgets = await _service.GetBudgetItemsByStatus("", statuts);
+            budgets = budgets.Where(x => x.NbreLigneBudgetaire > 0).ToList();
 
             BudgetItems = new ObservableCollection<BudgetManageModel>(
                 budgets
@@ -139,29 +148,39 @@ namespace SuiviBuget.Mobile.ViewModels
 
 
         }
-        private async void OnSubmitCommand()
+        private async Task OnSubmitCommand()
         {
             try
             {
+                RechercherLabel = "🔍 Réchercher en cours ...";
+                IsEnabled = false;
                 var result = await Validator.ValidateRechercheAsync(DateDebut, DateFin, SelectedBudget);
                 if (!result.isSuccess)
                 {
                     await _alertService.ShowAlertAsync("Erreur", result.message);
+                    RechercherLabel = "🔍 Réchercher";
+                    IsEnabled = true;
                     return;
                 }
-                ClassementBudgetAsync();
-                LoadChart();
+                await ClassementBudgetAsync();
+                RechercherLabel = "🔍 Réchercher";
+                IsEnabled = true;
+
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                await _alertService.ShowAlertAsync("Exception", ex.Message);
+                RechercherLabel = "🔍 Réchercher";
+                IsEnabled = true;
+
             }
+            return;
         }
 
-        private async void LoadChart()
+        private async Task LoadChart(List<Budget> datas)
         {
-            var resultat = await _service.GetConsommationByLigneBudgetaire(DateDebut, DateFin, SelectedBudget.CodeBudget);
+            var resultat = await _service.GetConsommationByLigneBudgetaire(datas);
             if (resultat == null)
             {
                 //await _alertService.ShowAlertAsync("Information", "Aucun resultat disponible pour ce critère !!!");
@@ -200,15 +219,24 @@ namespace SuiviBuget.Mobile.ViewModels
   );
         }
 
-        public async void ClassementBudgetAsync()
+        public async Task ClassementBudgetAsync()
         {
             // Charger les données de façon asynchrone
             var budgets = await _service.GetBudgetItems(DateDebut, DateFin, SelectedBudget.CodeBudget);
+            if (!budgets.Any())
+            {
+                await _alertService.ShowAlertAsync("Erreur", "Aucune donnée disponible pour ce critère.");
 
-            if (budgets.Count() == 0) return;
+                // Laisser Chart = null quand il n’y a pas de données
+                Chart = null;
+                TopDepensesChart = null;
+                DepassementsItems = new ObservableCollection<GrapheModel>();
+                return;
+            }
 
+            var classement = budgets.Take(7).ToList();
             // Créer un tableau ChartEntry à partir de la liste
-            Entries = budgets.Select(l => new ChartEntry((float)l.MontantBudget)
+            Entries = classement.Select(l => new ChartEntry((float)l.MontantBudget)
             {
                 Label = l.LibelleBudget, // ou l.CodeLigneBudgetaire selon ton besoin
                 ValueLabel = l.MontantBudget.ToString("N0", CultureInfo.InvariantCulture).Replace(",", " "),
@@ -226,7 +254,12 @@ namespace SuiviBuget.Mobile.ViewModels
                 ValueLabelOrientation = Orientation.Horizontal,
                 BackgroundColor = SKColors.White
             };
+
+            await LoadChart(budgets);
+
         }
+
+
 
 
     }

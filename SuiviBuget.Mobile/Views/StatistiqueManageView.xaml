@@ -38,7 +38,8 @@
                         BackgroundColor="#FF7F50"
                         Command="{Binding SubmitCommand}"
                         CornerRadius="8"
-                        Text="🔍 Réchercher"
+                        IsEnabled="{Binding IsEnabled}"
+                        Text="{Binding RechercherLabel}"
                         TextColor="White" />
 
                 </VerticalStackLayout>
