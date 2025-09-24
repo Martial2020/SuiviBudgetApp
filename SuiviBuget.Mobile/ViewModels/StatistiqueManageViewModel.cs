@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using Microcharts;
 using SkiaSharp;
 using SuiviBudge.Validators;
@@ -17,6 +18,7 @@ using SuiviBuget.Mobile.Helpers;
 using SuiviBuget.Mobile.Interfaces;
 using SuiviBuget.Mobile.Models;
 using SuiviBuget.Mobile.Services;
+using static SuiviBuget.Mobile.Messages.Messages;
 
 namespace SuiviBuget.Mobile.ViewModels
 {
@@ -83,6 +85,15 @@ namespace SuiviBuget.Mobile.ViewModels
             _alertService = new AlertService();
             SubmitCommand = new RelayCommand(OnSubmitCommand);
             LoadBudgetAsync();
+            RegisterMessenger();
+        }
+
+        private void RegisterMessenger()
+        {
+            WeakReferenceMessenger.Default.Register<RefreshList>(this, async (r, m) =>
+            {
+                LoadBudgetAsync();
+            });
         }
 
         private async void LoadBudgetAsync()
@@ -138,10 +149,8 @@ namespace SuiviBuget.Mobile.ViewModels
                     await _alertService.ShowAlertAsync("Erreur", result.message);
                     return;
                 }
-
-                LoadChart();
                 ClassementBudgetAsync();
-
+                LoadChart();
             }
             catch (Exception)
             {
@@ -155,7 +164,7 @@ namespace SuiviBuget.Mobile.ViewModels
             var resultat = await _service.GetConsommationByLigneBudgetaire(DateDebut, DateFin, SelectedBudget.CodeBudget);
             if (resultat == null)
             {
-                await _alertService.ShowAlertAsync("Information", "Aucun resultat disponible pour ce critère !!!");
+                //await _alertService.ShowAlertAsync("Information", "Aucun resultat disponible pour ce critère !!!");
                 return;
             }
 

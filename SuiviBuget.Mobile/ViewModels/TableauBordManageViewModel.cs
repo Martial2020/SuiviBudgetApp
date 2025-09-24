@@ -250,14 +250,14 @@ namespace SuiviBuget.Mobile.ViewModels
                         {
                             var nouvelItem = new ExecutionBudgetaireDetailManageModel
                             {
-                                DateExecution = DateTime.Now,
+                                DateExecution =DateTime.Now,
                                 ExecutionBudgetaireID = Guid.NewGuid(),
                                 LibelleLigneBudgetaire = item.LibelleLigneBudgetaire,
                                 ModePaiement = "Cash",
                                 Montant = Math.Abs(difference),
                                 CodeBudget = item.CodeBudget,
                                 CodeLigneBudgetaire = item.CodeLigneBudgetaire,
-                                Description = "Dépassement transport",
+                                Description = "",
                                 LibelleBudget = "",
                             };
                             // Ajouter à la collection

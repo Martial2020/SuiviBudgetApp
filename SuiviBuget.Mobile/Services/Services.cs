@@ -270,7 +270,7 @@ namespace SuiviBuget.Mobile.Services
                 var getBudget = await _db.Table<Budget>()
                     .FirstOrDefaultAsync(x => x.CodeBudget == budget.CodeBudget);
 
-                if (getBudget == null)
+               if (getBudget == null)
                     return false; // Ligne non trouvée
                 getBudget.CodeBudget = budget.CodeBudget;
                 //getBudget.DateCreationBudget = budget.DateCreationBudget;
@@ -725,8 +725,7 @@ namespace SuiviBuget.Mobile.Services
                                  CodeBudget = e.CodeBudget,
                                  Description = e.Description,
                                  LibelleBudget = b.LibelleBudget
-                             }).ToList();
-
+                             }).OrderByDescending(x=>x.DateExecution).ToList();
                 return query;
             }
             catch (Exception ex)
