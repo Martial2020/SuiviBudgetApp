@@ -41,6 +41,13 @@ namespace SuiviBuget.Mobile.ViewModels
         [ObservableProperty]
         public Chart chart;
 
+        [ObservableProperty]
+        public decimal totalDepassement;
+
+        [ObservableProperty]
+        private decimal totalDepense;
+
+
         private BudgetManageModel _selectedBudget;
         public BudgetManageModel SelectedBudget
         {
@@ -110,7 +117,7 @@ namespace SuiviBuget.Mobile.ViewModels
             var ligneBudgetaire = await _service.GetBudgetDetailItems(budget.CodeBudget, "");
 
             if (budget.MontantBudget == 0) return;
-            
+
             // Créer un tableau ChartEntry à partir de la liste
             Entries = ligneBudgetaire.Select(l => new ChartEntry((float)l.Montant)
             {
@@ -219,6 +226,8 @@ namespace SuiviBuget.Mobile.ViewModels
                         LibelleBudget = x.LibelleBudget
                     })
                 );
+
+                TotalDepense = ExecutionBudgetaireItems.Sum(x => x.Montant);
             }
             catch (Exception ex)
             {
@@ -250,7 +259,7 @@ namespace SuiviBuget.Mobile.ViewModels
                         {
                             var nouvelItem = new ExecutionBudgetaireDetailManageModel
                             {
-                                DateExecution =DateTime.Now,
+                                DateExecution = DateTime.Now,
                                 ExecutionBudgetaireID = Guid.NewGuid(),
                                 LibelleLigneBudgetaire = item.LibelleLigneBudgetaire,
                                 ModePaiement = "Cash",
@@ -264,13 +273,10 @@ namespace SuiviBuget.Mobile.ViewModels
                             DepassementItems.Add(nouvelItem);
                         }
                     }
-
-
-
                 }
                 DepassementItems = new ObservableCollection<ExecutionBudgetaireDetailManageModel>(
   DepassementItems.GroupBy(x => new { x.CodeBudget, x.CodeLigneBudgetaire }).Select(g => g.First()));
-
+                TotalDepassement = DepassementItems.Sum(x => x.Montant);
             }
             catch (Exception ex)
             {

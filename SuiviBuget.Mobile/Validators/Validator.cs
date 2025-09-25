@@ -92,7 +92,7 @@ namespace SuiviBudge.Validators
 
             return (true, string.Empty);
         }
-        public static (bool isSuccess, string message) ValidateBudgetDelete(BudgetModel budget)
+        public static (bool isSuccess, string message) ValidateBudgetUpdate(BudgetModel budget)
         {
 
             if (budget == null)

@@ -68,7 +68,7 @@
                 <VerticalStackLayout>
                     <Label FontAttributes="Bold" Text="📊 Consommation par type de depense" />
                     <!--  DonutChart  -->
-                    <microcharts:ChartView Chart="{Binding TopDepensesChart}" HeightRequest="250" />
+                    <microcharts:ChartView Chart="{Binding TopDepensesChart}" HeightRequest="300" />
                 </VerticalStackLayout>
             </Frame>
 
@@ -79,8 +79,23 @@
                 CornerRadius="10"
                 HasShadow="True">
                 <VerticalStackLayout>
-                    <Label FontAttributes="Bold" Text="🚨 Dépassements par type" />
+                    <Grid ColumnDefinitions="*,Auto">
 
+                        <Label
+                            Grid.Column="0"
+                            FontAttributes="Bold"
+                            FontSize="14"
+                            HorizontalOptions="Start"
+                            Text="🚨 Dépassements par type :"
+                            TextColor="Black" />
+                        <Label
+                            Grid.Column="1"
+                            FontAttributes="Bold"
+                            FontSize="14"
+                            HorizontalOptions="End"
+                            Text="{Binding TotalDepassement, StringFormat='{0:N0} FCFA'}"
+                            TextColor="Black" />
+                    </Grid>
                     <CollectionView Margin="10" ItemsSource="{Binding DepassementsItems}">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>

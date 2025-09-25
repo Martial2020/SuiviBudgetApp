@@ -94,6 +94,15 @@ namespace SuiviBuget.Mobile.ViewModels
             _alertService = new AlertService();
             _ = LoadLigneBudgetaireAsync("");
             SubmitCommand = new RelayCommand(OnSubmitCommand);
+            RegisterMessenger();
+        }
+
+        private void RegisterMessenger()
+        {
+            WeakReferenceMessenger.Default.Register<RefreshList>(this, async (r, m) =>
+            {
+                _ = LoadLigneBudgetaireAsync("");
+            });
         }
 
         private async Task<LigneBudgetaireModel> GetLigneBudgetaireByCodeAsync(string codeLine)

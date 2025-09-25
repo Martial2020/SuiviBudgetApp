@@ -17,6 +17,7 @@ namespace SuiviBuget.Mobile.Models
         public string LibelleBudget { get; set; }
         public string Description { get; set; }
         public DateTime DateExecution { get; set; }
+        public DateTime DateCreation { get; set; }
 
     }
 }

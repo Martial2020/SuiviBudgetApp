@@ -724,8 +724,9 @@ namespace SuiviBuget.Mobile.Services
                                  CodeLigneBudgetaire = l.CodeLigneBudgetaire,
                                  CodeBudget = e.CodeBudget,
                                  Description = e.Description,
-                                 LibelleBudget = b.LibelleBudget
-                             }).OrderByDescending(x => x.DateExecution).ToList();
+                                 LibelleBudget = b.LibelleBudget,
+                                 DateCreation=e.DateCreation
+                             }).OrderByDescending(x => x.DateCreation).ToList();
                 return query;
             }
             catch (Exception ex)

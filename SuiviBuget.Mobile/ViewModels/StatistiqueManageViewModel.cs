@@ -45,6 +45,9 @@ namespace SuiviBuget.Mobile.ViewModels
         public Chart chart;
 
         [ObservableProperty]
+        public Decimal totalDepassement;
+
+        [ObservableProperty]
         private string rechercherLabel = "🔍 Réchercher";
 
         [ObservableProperty]
@@ -146,7 +149,6 @@ namespace SuiviBuget.Mobile.ViewModels
             if (BudgetItems.Count > 0)
                 SelectedBudget = BudgetItems.FirstOrDefault(b => b.CodeBudget == GlobalConst.CodeTousLesBudgets);
 
-
         }
         private async Task OnSubmitCommand()
         {
@@ -198,7 +200,7 @@ namespace SuiviBuget.Mobile.ViewModels
             {
                 Entries = entries,
                 HoleRadius = 0.5f,
-                LabelTextSize = 30
+                LabelTextSize = 26
             };
 
             Depassements(resultat);
@@ -213,12 +215,12 @@ namespace SuiviBuget.Mobile.ViewModels
                 MontantLigneBudgetaire = x.MontantLigneBudgetaire,
                 MontantLigneUtilise = x.MontantLigneUtilise,
                 Depassement = x.MontantLigneBudgetaire - x.MontantLigneUtilise
-            }).Where(g => g.Depassement < 0).OrderBy(d => d.LigneBudgetaire) // garde uniquement les dépassements
+            }).Where(g => g.Depassement < 0).OrderBy(d => d.LigneBudgetaire)); // garde uniquement les dépassements
 
 
-  );
+            TotalDepassement = (decimal)DepassementsItems.Sum(x => x.Depassement);
         }
-
+            
         public async Task ClassementBudgetAsync()
         {
             // Charger les données de façon asynchrone
@@ -254,9 +256,7 @@ namespace SuiviBuget.Mobile.ViewModels
                 ValueLabelOrientation = Orientation.Horizontal,
                 BackgroundColor = SKColors.White
             };
-
             await LoadChart(budgets);
-
         }
 
 

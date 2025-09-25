@@ -14,44 +14,77 @@
     <Grid>
         <!--  Contenu principal  -->
         <ScrollView>
-            <VerticalStackLayout Padding="10" Spacing="25">
+            <VerticalStackLayout Padding="10" Spacing="15">
                 <Picker
                     Title="Sélectionnez un budget"
                     ItemDisplayBinding="{Binding LibelleBudget, Mode=TwoWay}"
                     ItemsSource="{Binding BudgetItems, Mode=TwoWay}"
                     SelectedItem="{Binding SelectedBudget, Mode=TwoWay}" />
-
-                <HorizontalStackLayout
+                <Frame
                     Padding="5"
-                    IsVisible="{Binding IsVisibleBudgetDetail}"
-                    Spacing="8">
+                    BackgroundColor="White"
+                    CornerRadius="15"
+                    HasShadow="True">
+                    <VerticalStackLayout Spacing="10">
+                        <Label
+                            FontAttributes="Bold"
+                            Text="🏦 Information du budget"
+                            TextColor="#2C3E50" />
+                        <Grid
+                            Padding="5"
+                            ColumnDefinitions="Auto,*"
+                            ColumnSpacing="5"
+                            IsVisible="{Binding IsVisibleBudgetDetail}"
+                            RowDefinitions="*,*"
+                            RowSpacing="5">
+                            <!--  Badge Montant  -->
+                            <Frame
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Padding="8,4"
+                                BackgroundColor="AliceBlue"
+                                CornerRadius="12"
+                                HasShadow="True">
+                                <Label Text="{Binding SelectedBudget.MontantBudget, StringFormat='💰 Budget : {0:N0} CFA'}" TextColor="Black" />
+                            </Frame>
+                            <Frame
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Padding="8,4"
+                                BackgroundColor="AliceBlue"
+                                CornerRadius="12"
+                                HasShadow="True">
+                                <Label Text="{Binding SelectedBudget.MontantUtilise, StringFormat='💳 Utilisé : {0:N0} CFA'}" TextColor="Black" />
+                            </Frame>
+                            <Frame
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Padding="8,4"
+                                BackgroundColor="AliceBlue"
+                                CornerRadius="12"
+                                HasShadow="True">
+                                <Label Text="{Binding SelectedBudget.MontantRestant, StringFormat='💵 Reste : {0:N0} CFA'}" TextColor="Black" />
+                            </Frame>
+                            <!--  Badge Période  -->
+                            <Frame
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Padding="8,4"
+                                BackgroundColor="AliceBlue"
+                                CornerRadius="12"
+                                HasShadow="True">
+                                <HorizontalStackLayout
+                                    Grid.Row="1"
+                                    Grid.ColumnSpan="2"
+                                    Spacing="4">
+                                    <Label Text="{Binding SelectedBudget.DateDebutBudget, StringFormat='📅 {0:dd/MM/yyyy}'}" TextColor="Black" />
+                                    <Label Text="{Binding SelectedBudget.DateFinBudget, StringFormat=' - {0:dd/MM/yyyy}'}" TextColor="Black" />
+                                </HorizontalStackLayout>
+                            </Frame>
+                        </Grid>
+                    </VerticalStackLayout>
 
-                    <!--  Badge Montant  -->
-                    <Frame
-                        Padding="8,4"
-                        BackgroundColor="AliceBlue"
-                        CornerRadius="12"
-                        HasShadow="True">
-                        <Label Text="{Binding SelectedBudget.MontantBudget, StringFormat='💰 Budget : {0:N0} CFA'}" TextColor="Black" />
-                    </Frame>
-
-                    <!--  Badge Période  -->
-                    <Frame
-                        Padding="8,4"
-                        BackgroundColor="AliceBlue"
-                        CornerRadius="12"
-                        HasShadow="True">
-                        <HorizontalStackLayout
-                            Grid.Row="1"
-                            Grid.ColumnSpan="2"
-                            HorizontalOptions="Center"
-                            Spacing="4">
-                            <Label Text="{Binding SelectedBudget.DateDebutBudget, StringFormat='📅 {0:dd/MM/yyyy}'}" TextColor="Black" />
-                            <Label Text="{Binding SelectedBudget.DateFinBudget, StringFormat=' - {0:dd/MM/yyyy}'}" TextColor="Black" />
-                        </HorizontalStackLayout>
-                    </Frame>
-
-                </HorizontalStackLayout>
+                </Frame>
 
                 <!--  Section Dépassements  -->
                 <Frame
@@ -75,11 +108,23 @@
                     CornerRadius="15"
                     HasShadow="True">
                     <VerticalStackLayout Spacing="10">
-                        <Label
-                            FontAttributes="Bold"
-                            FontSize="14"
-                            Text="🚨 Dépassements"
-                            TextColor="Red" />
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label
+                                Grid.Column="0"
+                                FontAttributes="Bold"
+                                FontSize="14"
+                                HorizontalOptions="Start"
+                                Text="🚨 Dépassements :"
+                                TextColor="Red" />
+
+                            <Label
+                                Grid.Column="1"
+                                FontAttributes="Bold"
+                                FontSize="14"
+                                HorizontalOptions="End"
+                                Text="{Binding TotalDepassement, StringFormat='{0:N0} FCFA'}"
+                                TextColor="Red" />
+                        </Grid>
 
                         <CollectionView ItemsSource="{Binding DepassementItems}">
                             <CollectionView.ItemTemplate>
@@ -124,11 +169,23 @@
                     CornerRadius="15"
                     HasShadow="True">
                     <VerticalStackLayout Spacing="10">
-                        <Label
-                            FontAttributes="Bold"
-                            FontSize="14"
-                            Text="📅 Dépenses du jour"
-                            TextColor="Black" />
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label
+                                Grid.Column="0"
+                                FontAttributes="Bold"
+                                FontSize="14"
+                                HorizontalOptions="Start"
+                                Text="📅 Dépenses du jour :"
+                                TextColor="Black" />
+
+                            <Label
+                                Grid.Column="1"
+                                FontAttributes="Bold"
+                                FontSize="14"
+                                HorizontalOptions="End"
+                                Text="{Binding TotalDepense, StringFormat='{0:N0} FCFA'}"
+                                TextColor="Black" />
+                        </Grid>
                         <CollectionView ItemsSource="{Binding ExecutionBudgetaireItems}">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
