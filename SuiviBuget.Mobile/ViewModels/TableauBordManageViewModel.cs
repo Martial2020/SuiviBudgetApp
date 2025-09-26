@@ -47,6 +47,8 @@ namespace SuiviBuget.Mobile.ViewModels
         [ObservableProperty]
         private decimal totalDepense;
 
+        [ObservableProperty]
+        private double chartHeight;
 
         private BudgetManageModel _selectedBudget;
         public BudgetManageModel SelectedBudget
@@ -101,6 +103,7 @@ namespace SuiviBuget.Mobile.ViewModels
             ExecutionBudgetaireItems = new ObservableCollection<ExecutionBudgetaireDetailManageModel>();
             BudgetItems = new ObservableCollection<BudgetManageModel>();
             DepassementItems = new ObservableCollection<ExecutionBudgetaireDetailManageModel>();
+            ChartHeight = Helper.CalculerHauteurChart();
             LoadBudgetAsync();
             //LoadDashbordByDate(DateTime.Now);
             RegisterMessenger();

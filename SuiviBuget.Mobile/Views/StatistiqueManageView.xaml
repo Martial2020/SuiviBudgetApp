@@ -52,7 +52,7 @@
                 <VerticalStackLayout Spacing="10">
                     <Label FontAttributes="Bold" Text="📈 Top 7 des budgets par valeurs en FCFA" />
                     <!--  Graphique  -->
-                    <microcharts:ChartView Chart="{Binding Chart}" HeightRequest="300" />
+                    <microcharts:ChartView Chart="{Binding Chart}" HeightRequest="{Binding ChartHeight}" />
                 </VerticalStackLayout>
             </Frame>
 
@@ -70,20 +70,21 @@
             </Frame>
 
             <!--  Bloc 2 : Dépassements  -->
-            <Frame
-                Padding="10"
-                BorderColor="LightGray"
-                CornerRadius="10"
-                HasShadow="True">
-                <VerticalStackLayout>
-                    <Grid ColumnDefinitions="*,Auto">
 
+            <Frame
+                Padding="15"
+                BackgroundColor="White"
+                CornerRadius="15"
+                HasShadow="True">
+                <VerticalStackLayout Margin="0,5" Spacing="10">
+                    <Grid ColumnDefinitions="*,Auto">
                         <Label
                             Grid.Column="0"
                             FontAttributes="Bold"
                             HorizontalOptions="Start"
-                            Text="🚨 Dépassements par type :"
+                            Text="🚨 Dépassements par type de dépense :"
                             TextColor="Black" />
+
                         <Label
                             Grid.Column="1"
                             Margin="0,0,10,0"
@@ -92,22 +93,40 @@
                             Text="{Binding TotalDepassement, StringFormat='{0:N0} FCFA'}"
                             TextColor="Black" />
                     </Grid>
-                    <CollectionView Margin="10" ItemsSource="{Binding DepassementsItems}">
+
+                    <CollectionView ItemsSource="{Binding DepassementsItems}">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <Grid ColumnDefinitions="2*,1*,1*,1*">
-                                    <Label Text="{Binding LigneBudgetaire}" />
-                                    <Label Grid.Column="1" Text="{Binding MontantLigneBudgetaire}" />
-                                    <Label Grid.Column="2" Text="{Binding MontantLigneUtilise}" />
-                                    <Label
-                                        Grid.Column="3"
-                                        Text="{Binding Depassement}"
-                                        TextColor="Red" />
-                                </Grid>
+                                <Frame
+                                    Margin="0,5"
+                                    Padding="10"
+                                    BackgroundColor="#FFEAEA"
+                                    CornerRadius="10">
+                                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                                        <!--  Colonne libellé et budget  -->
+                                        <VerticalStackLayout
+                                            Grid.Row="0"
+                                            Grid.Column="0"
+                                            Spacing="2">
+                                            <Label
+                                                FontAttributes="Bold"
+                                                Text="{Binding LigneBudgetaire}"
+                                                TextColor="#C0392B" />
+                                        </VerticalStackLayout>
+
+                                        <!--  Montant à droite  -->
+                                        <Label
+                                            Grid.Row="0"
+                                            Grid.Column="1"
+                                            FontAttributes="Bold"
+                                            Text="{Binding Depassement, StringFormat='{0:N0} FCFA'}"
+                                            TextColor="#E74C3C"
+                                            VerticalOptions="Center" />
+                                    </Grid>
+                                </Frame>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
-
                 </VerticalStackLayout>
             </Frame>
 

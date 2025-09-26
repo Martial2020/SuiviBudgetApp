@@ -73,6 +73,11 @@ namespace SuiviBuget.Mobile.Helpers
     "#8b0000", // rouge foncé
     "#20b2aa"  // turquoise foncé
 };
+        public static double CalculerHauteurChart()
+        {
+            var screenWidth = DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;
+            return screenWidth * 0.6;
+        }
 
     }
 }

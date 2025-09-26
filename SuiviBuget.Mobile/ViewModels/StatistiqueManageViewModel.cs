@@ -100,12 +100,9 @@ namespace SuiviBuget.Mobile.ViewModels
             SubmitCommand = new AsyncRelayCommand(OnSubmitCommand);
             LoadBudgetAsync();
             RegisterMessenger();
+            ChartHeight = Helper.CalculerHauteurChart();
         }
-        public void CalculerHauteurChart()
-        {
-            var screenWidth = DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;
-            ChartHeight = screenWidth * 0.6;
-        }
+      
         private void RegisterMessenger()
         {
             WeakReferenceMessenger.Default.Register<RefreshList>(this, async (r, m) =>
@@ -161,7 +158,7 @@ namespace SuiviBuget.Mobile.ViewModels
         {
             try
             {
-                CalculerHauteurChart();
+              
                 RechercherLabel = "🔍 Réchercher en cours ...";
                 IsEnabled = false;
                 var result = await Validator.ValidateRechercheAsync(DateDebut, DateFin, SelectedBudget);
@@ -225,7 +222,7 @@ namespace SuiviBuget.Mobile.ViewModels
                 MontantLigneBudgetaire = x.MontantLigneBudgetaire,
                 MontantLigneUtilise = x.MontantLigneUtilise,
                 Depassement = Math.Abs(x.MontantLigneBudgetaire - x.MontantLigneUtilise)
-            }).Where(g => g.Depassement < 0).OrderBy(d => d.LigneBudgetaire)); // garde uniquement les dépassements
+            }).Where(g => g.MontantLigneBudgetaire - g.MontantLigneUtilise < 0).OrderBy(d => d.LigneBudgetaire)); // garde uniquement les dépassements
 
             TotalDepassement = Math.Abs((decimal)DepassementsItems.Sum(x => x.Depassement));
         }

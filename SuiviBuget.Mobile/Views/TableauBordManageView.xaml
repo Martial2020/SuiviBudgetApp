@@ -98,7 +98,7 @@
                             Text="🧾 Répartition des types de dépenses"
                             TextColor="#2C3E50" />
                         <!--  Graphique  -->
-                        <microcharts:ChartView Chart="{Binding Chart}" HeightRequest="300" />
+                        <microcharts:ChartView Chart="{Binding Chart}" HeightRequest="{Binding ChartHeight}" />
                     </VerticalStackLayout>
                 </Frame>
                 <!--  Section Dépassements  -->
