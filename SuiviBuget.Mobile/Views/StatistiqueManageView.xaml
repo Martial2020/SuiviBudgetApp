@@ -22,10 +22,7 @@
                 CornerRadius="10"
                 HasShadow="True">
                 <VerticalStackLayout>
-                    <Label
-                        FontAttributes="Bold"
-                        FontSize="Medium"
-                        Text="📅 Critères de recherche" />
+                    <Label FontAttributes="Bold" Text="📅 Critères de recherche" />
                     <DatePicker x:Name="StartDatePicker" Date="{Binding DateDebut, Mode=TwoWay}" />
                     <DatePicker x:Name="EndDatePicker" Date="{Binding DateFin, Mode=TwoWay}" />
                     <!--  Budget  -->
@@ -66,9 +63,9 @@
                 BorderColor="LightGray"
                 CornerRadius="10">
                 <VerticalStackLayout>
-                    <Label FontAttributes="Bold" Text="📊 Consommation par type de depense" />
+                    <Label FontAttributes="Bold" Text="📊 Consommation par type de depense en FCFA" />
                     <!--  DonutChart  -->
-                    <microcharts:ChartView Chart="{Binding TopDepensesChart}" HeightRequest="300" />
+                    <microcharts:ChartView Chart="{Binding TopDepensesChart}" HeightRequest="{Binding ChartHeight}" />
                 </VerticalStackLayout>
             </Frame>
 
@@ -84,14 +81,13 @@
                         <Label
                             Grid.Column="0"
                             FontAttributes="Bold"
-                            FontSize="14"
                             HorizontalOptions="Start"
                             Text="🚨 Dépassements par type :"
                             TextColor="Black" />
                         <Label
                             Grid.Column="1"
+                            Margin="0,0,10,0"
                             FontAttributes="Bold"
-                            FontSize="14"
                             HorizontalOptions="End"
                             Text="{Binding TotalDepassement, StringFormat='{0:N0} FCFA'}"
                             TextColor="Black" />
@@ -114,7 +110,6 @@
 
                 </VerticalStackLayout>
             </Frame>
-
 
         </VerticalStackLayout>
     </ScrollView>

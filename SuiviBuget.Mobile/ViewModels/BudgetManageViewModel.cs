@@ -258,7 +258,7 @@ namespace SuiviBuget.Mobile.ViewModels
         }
         private async void OnDelete(BudgetManageModel budget)
         {
-            var result = Validator.ValidateBudgeteDelete(budget);
+            var result = await  Validator.ValidateBudgeteDelete(budget);
             if (!result.isSuccess)
             {
                 await _alertService.ShowAlertAsync("Erreur", result.message);

@@ -322,7 +322,7 @@ namespace SuiviBuget.Mobile.Services
                     LibelleBudget = budgetItem.LibelleBudget,
                     MontantBudget = budgetItem.MontantBudget,
                     NbreLigneBudgetaire = budgetItem.NbreLigneBudgetaire,
-                    StatutBudget = budgetItem.StatutBudget
+                    StatutBudget = budgetItem.StatutBudget,
                 };
             }
             catch (Exception ex)
@@ -615,15 +615,15 @@ namespace SuiviBuget.Mobile.Services
         {
             try
             {
-                var executions = await _db.Table<ExecutionBudgetaire>().ToListAsync();
+                var executions = await _db.Table<ExecutionBudgetaire>()
+                    .Where(e=>e.CodeBudget==codeBudget)
+                    .ToListAsync();
                 var lignes = await _db.Table<LigneBudgetaire>()
                     .Where(x => x.CodeLigneBudgetaire == ligneBudgetaire).ToListAsync();
                 var paiement = await _db.Table<ModePaiement>().ToListAsync();
-
                 var query = (from e in executions
                              join l in lignes on e.CodeLigneBudgetaire equals l.CodeLigneBudgetaire
                              join m in paiement on e.CodeModePaiement equals m.CodeModePaiement
-                             where e.CodeBudget == codeBudget
                              orderby e.DateCreation descending
                              select new ExecutionBudgetaireDetailManageModel
                              {
@@ -781,9 +781,10 @@ namespace SuiviBuget.Mobile.Services
         #endregion
 
         #region Statistiques
-        public async Task<List<GrapheModel>> GetConsommationByLigneBudgetaire(List<Budget> budgets)
+        public async Task<List<GrapheModel>> GetConsommationByLigneBudgetaire(List<Budget> budgets, DateTime dateDebut, DateTime dateFin)
         {
-
+            var startDate = dateDebut.Date;          // 00:00:00 du jour
+            var endDate = dateFin.Date.AddDays(1); // 00:00:00 du jour suivant
             // recupere le code des budgets concerné
             var budgetCodes = budgets.Select(b => b.CodeBudget).ToList();
 
@@ -803,7 +804,8 @@ namespace SuiviBuget.Mobile.Services
             var ligneCodes = groupedDetails.Select(b => b.LigneBudgetaire).ToList();
 
             var depenses = await _db.Table<ExecutionBudgetaire>()
-           .Where(d => ligneCodes.Contains(d.CodeLigneBudgetaire) && budgetCodes.Contains(d.CodeBudget)).ToListAsync();
+           .Where(d => ligneCodes.Contains(d.CodeLigneBudgetaire) && budgetCodes.Contains(d.CodeBudget)
+           && d.DateExecution >= startDate && d.DateExecution < endDate).ToListAsync();
 
             if (depenses.Count == 0) return null;
 

@@ -53,7 +53,10 @@ namespace SuiviBuget.Mobile.ViewModels
         [ObservableProperty]
         private bool isEnabled = true; // génère public bool IsEnabled { get; set; }
 
+        [ObservableProperty]
+        private double chartHeight;
 
+       
         private BudgetManageModel _selectedBudget;
         public BudgetManageModel SelectedBudget
         {
@@ -98,7 +101,11 @@ namespace SuiviBuget.Mobile.ViewModels
             LoadBudgetAsync();
             RegisterMessenger();
         }
-
+        public void CalculerHauteurChart()
+        {
+            var screenWidth = DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;
+            ChartHeight = screenWidth * 0.6;
+        }
         private void RegisterMessenger()
         {
             WeakReferenceMessenger.Default.Register<RefreshList>(this, async (r, m) =>
@@ -154,6 +161,7 @@ namespace SuiviBuget.Mobile.ViewModels
         {
             try
             {
+                CalculerHauteurChart();
                 RechercherLabel = "🔍 Réchercher en cours ...";
                 IsEnabled = false;
                 var result = await Validator.ValidateRechercheAsync(DateDebut, DateFin, SelectedBudget);
@@ -179,10 +187,10 @@ namespace SuiviBuget.Mobile.ViewModels
             }
             return;
         }
-
+        
         private async Task LoadChart(List<Budget> datas)
         {
-            var resultat = await _service.GetConsommationByLigneBudgetaire(datas);
+            var resultat = await _service.GetConsommationByLigneBudgetaire(datas,DateDebut,DateFin);
             if (resultat == null)
             {
                 //await _alertService.ShowAlertAsync("Information", "Aucun resultat disponible pour ce critère !!!");
@@ -192,7 +200,9 @@ namespace SuiviBuget.Mobile.ViewModels
             var entries = resultat.Select(static l => new ChartEntry((float)l.MontantLigneUtilise)
             {
                 Label = l.LigneBudgetaire,
-                ValueLabel = $"{Math.Round(l.MontantLigneUtilise / l.MontantLigneBudgetaire * 100)}%",
+                //ValueLabel = $"{Math.Round(l.MontantLigneUtilise / l.MontantLigneBudgetaire * 100)}%",/
+                ValueLabel = l.MontantLigneUtilise.ToString("N0", CultureInfo.InvariantCulture).Replace(",", " "),
+                //ValueLabel = $"{l.MontantLigneUtilise}",
                 Color = SKColor.Parse(Helper.GetNextColor())
             }).OrderByDescending(e => e.Value).ToList();  // tri décroissant pour que le plus gros segment soit en premier
 
@@ -214,11 +224,10 @@ namespace SuiviBuget.Mobile.ViewModels
                 LigneBudgetaire = x.LigneBudgetaire,
                 MontantLigneBudgetaire = x.MontantLigneBudgetaire,
                 MontantLigneUtilise = x.MontantLigneUtilise,
-                Depassement = x.MontantLigneBudgetaire - x.MontantLigneUtilise
+                Depassement = Math.Abs(x.MontantLigneBudgetaire - x.MontantLigneUtilise)
             }).Where(g => g.Depassement < 0).OrderBy(d => d.LigneBudgetaire)); // garde uniquement les dépassements
 
-
-            TotalDepassement = (decimal)DepassementsItems.Sum(x => x.Depassement);
+            TotalDepassement = Math.Abs((decimal)DepassementsItems.Sum(x => x.Depassement));
         }
             
         public async Task ClassementBudgetAsync()

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SuiviBudget.Mobile.Constants;
 using SuiviBudget.Mobile.Interfaces;
 using SuiviBuget.Mobile.Helpers;
 using SuiviBuget.Mobile.Models;
@@ -107,18 +108,20 @@ namespace SuiviBudge.Validators
 
             return (true, string.Empty);
         }
-        public static (bool isSuccess, string message) ValidateBudgeteDelete(BudgetManageModel budget)
+        public static async Task<(bool isSuccess, string message)> ValidateBudgeteDelete(BudgetManageModel budget)
         {
             if (budget == null)
                 return (false, "Aucune donnée disponible pour la suppression du budget");
 
-            var getBudget = adminService.GetBudgetByCode(budget.CodeBudget);
+            var getBudget = await adminService.GetBudgetByCodeBudget(budget.CodeBudget);
             if (getBudget == null)
                 return (false, "Le budget à supprimer n'existe pas dans la base de donnée");
 
-            var execution = adminService.GetExecutionBudgetaireDetailsItems(budget.CodeBudget, string.Empty);
-            if (execution != null)
-                return (false, "Impossible de supprimer car le budget est encours d'utilisation");
+            if (getBudget.MontantUtilise > 0)
+                return (false, "Impossible de supprimer car ce budget a fait l'objet d'une dépense.Veuillez supprimer ces depense avant la suppression.");
+
+            if (getBudget.StatutBudget ==StatutBudgetConst.Cloture)
+                return (false, "Impossible de supprimer car ce budget dejà Clôturé");
 
 
             return (true, string.Empty);

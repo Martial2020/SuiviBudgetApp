@@ -107,20 +107,19 @@
                     BackgroundColor="White"
                     CornerRadius="15"
                     HasShadow="True">
-                    <VerticalStackLayout Spacing="10">
+                    <VerticalStackLayout Margin="0,5" Spacing="10">
                         <Grid ColumnDefinitions="*,Auto">
                             <Label
                                 Grid.Column="0"
                                 FontAttributes="Bold"
-                                FontSize="14"
                                 HorizontalOptions="Start"
                                 Text="🚨 Dépassements :"
                                 TextColor="Red" />
 
                             <Label
                                 Grid.Column="1"
+                                Margin="0,0,10,0"
                                 FontAttributes="Bold"
-                                FontSize="14"
                                 HorizontalOptions="End"
                                 Text="{Binding TotalDepassement, StringFormat='{0:N0} FCFA'}"
                                 TextColor="Red" />
@@ -173,18 +172,17 @@
                             <Label
                                 Grid.Column="0"
                                 FontAttributes="Bold"
-                                FontSize="14"
                                 HorizontalOptions="Start"
                                 Text="📅 Dépenses du jour :"
-                                TextColor="Black" />
+                                TextColor="#2C3E50" />
 
                             <Label
                                 Grid.Column="1"
+                                Margin="0,0,10,0"
                                 FontAttributes="Bold"
-                                FontSize="14"
                                 HorizontalOptions="End"
                                 Text="{Binding TotalDepense, StringFormat='{0:N0} FCFA'}"
-                                TextColor="Black" />
+                                TextColor="#2C3E50" />
                         </Grid>
                         <CollectionView ItemsSource="{Binding ExecutionBudgetaireItems}">
                             <CollectionView.ItemTemplate>

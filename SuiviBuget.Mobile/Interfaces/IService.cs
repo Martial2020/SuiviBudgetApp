@@ -11,7 +11,7 @@ namespace SuiviBudget.Mobile.Interfaces
 {
     public interface IServices
     {
-        Task<List<GrapheModel>> GetConsommationByLigneBudgetaire(List<Budget> budgets);
+        Task<List<GrapheModel>> GetConsommationByLigneBudgetaire(List<Budget> budgets,DateTime dateDebut,DateTime dateFin);
         void ReinitialiseApp();
         Task<List<Budget>> GetBudgetItems(DateTime dateDebut, DateTime dateFin, string codeBudget);
         Task<string> GetNumeroForCodeEntityAsync(string codeParametre);
@@ -29,7 +29,7 @@ namespace SuiviBudget.Mobile.Interfaces
         Task<bool> UpdateBudgetAsync(BudgetModel budget);
         Task<BudgetModel> GetBudgetByCode(string codeBudget);
         Task<List<BudgetManageModel>> GetBudgetItems(string searchText);
-
+        Task<Budget> GetBudgetByCodeBudget(string codeBudget);
         Task<List<BudgetManageModel>> GetBudgetItemsByStatus(string searchText, List<string> statuts);
         #endregion
 

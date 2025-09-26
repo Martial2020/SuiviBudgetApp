@@ -235,7 +235,8 @@ namespace SuiviBuget.Mobile.ViewModels
 
             var ratio = MontantBudget == 0 ? 0 : (double)(MontantUtilise / MontantBudget);
             ProgressValue = Math.Min(ratio, 1); // ProgressBar = 0.16 (16%)
-            ProgressText = $"{(ratio <= 1 ? ratio : 1) * 100:0}%"; // Affiche "16%"
+            //ProgressText = $"{(ratio <= 1 ? ratio : 1) * 100:0}%"; // Affiche "16%"
+            ProgressText = $"{Math.Round((ratio <= 1 ? ratio : 1) * 100)}%"; // Affiche "16%"
             ProgressColor = ratio <= 1 ? Colors.Green : Colors.Red;
 
         }
