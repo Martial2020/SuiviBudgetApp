@@ -17,7 +17,10 @@ namespace SuiviBuget.Mobile.Services
             switch (pageName)
             {
                 
-                case "ReinitialiserView":
+                 case "RestaurationView":
+                await Shell.Current.GoToAsync(nameof(RestaurationView));
+                break;
+            case "ReinitialiserView":
                     await Shell.Current.GoToAsync(nameof(ReinitialiserView));
                     break;
                 case "LigneBudgetaireManageView":

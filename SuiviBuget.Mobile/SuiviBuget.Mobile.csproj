@@ -168,6 +168,9 @@
 		<MauiXaml Update="Views\ReinitilaiserView.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
+		<MauiXaml Update="Views\RestaurationView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="Views\StatistiqueManageView.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>

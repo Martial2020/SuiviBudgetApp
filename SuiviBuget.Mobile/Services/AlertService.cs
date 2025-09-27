@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SuiviBuget.Mobile.Interfaces;
+using static SuiviBuget.Mobile.Services.AlertService;
 
 namespace SuiviBuget.Mobile.Services
 {
@@ -18,5 +19,7 @@ namespace SuiviBuget.Mobile.Services
                 await currentPage.DisplayAlert(title, message, buttonText);
             }
         }
+
+       
     }
 }

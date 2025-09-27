@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SuiviBuget.Mobile.Views.RestaurationView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewModels="clr-namespace:SuiviBuget.Mobile.ViewModels;assembly=SuiviBuget.Mobile"
+    Title="Restauration des données">
+    <ContentPage.BindingContext>
+        <viewModels:RestaurationViewModel />
+    </ContentPage.BindingContext>
+    <VerticalStackLayout Padding="20" Spacing="15">
+
+
+        <Grid Margin="10" ColumnSpacing="5">
+            <!--  ColumnSpacing ajoute un petit espace  -->
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <!--  Entry prend tout l'espace disponible  -->
+                <ColumnDefinition Width="Auto" />
+                <!--  Bouton prend juste ce qu'il faut  -->
+            </Grid.ColumnDefinitions>
+
+            <Entry
+                Grid.Column="0"
+                HorizontalOptions="FillAndExpand"
+                IsReadOnly="True"
+                Placeholder="Aucun fichier sélectionné"
+                Text="{Binding SelectedFile}"
+                VerticalOptions="Center" />
+
+            <Button
+                Grid.Column="1"
+                BackgroundColor="#FF7F50"
+                Command="{Binding PickFileCommand}"
+                Text="..."
+                VerticalOptions="Center"
+                WidthRequest="50" />
+        </Grid>
+
+        <!--  Loader  -->
+        <ActivityIndicator
+            AbsoluteLayout.LayoutBounds="0.5,0.5,50,50"
+            AbsoluteLayout.LayoutFlags="PositionProportional"
+            HeightRequest="50"
+            HorizontalOptions="Center"
+            IsRunning="{Binding IsBusy}"
+            IsVisible="{Binding IsBusy}"
+            VerticalOptions="Center"
+            WidthRequest="50"
+            Color="DodgerBlue" />
+        <Button
+            BackgroundColor="#FF7F50"
+            Command="{Binding RestoreCommand}"
+            CornerRadius="8"
+            Text="🗂️ Restaurer"
+            TextColor="White" />
+
+    </VerticalStackLayout>
+</ContentPage>

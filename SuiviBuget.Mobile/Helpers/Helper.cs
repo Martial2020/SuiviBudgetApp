@@ -75,8 +75,19 @@ namespace SuiviBuget.Mobile.Helpers
 };
         public static double CalculerHauteurChart()
         {
-            var screenWidth = DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;
-            return screenWidth * 0.6;
+            var display = DeviceDisplay.MainDisplayInfo;
+
+            // Dimensions logiques (DIPs)
+            var screenWidth = display.Width / display.Density;
+            var screenHeight = display.Height / display.Density;
+
+            // On prend la plus petite dimension (pour garder le rond correct)
+            var minSize = Math.Min(screenWidth, screenHeight);
+
+            // 60% de la plus petite dimension
+          return minSize * 0.6;
+            //var screenWidth = DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;
+            //return screenWidth * 0.6;
         }
 
     }

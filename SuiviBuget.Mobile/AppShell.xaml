@@ -16,7 +16,7 @@
 
     <!--  Header avec les 3 points  -->
     <Shell.ToolbarItems>
-        <ToolbarItem Command="{Binding ShowMenuCommand}" IconImageSource="setting.png" />
+        <ToolbarItem Command="{Binding ShowMenuCommand}"   IconImageSource="setting.png" />
     </Shell.ToolbarItems>
 
     <!--  Barre d'onglets  -->

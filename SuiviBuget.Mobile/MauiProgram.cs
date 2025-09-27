@@ -35,7 +35,8 @@ namespace SuiviBuget.Mobile
 
             // Enregistrement du service de navigation
             builder.Services.AddSingleton<INavigationService, NavigationService>();
-            builder.Services.AddSingleton<AlertService, AlertService>();
+            builder.Services.AddSingleton<IAlertService, AlertService>();
+            builder.Services.AddSingleton<IDialogService, DialogService>();
 
             // Configuration des logs en mode DEBUG
 #if DEBUG
