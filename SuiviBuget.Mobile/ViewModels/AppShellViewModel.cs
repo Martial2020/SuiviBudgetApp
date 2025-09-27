@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Xml.Linq;
 using CommunityToolkit.Maui.Core.Primitives;
+using CommunityToolkit.Maui.Storage;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -47,11 +48,11 @@ namespace SuiviBuget.Mobile.ViewModels
         {
             const string typeDepense = "💰 Type de dépense";
             const string modePaiement = "💳 Mode de paiement";
+            const string general = "🧰 Général";
             const string backupBD = "💾 Sauvegarder ses données";
             const string restaurationBD = "🗂️ Restaurer ses données";
-            const string general = "🧰 Général";
             const string reinitialiser = "🔄 Réinitialiser";
-            
+
             var options = new List<string> { typeDepense, modePaiement, backupBD, restaurationBD, general, reinitialiser };
             string action = await _service.ShowActionSheet(
                    "⚙️ Paramètres",
@@ -72,7 +73,7 @@ namespace SuiviBuget.Mobile.ViewModels
 
                 case backupBD:
 
-                    await BackupData();
+                    await ExportDatabaseAsync();
                     break;
 
                 case restaurationBD:
@@ -83,7 +84,7 @@ namespace SuiviBuget.Mobile.ViewModels
                     await _navigationService.NavigateToAsync("ReinitialiserView");
                     break;
                 case general:
-                    await _alert.ShowAlertAsync("Information","Fonctionnalité en cours");
+                    await _alert.ShowAlertAsync("Information", "Fonctionnalité en cours");
                     break;
 
                 default:
@@ -93,6 +94,22 @@ namespace SuiviBuget.Mobile.ViewModels
             // Crée et affiche le PopUp ici
             //var menuPopup = new PopUpMenuView();
             //await Shell.Current.CurrentPage.ShowPopupAsync(menuPopup);
+        }
+
+        public async Task ExportDatabaseAsync()
+        {
+            var dbPath = Helper.GetDatabaseFullPath();
+            var fileName = $"Backup_{DateTime.Now:ddMMyyyyHHmm}.db";
+            var result = await FileSaver.Default.SaveAsync(
+                fileName,
+                new FileStream(dbPath, FileMode.Open, FileAccess.Read),
+                new CancellationToken());
+
+            if (result.IsSuccessful)
+                await Application.Current.MainPage.DisplayAlert("Succès", $"Sauvegardé dans : {result.FilePath}", "OK");
+            else
+                await Application.Current.MainPage.DisplayAlert("Erreur", result.Exception?.Message, "OK");
+
         }
 
         private async Task BackupData()
@@ -145,11 +162,10 @@ namespace SuiviBuget.Mobile.ViewModels
                 File.Copy(dbPath, backupPath, true);
                 await _alert.ShowAlertAsync("Information", $"Les données ont été sauvegardées avec succès dans le dossier suivant: {myFolder}");
 
-
             }
             catch (Exception ex)
             {
-                await _alert.ShowAlertAsync("Erreur", "Le système rencontre une erreur lors de la sauvegarde de vos données. ");
+                await _alert.ShowAlertAsync("Erreur", ex.Message);
             }
         }
 

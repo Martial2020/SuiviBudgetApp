@@ -80,7 +80,8 @@ namespace SuiviBuget.Mobile.ViewModels
                 string dbPath = Helper.GetDatabaseFullPath();
                 File.Copy(backupPath, dbPath, true);
                 IsBusy = false;
-                await App.Current.MainPage.DisplayAlert("Succès", "Restauration terminée.", "OK");
+                await App.Current.MainPage.DisplayAlert("Succès", "Restauration terminée. Votre application se fermera, nous vous prions de relancer afin qu'elle prenne en compte les nouvelles données restaurées.", "OK");
+                Application.Current.Quit();
             }
             catch (Exception ex)
             {
