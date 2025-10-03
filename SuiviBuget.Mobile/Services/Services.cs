@@ -139,6 +139,36 @@ namespace SuiviBuget.Mobile.Services
                 return new List<LigneBudgetaireModel>();
             }
         }
+        public async Task<List<LigneBudgetaireModel>> GetLigneBudgetaireExclusionItems(string code,string ligne)
+        {
+            try
+            {
+                var details = await GetBudgetDetailItems(code, "");
+                var codesDetails = details.Select(d => d.CodeLigneBudgetaire).ToList();
+                if (!string.IsNullOrEmpty(ligne))
+                     codesDetails = details.Where(l => l.CodeLigneBudgetaire != ligne).Select(d => d.CodeLigneBudgetaire).ToList();
+
+                // récupérer tous les codes des détails
+                // exclure ces codes de la requête
+                var ligneBudgetaires = await _db.Table<LigneBudgetaire>()
+                    .Where(l => !codesDetails.Contains(l.CodeLigneBudgetaire)).ToListAsync();
+
+                return ligneBudgetaires
+                    .Select(x => new LigneBudgetaireModel
+                    {
+                        CodeLigneBudgetaire = x.CodeLigneBudgetaire,
+                        LibelleLigneBudgetaire = x.LibelleLigneBudgetaire
+                    })
+                    .OrderBy(x => x.LibelleLigneBudgetaire).ToList();
+
+            }
+            catch (Exception ex)
+            {
+                // Log erreur (peut-être un fichier ou un service de journalisation)
+                Console.WriteLine($"Erreur lors de la récupération des lignes budgétaires: {ex.Message}");
+                return new List<LigneBudgetaireModel>();
+            }
+        }
         #endregion
 
         #region Mode de paiement

@@ -106,7 +106,6 @@ namespace SuiviBuget.Mobile.ViewModels
             AddBudgetDetailCommand = new RelayCommand<string>(OnAddBudgetDetailCommand);
             DeleteCommand = new RelayCommand<BudgetDetailManageModel>(OnDelete);
             EditCommand = new RelayCommand<BudgetDetailManageModel>(OnEdit);
-
             RegisterMessenger(); // Enregistre l'écoute du message
             ResetAppMessage();
 

@@ -37,7 +37,7 @@ namespace SuiviBuget.Mobile.ViewModels
                 OnPropertyChanged();
                 // mettre à jour le code dans DataItem
                 //DataItem.CodeLigneBudgetaire = value?.CodeLigneBudgetaire;
-                _ = LoadExecutionBudgetaireAsync(CodeBudget, value?.CodeLigneBudgetaire);
+                _ = LoadExecutionBudgetaireAsync(CodeBudget, _selectedLigneBudgetaire.CodeLigneBudgetaire);
             }
         }
 
@@ -244,7 +244,8 @@ namespace SuiviBuget.Mobile.ViewModels
         {
             WeakReferenceMessenger.Default.Register<RefreshList>(this, async (r, m) =>
             {
-                await LoadExecutionBudgetaireAsync(CodeBudget, SelectedLigneBudgetaire.CodeLigneBudgetaire);// Rafraîchit la liste si un ajout est effectué
+                //await LoadExecutionBudgetaireAsync(CodeBudget, SelectedLigneBudgetaire.CodeLigneBudgetaire);// Rafraîchit la liste si un ajout est effectué
+                SelectedLigneBudgetaire = LigneBudgetaireItems.FirstOrDefault(l => l.CodeLigneBudgetaire == SelectedLigneBudgetaire.CodeLigneBudgetaire);
             });
         }
 
@@ -256,14 +257,14 @@ namespace SuiviBuget.Mobile.ViewModels
                 ligneItems.Select(x => new LigneBudgetaireManageModel
                 {
                     CodeLigneBudgetaire = x.CodeLigneBudgetaire,
-                    LibelleLigneBudgetaire = $"[{x.CodeLigneBudgetaire}] - {x.LibelleLigneBudgetaire}"
-                })
+                    LibelleLigneBudgetaire = $"[{x.CodeLigneBudgetaire}] - {x.LibelleLigneBudgetaire}",
+                    LibelleLigneBudgetaireSimple=x.LibelleLigneBudgetaire
+                }).OrderBy(l =>l.LibelleLigneBudgetaireSimple)
             );
 
-            if (LigneBudgetaireItems.Count > 0)
-            {
+            if (LigneBudgetaireItems.Count > 0 && SelectedLigneBudgetaire == null)
                 SelectedLigneBudgetaire = LigneBudgetaireItems.FirstOrDefault();
-            }
+
         }
 
         private async Task LoadExecutionBudgetaireAsync(string codeBudget, string ligne)
@@ -286,7 +287,9 @@ namespace SuiviBuget.Mobile.ViewModels
                     Description = x.Description,
                 })
             );
+
             ActualiserMontants(codeBudget, ligne);
+            //SelectedLigneBudgetaire = LigneBudgetaireItems.FirstOrDefault(x => x.CodeLigneBudgetaire == ligne);
 
             IsBusy = false;
         }
@@ -330,7 +333,8 @@ namespace SuiviBuget.Mobile.ViewModels
                 await _alertService.ShowAlertAsync("Erreur", "Veuillez selectionner un budget");
                 return;
             }
-            await _navigationService.NavigateToAsync("ExecutionBudgetaireDetailView", CodeBudget);
+            var budgetEtLigne = $"{CodeBudget}X{SelectedLigneBudgetaire.CodeLigneBudgetaire}";
+            await _navigationService.NavigateToAsync("ExecutionBudgetaireDetailView", budgetEtLigne);
         }
 
         public async Task InitializePageAsync(string code, string action)

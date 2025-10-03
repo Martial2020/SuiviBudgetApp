@@ -17,6 +17,7 @@ namespace SuiviBudget.Mobile.Interfaces
         Task<string> GetNumeroForCodeEntityAsync(string codeParametre);
         #region Ligne budgetaire
         Task<List<LigneBudgetaireModel>> GetLigneBudgetaireItems(string searchText);
+        Task<List<LigneBudgetaireModel>> GetLigneBudgetaireExclusionItems(string code,string ligne);
         Task<LigneBudgetaireModel> GetLigneBudgetaireByCode(string code);
         Task<bool> AddLigneBudgetaireAsync(LigneBudgetaireModel ligne);
         Task<bool> UpdateLigneBudgetaireAsync(LigneBudgetaireModel ligne);

@@ -27,6 +27,9 @@ namespace SuiviBuget.Mobile.ViewModels
         private BudgetDetailModel dataItem = new();
 
         [ObservableProperty]
+        private string ligneEncours = "";
+
+        [ObservableProperty]
         private ObservableCollection<LigneBudgetaireManageModel> ligneBudgetaireItems;
 
 
@@ -92,7 +95,7 @@ namespace SuiviBuget.Mobile.ViewModels
             _navigationService = new NavigationService();
             _navigationService = new NavigationService();
             _alertService = new AlertService();
-            _ = LoadLigneBudgetaireAsync("");
+            
             SubmitCommand = new RelayCommand(OnSubmitCommand);
             RegisterMessenger();
         }
@@ -118,7 +121,7 @@ namespace SuiviBuget.Mobile.ViewModels
 
         private async Task LoadLigneBudgetaireAsync(string searchText)
         {
-            var ligneItems = await adminService.GetLigneBudgetaireItems(searchText);
+            var ligneItems = await adminService.GetLigneBudgetaireExclusionItems(DataItem.CodeBudget, LigneEncours);
 
             LigneBudgetaireItems = new ObservableCollection<LigneBudgetaireManageModel>(
                 ligneItems.Select(x => new LigneBudgetaireManageModel
@@ -127,8 +130,10 @@ namespace SuiviBuget.Mobile.ViewModels
                     LibelleLigneBudgetaire = $"[{x.CodeLigneBudgetaire}] - {x.LibelleLigneBudgetaire}"
                 })
             );
+            SelectedLigneBudgetaire = LigneBudgetaireItems.FirstOrDefault(l => l.CodeLigneBudgetaire == DataItem.CodeLigneBudgetaire);
+
         }
-    
+
         private async void OnSubmitCommand()
         {
             switch (Action)
@@ -152,6 +157,7 @@ namespace SuiviBuget.Mobile.ViewModels
             {
                 case GlobalConst.Add:
                     DataItem.CodeBudget = code;
+                    _ = LoadLigneBudgetaireAsync("");
                     break;
                 case GlobalConst.Edit:
                     Title = "Modifier une allocation";
@@ -163,14 +169,15 @@ namespace SuiviBuget.Mobile.ViewModels
                     DataItem.Montant = ligne.Montant;
                     DataItem.CodeBudget = ligne.CodeBudget;
                     CodeLigneBudgetaireIsEnabled = false;
-                    SelectedLigneBudgetaire = LigneBudgetaireItems.FirstOrDefault(l => l.CodeLigneBudgetaire == DataItem.CodeLigneBudgetaire);
+                    LigneEncours = ligne.CodeLigneBudgetaire;
+                    _ = LoadLigneBudgetaireAsync("");
 
                     break;
                 default:
                     break;
             }
 
-
+           
         }
 
         private async void BudgetDetailCreate()

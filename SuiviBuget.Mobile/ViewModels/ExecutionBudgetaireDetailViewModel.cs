@@ -124,6 +124,7 @@ namespace SuiviBuget.Mobile.ViewModels
                     LibelleLigneBudgetaire = $"[{x.CodeLigneBudgetaire}] - {x.LibelleLigneBudgetaire}"
                 })
             );
+            SelectedLigneBudgetaire = LigneBudgetaireItems.FirstOrDefault(l => l.CodeLigneBudgetaire==DataItem.CodeLigneBudgetaire);
         }
 
         private async Task LoadModePaiementAsync(string searchText)
@@ -158,8 +159,14 @@ namespace SuiviBuget.Mobile.ViewModels
         public async Task InitializePageAsync(string code, string action)
         {
             Action = action;
-
-            DataItem.CodeBudget = code;
+            
+            if (!string.IsNullOrEmpty(code))
+            {
+                var parts = code.Split('X');
+                DataItem.CodeBudget = parts[0].Trim();
+                DataItem.CodeLigneBudgetaire = parts[1].Trim();
+            }
+          
             switch (Action)
             {
                 case GlobalConst.Add:

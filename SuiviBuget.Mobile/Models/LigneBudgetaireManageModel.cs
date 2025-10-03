@@ -9,6 +9,7 @@ namespace SuiviBuget.Mobile.Models
     public class LigneBudgetaireManageModel
     {
         public string? CodeLigneBudgetaire { get; set; }
-        public string? LibelleLigneBudgetaire { get; set; }
+         public string? LibelleLigneBudgetaire { get; set; }
+        public string? LibelleLigneBudgetaireSimple { get; set; }
     }
 }
