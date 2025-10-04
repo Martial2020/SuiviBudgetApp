@@ -736,6 +736,7 @@ namespace SuiviBuget.Mobile.Services
                  .Where(x => x.DateExecution >= startDate && x.DateExecution < endDate).ToListAsync();
                 var lignes = await _db.Table<LigneBudgetaire>().ToListAsync();
                 var paiement = await _db.Table<ModePaiement>().ToListAsync();
+
                 var budget = await _db.Table<Budget>()
                     .Where(b => b.CodeBudget == codeBudget).ToListAsync();
 
@@ -890,6 +891,49 @@ namespace SuiviBuget.Mobile.Services
                 return new List<Budget>();
             }
         }
+
+        public async Task<List<ExecutionBudgetaireDetailManageModel>> GetDepenseItemsByPeriode(DateTime dateDebut, DateTime dateFin, List<Budget> budgets)
+        {
+            try
+            {
+                var startDate = dateDebut.Date;          // 00:00:00 du jour
+                var endDate = dateFin.Date.AddDays(1); // 00:00:00 du jour suivant
+
+                var executions = await _db.Table<ExecutionBudgetaire>()
+                 .Where(x => x.DateExecution >= startDate && x.DateExecution < endDate).ToListAsync();
+                var lignes = await _db.Table<LigneBudgetaire>().ToListAsync();
+                var paiement = await _db.Table<ModePaiement>().ToListAsync();
+
+                var budget = budgets;
+
+
+                var query = (from e in executions
+                             join l in lignes on e.CodeLigneBudgetaire equals l.CodeLigneBudgetaire
+                             join m in paiement on e.CodeModePaiement equals m.CodeModePaiement
+                             join b in budgets on e.CodeBudget equals b.CodeBudget
+                             select new ExecutionBudgetaireDetailManageModel
+                             {
+                                 DateExecution = e.DateExecution,
+                                 ExecutionBudgetaireID = e.ExecutionBudgetaireID,
+                                 LibelleLigneBudgetaire = l.LibelleLigneBudgetaire,
+                                 ModePaiement = m.LibelleModePaiement,
+                                 Montant = e.Montant,
+                                 CodeLigneBudgetaire = l.CodeLigneBudgetaire,
+                                 CodeBudget = e.CodeBudget,
+                                 Description = e.Description,
+                                 LibelleBudget = b.LibelleBudget,
+                                 DateCreation = e.DateCreation
+                             }).OrderByDescending(x => x.DateCreation).ToList();
+                return query;
+            }
+            catch (Exception ex)
+            {
+                // Log erreur (peut-être un fichier ou un service de journalisation)
+                Console.WriteLine($"Erreur lors de la récupération des lignes budgétaires: {ex.Message}");
+                return new List<ExecutionBudgetaireDetailManageModel>();
+            }
+        }
+
 
         #endregion
 

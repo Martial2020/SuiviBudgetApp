@@ -37,9 +37,14 @@ namespace SuiviBuget.Mobile.ViewModels
         [ObservableProperty]
         public ObservableCollection<GrapheModel> depassementsItems;
 
+        [ObservableProperty]
+        private ObservableCollection<ExecutionBudgetaireDetailManageModel> executionBudgetaireItems;
 
         [ObservableProperty]
         public ChartEntry[] entries;
+
+        [ObservableProperty]
+        private decimal totalDepense;
 
         [ObservableProperty]
         public Chart chart;
@@ -197,8 +202,8 @@ namespace SuiviBuget.Mobile.ViewModels
             var entries = resultat.Select(static l => new ChartEntry((float)l.MontantLigneUtilise)
             {
                 Label = l.LigneBudgetaire,
-                //ValueLabel = $"{Math.Round(l.MontantLigneUtilise / l.MontantLigneBudgetaire * 100)}%",/
-                ValueLabel = l.MontantLigneUtilise.ToString("N0", CultureInfo.InvariantCulture).Replace(",", " "),
+                //ValueLabel = $"{Math.Round(l.MontantLigneUtilise / l.MontantLigneBudgetaire * 100)}%",
+                ValueLabel = $"{l.MontantLigneUtilise.ToString("N0", CultureInfo.InvariantCulture).Replace(",", " ")} ({Math.Round(l.MontantLigneUtilise / l.MontantLigneBudgetaire * 100)}%)",
                 //ValueLabel = $"{l.MontantLigneUtilise}",
                 Color = SKColor.Parse(Helper.GetNextColor())
             }).OrderByDescending(e => e.Value).ToList();  // tri décroissant pour que le plus gros segment soit en premier
@@ -213,6 +218,36 @@ namespace SuiviBuget.Mobile.ViewModels
             Depassements(resultat);
         }
 
+        private async Task DepensesByPeriodeItems(List<Budget> budgets)
+        {
+            ExecutionBudgetaireItems = new ObservableCollection<ExecutionBudgetaireDetailManageModel>();
+            ExecutionBudgetaireItems.Clear();
+            try
+            {
+                var executeItems = await _service.GetDepenseItemsByPeriode(DateDebut,DateFin, budgets);
+                ExecutionBudgetaireItems = new ObservableCollection<ExecutionBudgetaireDetailManageModel>(
+                    executeItems.Select(x => new ExecutionBudgetaireDetailManageModel
+                    {
+                        DateExecution = x.DateExecution,
+                        ExecutionBudgetaireID = x.ExecutionBudgetaireID,
+                        LibelleLigneBudgetaire = x.LibelleLigneBudgetaire,
+                        ModePaiement = x.ModePaiement,
+                        Montant = x.Montant,
+                        CodeBudget = x.CodeBudget,
+                        CodeLigneBudgetaire = x.CodeLigneBudgetaire,
+                        Description = x.Description,
+                        LibelleBudget = x.LibelleBudget
+                    })
+                );
+
+                TotalDepense = ExecutionBudgetaireItems.Sum(x => x.Montant);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
         private async void Depassements(List<GrapheModel> datas)
         {
             DepassementsItems = new ObservableCollection<GrapheModel>(
@@ -263,6 +298,8 @@ namespace SuiviBuget.Mobile.ViewModels
                 BackgroundColor = SKColors.White
             };
             await LoadChart(budgets);
+            await DepensesByPeriodeItems(budgets);
+            
         }
 
 

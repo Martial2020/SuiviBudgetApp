@@ -11,6 +11,7 @@ namespace SuiviBuget.Mobile.Models
         public string LigneBudgetaire { get; set; }
         public float MontantLigneBudgetaire { get; set; }
         public float MontantLigneUtilise { get; set; }
+        public string Description { get; set; }
         public float Depassement { get; set; }
     }
 }
