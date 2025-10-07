@@ -16,7 +16,7 @@
 
     <!--  Header avec les 3 points  -->
     <Shell.ToolbarItems>
-        <ToolbarItem Command="{Binding ShowMenuCommand}"   IconImageSource="setting.png" />
+        <ToolbarItem Command="{Binding ShowMenuCommand}" IconImageSource="setting.png" />
     </Shell.ToolbarItems>
 
     <!--  Barre d'onglets  -->
@@ -30,9 +30,11 @@
         <Tab Title="Budgets" Icon="budget.png">
             <ShellContent ContentTemplate="{DataTemplate local:BudgetManageView}" />
         </Tab>
+
         <Tab Title="Dépenses" Icon="execution.png">
             <ShellContent ContentTemplate="{DataTemplate local:ExecutionBudgetaireManageView}" />
         </Tab>
+
         <Tab Title="Statistiques" Icon="report.png">
             <ShellContent ContentTemplate="{DataTemplate local:StatistiqueManageView}" />
         </Tab>

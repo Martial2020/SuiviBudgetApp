@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SuiviBuget.Mobile.Views.DetailsBudgetView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewModels="clr-namespace:SuiviBuget.Mobile.ViewModels;assembly=SuiviBuget.Mobile"
+    Title="{Binding Title}">
+    <!--  Liaison du ViewModel à la page  -->
+    <ContentPage.BindingContext>
+        <viewModels:DetailsBudgetViewModel />
+    </ContentPage.BindingContext>
+    <ScrollView Padding="15">
+        <VerticalStackLayout Spacing="15">
+
+            <!--  🟥 Bloc 1 : Informations générales  -->
+            <Frame
+                Padding="15"
+                BackgroundColor="#E0F2FE"
+                BorderColor="#E5E7EB"
+                CornerRadius="12">
+                <VerticalStackLayout Spacing="5">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="16"
+                        Text="Informations générales"
+                        TextColor="#1E3A8A" />
+                    <BoxView
+                        Margin="0,5"
+                        HeightRequest="1"
+                        Color="#93C5FD" />
+
+                    <Label Text="{Binding DataItem.CodeBudget, StringFormat='🏷️ Code : {0}'}" TextColor="#1E3A8A" />
+                    <Label Text="{Binding DataItem.LibelleBudget, StringFormat='📘 Libellé : {0}'}" TextColor="#1E3A8A" />
+
+                    <Label Text="{Binding DataItem.DateDebutBudget, StringFormat='🗓️ Du : {0:dd/MM/yyyy}'}" TextColor="Gray" />
+                    <Label Text="{Binding DataItem.DateFinBudget, StringFormat='📅 Au : {0:dd/MM/yyyy}'}" TextColor="Gray" />
+                    <Label Text="{Binding DataItem.DateCreationBudget, StringFormat='📅 Créé le : {0:dd MMM yyyy à HH:mm}'}" TextColor="Gray" />
+                    <Label Text="{Binding DataItem.DescriptionBudget, StringFormat='📝 Description : {0}'}" TextColor="#1E3A8A" />
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <!--  🟩 Bloc 2 : Montants  -->
+            <Frame
+                Padding="15"
+                BackgroundColor="#F9FAFB"
+                BorderColor="#E5E7EB"
+                CornerRadius="12">
+                <VerticalStackLayout Spacing="5">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="16"
+                        Text="Montants du budget"
+                        TextColor="#1E40AF" />
+                    <BoxView
+                        Margin="0,5"
+                        HeightRequest="1"
+                        Color="#CBD5E1" />
+
+                    <Label Text="{Binding DataItem.MontantBudget, StringFormat='💰 Montant total : {0:N0} FCFA'}" TextColor="#1E3A8A" />
+                    <Label Text="{Binding DataItem.MontantAlloue, StringFormat='🧾 Alloué : {0:N0} FCFA'}" TextColor="#2563EB" />
+                    <Label Text="{Binding DataItem.MontantNonAlloue, StringFormat='🟣 Non alloué : {0:N0} FCFA'}" TextColor="#9333EA" />
+                    <Label Text="{Binding DataItem.MontantReajustement, StringFormat='💹 Réajusté : {0:N0} FCFA'}" TextColor="#F472B6" />
+                    <Label Text="{Binding DataItem.MontantUtilise, StringFormat='🟠 Utilisé : {0:N0} FCFA'}" TextColor="#F59E0B" />
+                    <Label Text="{Binding DataItem.MontantRestant, StringFormat='🟢 Restant : {0:N0} FCFA'}" TextColor="#16A34A" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!--  🟨 Bloc 3 : Suivi et état  -->
+            <Frame
+                Padding="15"
+                BackgroundColor="#FEF9C3"
+                BorderColor="#E5E7EB"
+                CornerRadius="12">
+                <VerticalStackLayout Spacing="5">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="16"
+                        Text="Suivi du budget"
+                        TextColor="#854D0E" />
+                    <BoxView
+                        Margin="0,5"
+                        HeightRequest="1"
+                        Color="#FCD34D" />
+
+                    <Label Text="{Binding DataItem.NbreLigneBudgetaire, StringFormat='📊 Lignes budgétaires : {0}'}" TextColor="#92400E" />
+
+                    <HorizontalStackLayout Spacing="8">
+                        <Label Text="Statut :" TextColor="#92400E" />
+                        <Frame
+                            Padding="6,2"
+                            BackgroundColor="{Binding DataItem.BackgroundColorStatut}"
+                            CornerRadius="10"
+                            HasShadow="False">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="13"
+                                Text="{Binding DataItem.StatutBudget}"
+                                TextColor="White" />
+                        </Frame>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!--  🟦 Bloc 4 : Actions  -->
+            <!--
+            <HorizontalStackLayout
+                Margin="0,10,0,20"
+                HorizontalOptions="Center"
+                Spacing="30">
+                <Button
+                    BackgroundColor="#3B82F6"
+                    Command="{Binding ConsulterCommand}"
+                    CornerRadius="25"
+                    HeightRequest="50"
+                    Text="👁️"
+                    TextColor="White"
+                    WidthRequest="50" />
+
+                <Button
+                    BackgroundColor="#FACC15"
+                    Command="{Binding ModifierCommand}"
+                    CornerRadius="25"
+                    HeightRequest="50"
+                    Text="✏️"
+                    TextColor="White"
+                    WidthRequest="50" />
+
+                <Button
+                    BackgroundColor="#EF4444"
+                    Command="{Binding SupprimerCommand}"
+                    CornerRadius="25"
+                    HeightRequest="50"
+                    Text="🗑"
+                    TextColor="White"
+                    WidthRequest="50" />
+            </HorizontalStackLayout>-->
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

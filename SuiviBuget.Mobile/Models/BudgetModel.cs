@@ -14,6 +14,8 @@ namespace SuiviBuget.Mobile.Models
         [ObservableProperty]
         public string libelleBudget;
         [ObservableProperty]
+        public string description;
+        [ObservableProperty]
         public decimal montantBudget;
         [ObservableProperty]
         public DateTime dateCreationBudget;

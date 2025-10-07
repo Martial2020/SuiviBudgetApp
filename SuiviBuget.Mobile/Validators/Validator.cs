@@ -80,6 +80,9 @@ namespace SuiviBudge.Validators
             if (string.IsNullOrEmpty(budget.LibelleBudget))
                 return (false, "Veuillez saisir obligatoirement le libellé du budget");
 
+            if (budget.MontantBudget <= 0)
+                return (false, "Veuillez saisir obligatoirement un montant valide.");
+
             // Utilisation d'await au lieu de .Result
             var getLigne = await adminService.GetBudgetByCode(budget.CodeBudget);
             if (getLigne != null) // si getLigne existe déjà, le budget est dupliqué
@@ -102,6 +105,9 @@ namespace SuiviBudge.Validators
             if (string.IsNullOrEmpty(budget.LibelleBudget))
                 return (false, "Veuillez saisir obligatoirement le libellé du budget");
 
+            if (budget.MontantBudget <= 0)
+                return (false, "Veuillez saisir obligatoirement un montant valide.");
+
             var getBudget = adminService.GetBudgetByCode(budget.CodeBudget);
             if (getBudget == null)
                 return (false, "Le budget à modifier n'existe pas dans la base de donnée");
@@ -120,7 +126,7 @@ namespace SuiviBudge.Validators
             if (getBudget.MontantUtilise > 0)
                 return (false, "Impossible de supprimer car ce budget a fait l'objet d'une dépense.Veuillez supprimer ces depense avant la suppression.");
 
-            if (getBudget.StatutBudget ==StatutBudgetConst.Cloture)
+            if (getBudget.StatutBudget == StatutBudgetConst.Cloture)
                 return (false, "Impossible de supprimer car ce budget dejà Clôturé");
 
 
@@ -144,6 +150,23 @@ namespace SuiviBudge.Validators
             if (getLigne != null)
                 return (false, $"Le type de dépense [{ligneBugetaire.CodeLigneBudgetaire}] existe dejà dans notre base de donnée pour ce budget");
 
+            var budget = await adminService.GetBudgetByCode(ligneBugetaire.CodeBudget);
+            if (budget == null)
+                return (false, $"Le budget sur lequel vous souhaitez ajouté ce detail n'existe pas dans notre système.");
+
+            var details = await adminService.GetBudgetDetailItems(budget.CodeBudget, string.Empty);
+            if (details == null)
+            {
+                if (budget.MontantBudget < ligneBugetaire.Montant)
+                    return (false, $"Impossible, car le montant  du type de depense est superieur au montant du budget .");
+            }
+            else
+            {
+                var mtntTotal = details.Sum(x => x.Montant) + ligneBugetaire.Montant;
+                if (budget.MontantBudget < mtntTotal)
+                    return (false, $"Impossible, car le montant des types de depense est superieur au montant du budget .");
+            }
+
             var typeDepense = await adminService.GetExecutionBudgetaireDetailsByBudgetDetail(ligneBugetaire.CodeBudget, ligneBugetaire.CodeLigneBudgetaire);
             if (typeDepense != null)
                 return (false, $"Le type de dépense [{ligneBugetaire.CodeLigneBudgetaire}] existe dejà dans notre base de donnée pour ce budget");
@@ -165,6 +188,23 @@ namespace SuiviBudge.Validators
             if (getLigne == null)
                 return (false, $"Modification impossible.Le type de dépense[{ligneBugetaire.CodeLigneBudgetaire}] existe pas;");
 
+            var budget = await adminService.GetBudgetByCode(ligneBugetaire.CodeBudget);
+            if (budget == null)
+                return (false, $"Le budget sur lequel vous souhaitez ajouté ce detail n'existe pas dans notre système.");
+
+            var details = await adminService.GetBudgetDetailItems(budget.CodeBudget, string.Empty);
+            if (details == null)
+            {
+                if (budget.MontantBudget < ligneBugetaire.Montant)
+                    return (false, $"Impossible, car le montant  du type de depense est superieur au montant du budget .");
+            }
+            else
+            {
+                details = details.Where(d => d.BudgetDetailID != ligneBugetaire.BudgetDetailID).ToList();
+                var mtntTotal = details.Sum(x => x.Montant) + ligneBugetaire.Montant;
+                if (budget.MontantBudget < mtntTotal)
+                    return (false, $"Impossible, car le montant total des types de depense est superieur au montant du budget .");
+            }
             return (true, string.Empty);
         }
 
@@ -177,6 +217,36 @@ namespace SuiviBudge.Validators
             var getLigne = await adminService.GetExecutionBudgetaireDetailsByBudgetDetail(ligneBugetaire.CodeBudget, ligneBugetaire.CodeLigneBudgetaire);
             if (getLigne != null)
                 return (false, $"Impossible de supprimer, ce detail du budget {ligneBugetaire.CodeBudget} a dejà fait l'objet d'une exécution budgetaire");
+
+            return (true, string.Empty);
+        }
+
+        #endregion
+
+        #region Reajustement 
+        public static async Task<(bool isSuccess, string message)> ValidateReajustementCreate(ReajusterModel reajustement)
+        {
+            if (reajustement == null)
+                return (false, "Aucune donnée disponible pour l'ajout des allocations budgétaire'");
+
+            var budget = await adminService.GetBudgetByCode1(reajustement.CodeBudget);
+            if (budget == null)
+                return (false, $"Le budget sur lequel vous souhaitez ajouté ce detail n'existe pas dans notre système.");
+
+            if (budget.MontantNonAlloue < reajustement.Montant)
+                return (false, $"Impossible, car le montant non alloué [{budget.MontantNonAlloue}] est inferieur au montant de réajustement");
+
+            return (true, string.Empty);
+        }
+
+        public static async Task<(bool isSuccess, string message)> ValidateReajustementDelete(ReajusterManageModel reaj)
+        {
+            if (reaj == null)
+                return (false, "Aucune donnée disponible pour la suppression de ce réajustement");
+
+            var reajustement = await adminService.GetReajustementByCode(reaj.CodeBudget, reaj.CodeLigneBudgetaire);
+            if (reajustement == null)
+                return (false, "Le réajustement à supprimer n'existe pas dans la base de donnée");
 
             return (true, string.Empty);
         }
@@ -255,6 +325,27 @@ namespace SuiviBudge.Validators
             if (execution.DateExecution == DateTime.MinValue)
                 return (false, "Veuillez saisir une date valide");
 
+            var typeDepense = await adminService.GetBudgetDetailByBudgetLigne(execution.CodeBudget, execution.CodeLigneBudgetaire);
+            if (typeDepense == null)
+                return (false, "Cette type de depense n'existe pas dans la liste definie dans notre système.");
+
+            var depense = await adminService.GetExecutionBudgetaireDetailsItems(execution.CodeBudget, execution.CodeLigneBudgetaire);
+
+            if (depense.Count == 0)
+            {
+                if (typeDepense.Montant < execution.Montant)
+                {
+                    return (false, $"Impossible, car le montant saisi est superieur au montant defini pour ce type de depense qui est {typeDepense.Montant}.");
+                }
+            }
+            else
+            {
+                var total = depense.Sum(x => x.Montant) + execution.Montant;
+                if (typeDepense.Montant < total)
+                {
+                    return (false, $"Impossible, car le montant total des depenses est superieur au montant defini pour ce type de depense qui est {typeDepense.Montant}.");
+                }
+            }
 
             // Utilisation d'await au lieu de .Result
             var budget = await adminService.GetBudgetByCode(execution.CodeBudget);

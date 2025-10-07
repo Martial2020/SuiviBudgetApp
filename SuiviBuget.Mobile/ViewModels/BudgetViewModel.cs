@@ -101,6 +101,7 @@ namespace SuiviBuget.Mobile.ViewModels
                     DataItem.DateDebutBudget = budget.DateDebutBudget;
                     DataItem.DateFinBudget = budget.DateFinBudget;
                     DataItem.StatutBudget = budget.StatutBudget;
+                    DataItem.MontantBudget = budget.MontantBudget;
                     break;
                 default:
                     break;
@@ -126,8 +127,8 @@ namespace SuiviBuget.Mobile.ViewModels
                     DateDebutBudget = DataItem.DateDebutBudget,
                     DateFinBudget = DataItem.DateFinBudget,
                     DateCreationBudget = DateTime.Now,
-                    //DescriptionBudget = "",
-                    MontantBudget = 0,
+                    Description = DataItem.Description,
+                    MontantBudget = DataItem.MontantBudget,
                     NbreLigneBudgetaire = 0,
                     StatutBudget = StatutBudgetConst.Ouvert
                 };
@@ -169,10 +170,10 @@ namespace SuiviBuget.Mobile.ViewModels
                     DateDebutBudget = DataItem.DateDebutBudget,
                     DateFinBudget = DataItem.DateFinBudget,
                     DateCreationBudget = DataItem.DateCreationBudget,
-                    //DescriptionBudget = "",
+                    Description = DataItem.Description,
                     MontantBudget = DataItem.MontantBudget,
                     NbreLigneBudgetaire = DataItem.NbreLigneBudgetaire,
-                    StatutBudget = DataItem.statutBudget
+                    StatutBudget = DataItem.StatutBudget
                 };
                 var isOk = await adminService.UpdateBudgetAsync(dataEntity);
                 if (!isOk)

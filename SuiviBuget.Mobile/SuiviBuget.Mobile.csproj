@@ -114,6 +114,9 @@
 		<Compile Update="Views\BudgetDetailView.xaml.cs">
 			<DependentUpon>BudgetDetailView.xaml</DependentUpon>
 		</Compile>
+		<Compile Update="Views\DetailsBudgetView.xaml.cs">
+		  <DependentUpon>DetailsBudgetView.xaml</DependentUpon>
+		</Compile>
 		<Compile Update="Views\ExecutionBudgetaireManageDetailView.xaml.cs">
 			<DependentUpon>ExecutionBudgetaireManageDetailView.xaml</DependentUpon>
 		</Compile>
@@ -131,6 +134,9 @@
 		</MauiXaml>
 		<MauiXaml Update="Views\BudgetView.xaml">
 			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\DetailsBudgetView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Views\ExecutionBudgetaireDetailView.xaml">
 			<Generator>MSBuild:Compile</Generator>
@@ -164,6 +170,12 @@
 		</MauiXaml>
 		<MauiXaml Update="Views\PopUpMenuView.xaml">
 			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\ReajusterManageView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\ReajusterView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Views\ReinitilaiserView.xaml">
 			<Generator>MSBuild:Compile</Generator>

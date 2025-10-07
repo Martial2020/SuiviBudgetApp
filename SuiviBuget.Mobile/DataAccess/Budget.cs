@@ -14,6 +14,9 @@ namespace SuiviBudget.Services.DataAccess
         public string LibelleBudget { get; set; }
         public string DescriptionBudget { get; set; }
         public decimal MontantBudget { get; set; }
+        public decimal MontantAlloue { get; set; }
+        public decimal MontantNonAlloue { get; set; }
+        public decimal MontantReajustement { get; set; }    
         public decimal MontantUtilise { get; set; }
         public decimal MontantRestant { get; set; }
         public DateTime DateCreationBudget { get; set; }

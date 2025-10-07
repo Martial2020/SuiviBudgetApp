@@ -6,7 +6,11 @@ namespace SuiviBuget.Mobile
     {
         public AppShell()
         {
-            InitializeComponent();         
+            InitializeComponent();
+            
+            Routing.RegisterRoute(nameof(DetailsBudgetView), typeof(DetailsBudgetView));
+            Routing.RegisterRoute(nameof(ReajusterView), typeof(ReajusterView));
+            Routing.RegisterRoute(nameof(ReajusterManageView), typeof(ReajusterManageView));
             Routing.RegisterRoute(nameof(RestaurationView), typeof(RestaurationView));
             Routing.RegisterRoute(nameof(ReinitialiserView), typeof(ReinitialiserView));
             Routing.RegisterRoute(nameof(LigneBudgetaireManageView), typeof(LigneBudgetaireManageView));         

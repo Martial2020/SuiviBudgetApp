@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SuiviBuget.Mobile.Views.ReajusterView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewModels="clr-namespace:SuiviBuget.Mobile.ViewModels;assembly=SuiviBuget.Mobile"
+    Title="{Binding Title}">
+    <!--  Liaison du ViewModel à la page  -->
+    <ContentPage.BindingContext>
+        <viewModels:ReajusterViewModel />
+    </ContentPage.BindingContext>
+    <VerticalStackLayout Padding="20" Spacing="5">
+        <!--  ComboBox (Picker dans MAUI)  -->
+        <Label FontAttributes="Bold" Text="Type de dépense :" />
+        <Picker
+            Title="Sélectionnez un type de dépense"
+            IsEnabled="{Binding CodeLigneBudgetaireIsEnabled, Mode=TwoWay}"
+            ItemDisplayBinding="{Binding LibelleLigneBudgetaire, Mode=TwoWay}"
+            ItemsSource="{Binding LigneBudgetaireItems, Mode=TwoWay}"
+            SelectedItem="{Binding SelectedLigneBudgetaire, Mode=TwoWay}" />
+
+        <!--  Champ Montant  -->
+        <Label FontAttributes="Bold" Text="Montant :" />
+        <Entry
+            x:Name="MontantEntry"
+            Keyboard="Numeric"
+            Placeholder="Entrez le montant"
+            Text="{Binding DataItem.Montant, Mode=TwoWay}" />
+
+        <Label FontAttributes="Bold" Text="Date:" />
+        <DatePicker
+            x:Name="DatePickerDebut"
+            Date="{Binding DataItem.DateExecution, Mode=TwoWay}"
+            Format="dd/MM/yyyy" />
+
+        <!--  Nouveau champ : Description  -->
+        <Editor
+            AutoSize="TextChanges"
+            HeightRequest="100"
+            Placeholder="Veuillez saisir le détail en quelques lignes"
+            Text="{Binding DataItem.Description}" />
+
+
+        <Button
+            BackgroundColor="#FF7F50"
+            Command="{Binding SubmitCommand}"
+            CornerRadius="8"
+            Text="{Binding LabelButton}"
+            TextColor="White" />
+
+
+    </VerticalStackLayout>
+</ContentPage>

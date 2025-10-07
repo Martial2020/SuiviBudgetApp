@@ -173,6 +173,9 @@ namespace SuiviBuget.Mobile.ViewModels
                     StatutBudget = x.StatutBudget,
                     MontantUtilise = x.MontantUtilise,
                     MontantRestant = x.MontantRestant,
+                    MontantAlloue=x.MontantAlloue,
+                    MontantNonAlloue=x.MontantNonAlloue,
+                    MontantReajustement=x.MontantReajustement,
                     BackgroundColorStatut = Helper.GetBackgroundColor(x.StatutBudget)
                 }));
             ActualiserNombreBudget();

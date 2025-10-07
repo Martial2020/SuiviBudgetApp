@@ -9,6 +9,7 @@ using SuiviBudget.Mobile.Constants;
 using SuiviBudget.Mobile.Interfaces;
 using SuiviBudget.Services.DataAccess;
 using SuiviBuget.Mobile.DataAccess;
+using SuiviBuget.Mobile.Helpers;
 using SuiviBuget.Mobile.Models;
 
 namespace SuiviBuget.Mobile.Services
@@ -30,6 +31,7 @@ namespace SuiviBuget.Mobile.Services
             _db.CreateTableAsync<ParametreCompteur>().Wait();
             _db.CreateTableAsync<BudgetDetail>().Wait();
             _db.CreateTableAsync<ExecutionBudgetaire>().Wait();
+            _db.CreateTableAsync<Reajustement>().Wait();
         }
         #endregion
 
@@ -139,14 +141,14 @@ namespace SuiviBuget.Mobile.Services
                 return new List<LigneBudgetaireModel>();
             }
         }
-        public async Task<List<LigneBudgetaireModel>> GetLigneBudgetaireExclusionItems(string code,string ligne)
+        public async Task<List<LigneBudgetaireModel>> GetLigneBudgetaireExclusionItems(string code, string ligne)
         {
             try
             {
                 var details = await GetBudgetDetailItems(code, "");
                 var codesDetails = details.Select(d => d.CodeLigneBudgetaire).ToList();
                 if (!string.IsNullOrEmpty(ligne))
-                     codesDetails = details.Where(l => l.CodeLigneBudgetaire != ligne).Select(d => d.CodeLigneBudgetaire).ToList();
+                    codesDetails = details.Where(l => l.CodeLigneBudgetaire != ligne).Select(d => d.CodeLigneBudgetaire).ToList();
 
                 // récupérer tous les codes des détails
                 // exclure ces codes de la requête
@@ -268,9 +270,14 @@ namespace SuiviBuget.Mobile.Services
                     DateCreationBudget = budget.DateCreationBudget,
                     DateDebutBudget = budget.DateDebutBudget,
                     DateFinBudget = budget.DateFinBudget,
-                    //DescriptionBudget = budget.DescriptionBudget,
+                    DescriptionBudget = budget.Description,
                     LibelleBudget = budget.LibelleBudget,
                     MontantBudget = budget.MontantBudget,
+                    MontantAlloue = 0,
+                    MontantNonAlloue = budget.MontantBudget,
+                    MontantRestant = 0,
+                    MontantUtilise = 0,
+                    MontantReajustement = 0,
                     NbreLigneBudgetaire = budget.NbreLigneBudgetaire,
                     StatutBudget = budget.StatutBudget,
                     DateCreation = DateTime.Now
@@ -307,10 +314,12 @@ namespace SuiviBuget.Mobile.Services
                 getBudget.DateDebutBudget = budget.DateDebutBudget;
                 getBudget.DateFinBudget = budget.DateFinBudget;
                 getBudget.LibelleBudget = budget.LibelleBudget;
-                //getBudget.MontantBudget = budget.MontantBudget;
+                getBudget.MontantBudget = budget.MontantBudget;
+                getBudget.DescriptionBudget = budget.Description;
                 //getBudget.NbreLigneBudgetaire = budget.NbreLigneBudgetaire;
                 getBudget.StatutBudget = budget.StatutBudget;
                 await _db.UpdateAsync(getBudget);
+                MisAjourBudget(getBudget.CodeBudget);
                 return true;
             }
             catch (Exception ex)
@@ -361,6 +370,41 @@ namespace SuiviBuget.Mobile.Services
                 return null;
             }
         }
+        public async Task<BudgetManageModel> GetBudgetByCode1(string codeBudget)
+        {
+            try
+            {
+                var budgetItem = await _db.Table<Budget>()
+                                          .Where(x => x.CodeBudget == codeBudget)
+                                          .FirstOrDefaultAsync();
+                if (budgetItem == null)
+                    return null;
+
+                return new BudgetManageModel
+                {
+                    CodeBudget = budgetItem.CodeBudget,
+                    DateCreationBudget = budgetItem.DateCreationBudget,
+                    DateDebutBudget = budgetItem.DateDebutBudget,
+                    DateFinBudget = budgetItem.DateFinBudget,
+                    DescriptionBudget = budgetItem.DescriptionBudget,
+                    LibelleBudget = budgetItem.LibelleBudget,
+                    MontantBudget = budgetItem.MontantBudget,
+                    NbreLigneBudgetaire = budgetItem.NbreLigneBudgetaire,
+                    StatutBudget = budgetItem.StatutBudget,
+                    MontantNonAlloue = budgetItem.MontantNonAlloue,
+                    MontantAlloue = budgetItem.MontantAlloue,
+                    MontantReajustement = budgetItem.MontantReajustement,
+                    MontantRestant = budgetItem.MontantRestant,
+                    MontantUtilise = budgetItem.MontantUtilise,
+                    BackgroundColorStatut= Helper.GetBackgroundColor(budgetItem.StatutBudget)
+                };
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors de la récupération de la ligne budgétaire par code: {ex.Message}");
+                return null;
+            }
+        }
 
         public async Task<Budget> GetBudgetByCodeBudget(string codeBudget)
         {
@@ -402,7 +446,10 @@ namespace SuiviBuget.Mobile.Services
                         NbreLigneBudgetaire = budgetItem.NbreLigneBudgetaire,
                         StatutBudget = budgetItem.StatutBudget,
                         MontantUtilise = budgetItem.MontantUtilise,
-                        MontantRestant = budgetItem.MontantBudget - budgetItem.MontantUtilise
+                        MontantRestant = budgetItem.MontantRestant,
+                        MontantNonAlloue = budgetItem.MontantNonAlloue,
+                        MontantAlloue = budgetItem.MontantAlloue,
+                        MontantReajustement = budgetItem.MontantReajustement
 
                     })
                     .OrderByDescending(x => x.DateCreationBudget)
@@ -442,7 +489,11 @@ namespace SuiviBuget.Mobile.Services
                         NbreLigneBudgetaire = budgetItem.NbreLigneBudgetaire,
                         StatutBudget = budgetItem.StatutBudget,
                         MontantUtilise = budgetItem.MontantUtilise,
-                        MontantRestant = budgetItem.MontantRestant
+                        MontantRestant = budgetItem.MontantRestant,
+                        MontantNonAlloue = budgetItem.MontantNonAlloue,
+                        MontantAlloue = budgetItem.MontantAlloue,
+                        MontantReajustement = budgetItem.MontantReajustement
+
                     })
                     .OrderByDescending(x => x.DateCreationBudget)
                     .ToList();
@@ -614,6 +665,83 @@ namespace SuiviBuget.Mobile.Services
         }
         #endregion
 
+        #region Reajustement
+        public async Task<List<ReajusterManageModel>> GetReajustementItems(string codeBudget, string searchText)
+        {
+            try
+            {
+                var isSearchEmpty = string.IsNullOrWhiteSpace(searchText?.ToLower() ?? "");
+                var lignes = await _db.Table<LigneBudgetaire>().ToListAsync();
+                var budgetDetails = await _db.Table<Reajustement>()
+                    .Where(b => b.CodeBudget == codeBudget)
+                    .ToListAsync();
+
+                var query = (from b in budgetDetails
+                             join l in lignes on b.CodeLigneBudgetaire equals l.CodeLigneBudgetaire
+                             where (string.IsNullOrEmpty(searchText)
+                                    || l.LibelleLigneBudgetaire.ToLower().Contains(searchText.ToLower()))
+                             select new ReajusterManageModel
+                             {
+                                 ReajusterID = b.ReajustementID,
+                                 CodeBudget = b.CodeBudget,
+                                 CodeLigneBudgetaire = l.CodeLigneBudgetaire,
+                                 LibelleLigneBudgetaire = l.LibelleLigneBudgetaire,
+                                 Montant = b.Montant,
+                                 Motif=b.Motif
+                             }).ToList();
+
+                return query;
+            }
+            catch (Exception ex)
+            {
+                // Log erreur (peut-être un fichier ou un service de journalisation)
+                Console.WriteLine($"Erreur lors de la récupération des lignes budgétaires: {ex.Message}");
+                return new List<ReajusterManageModel>();
+            }
+        }
+        public async Task<bool> AddReajustementAsync(Reajustement reajustement)
+        {
+            try
+            {
+                await _db.InsertAsync(reajustement);
+                MisAjourBudget(reajustement.CodeBudget);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors de l'ajout: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<bool> DeleteReajustementAsync(Reajustement reajustement)
+        {
+            var reaj = await _db.Table<Reajustement>()
+                 .FirstOrDefaultAsync(x => x.ReajustementID == reajustement.ReajustementID);
+
+            if (reaj == null)
+                return false; // Ligne non trouvée
+
+            await _db.DeleteAsync(reaj);
+            MisAjourBudget(reajustement.CodeBudget);
+            return true;
+        }
+
+        public async Task<Reajustement> GetReajustementByCode(string codeBudget, string ligne)
+        {
+            try
+            {
+               return await _db.Table<Reajustement>()
+                .FirstOrDefaultAsync(x => x.CodeBudget == codeBudget && x.CodeLigneBudgetaire==ligne);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors de la récupération de la ligne budgétaire par code: {ex.Message}");
+                return null;
+            }
+        }
+
+        #endregion
+
         #region ExecutionBudgetaire
         public async Task<bool> AddExecutionBudgetaireDetailAsync(ExecutionBudgetaire execution)
         {
@@ -646,7 +774,7 @@ namespace SuiviBuget.Mobile.Services
             try
             {
                 var executions = await _db.Table<ExecutionBudgetaire>()
-                    .Where(e=>e.CodeBudget==codeBudget)
+                    .Where(e => e.CodeBudget == codeBudget)
                     .ToListAsync();
                 var lignes = await _db.Table<LigneBudgetaire>()
                     .Where(x => x.CodeLigneBudgetaire == ligneBudgetaire).ToListAsync();
@@ -756,7 +884,7 @@ namespace SuiviBuget.Mobile.Services
                                  CodeBudget = e.CodeBudget,
                                  Description = e.Description,
                                  LibelleBudget = b.LibelleBudget,
-                                 DateCreation=e.DateCreation
+                                 DateCreation = e.DateCreation
                              }).OrderByDescending(x => x.DateCreation).ToList();
                 return query;
             }
@@ -960,27 +1088,45 @@ namespace SuiviBuget.Mobile.Services
         }
         private async void MisAjourBudget(string codeBudget)
         {
-            decimal montantBudget = 0;
-            decimal montantUtilise = 0;
+            var budget = await GetBudgetByCodeBudget(codeBudget);
+
+            if (budget == null) return;
+
             var ligneBudgetaire = await _db.Table<BudgetDetail>().Where(x => x.CodeBudget == codeBudget).ToListAsync();
-            var executionBudgetaire = await _db.Table<ExecutionBudgetaire>().Where(x => x.CodeBudget == codeBudget).ToListAsync();
+            var depenses = await _db.Table<ExecutionBudgetaire>().Where(x => x.CodeBudget == codeBudget).ToListAsync();
+            var reajustement = await _db.Table<Reajustement>().Where(x => x.CodeBudget == codeBudget).ToListAsync();
 
             //Montant definie pour le budget
             if (ligneBudgetaire.Count() > 0)
-                montantBudget = ligneBudgetaire.Sum(x => x.Montant);
+            {
+                budget.MontantAlloue = ligneBudgetaire.Sum(x => x.Montant);
+            }
+            else
+            {
+                budget.MontantAlloue = 0;
+            }
 
             //Montant utilise dans le budget
-            if (executionBudgetaire.Count() > 0)
-                montantUtilise = executionBudgetaire.Sum(x => x.Montant);
+            if (depenses.Count() > 0)
+            {
+                budget.MontantUtilise = depenses.Sum(x => x.Montant);
+                budget.MontantRestant = budget.MontantAlloue - budget.MontantUtilise;
+            }
+            else
+            {
+                budget.MontantUtilise = 0;
+                budget.MontantRestant = budget.MontantAlloue;
+            }
 
-            var budget = await GetBudgetByCodeBudget(codeBudget);
-
-            if (budget == null)
-                return;
-
-            budget.MontantBudget = montantBudget;
-            budget.MontantUtilise = montantUtilise;
-            budget.MontantRestant = montantBudget - montantUtilise;
+            if (reajustement.Count() > 0)
+            {
+                budget.MontantReajustement = reajustement.Sum(x => x.Montant);
+            }
+            else
+            {
+                budget.MontantReajustement = 0;
+            }
+            budget.MontantNonAlloue = budget.MontantBudget - budget.MontantAlloue - budget.MontantReajustement;
             budget.NbreLigneBudgetaire = ligneBudgetaire.Count();
             var isUpdate = await UpdateBudgetAsync(budget);
         }

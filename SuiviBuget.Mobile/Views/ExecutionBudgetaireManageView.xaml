@@ -103,17 +103,17 @@
                             HasShadow="True">
 
 
-                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto">
 
                                 <!--  Infos Budget  -->
-                                <VerticalStackLayout
+                                <HorizontalStackLayout
                                     Grid.Row="0"
                                     Grid.Column="0"
-                                    Spacing="1">
-                                    <Label FontAttributes="Bold" Text="{Binding CodeBudget}" />
+                                    Spacing="2">
+                                    <Label Text="{Binding CodeBudget}" />
+                                    <Label Text="-" />
                                     <Label FontAttributes="Bold" Text="{Binding LibelleBudget}" />
-                                </VerticalStackLayout>
-
+                                </HorizontalStackLayout>
                                 <!--  Bouton Actions modernisé (menu ⋮)  -->
                                 <Button
                                     Grid.RowSpan="2"
@@ -131,7 +131,6 @@
                                     TextColor="#4682B4"
                                     VerticalOptions="Center"
                                     WidthRequest="40" />
-
                                 <!--  Dates  -->
                                 <HorizontalStackLayout
                                     Grid.Row="1"
@@ -140,57 +139,49 @@
                                     <Label Text="{Binding DateDebutBudget, StringFormat='Du : {0:dd/MM/yyyy}'}" TextColor="Gray" />
                                     <Label Text="{Binding DateFinBudget, StringFormat='Au : {0:dd/MM/yyyy}'}" TextColor="Gray" />
                                 </HorizontalStackLayout>
-
+                                <!--  Montants  -->
                                 <!--  Montants  -->
                                 <HorizontalStackLayout
                                     Grid.Row="2"
                                     Grid.ColumnSpan="2"
                                     Spacing="4">
-                                    <Label Text="{Binding MontantBudget, StringFormat='Solde : {0:N0} FCFA'}" TextColor="#1E3A8A" />
-                                    <!--<Label Text="{Binding MontantRestant, StringFormat='Rest : {0:N0} FCFA'}" TextColor="Blue"/>-->
+                                    <Label Text="{Binding MontantBudget, StringFormat='Budget : {0:N0} FCFA'}" TextColor="#1E40AF" />
+                                    <!--  Bleu foncé  -->
                                 </HorizontalStackLayout>
 
-                                <!--  Statut  -->
                                 <HorizontalStackLayout
                                     Grid.Row="3"
                                     Grid.ColumnSpan="2"
-                                    HorizontalOptions="Start"
-                                    Spacing="4">
-                                    <Label Text="{Binding MontantUtilise, StringFormat='Utilisé : {0:N0} FCFA'}" TextColor="#F59E0B" />
-                                </HorizontalStackLayout>
+                                    Margin="0,5,0,0"
+                                    Spacing="8"
+                                    VerticalOptions="Center">
 
-                                <!--  Statut  -->
-                                <HorizontalStackLayout
-                                    Grid.Row="4"
-                                    Grid.ColumnSpan="2"
-                                    HorizontalOptions="Start"
-                                    Spacing="4">
-                                    <Label Text="{Binding MontantRestant, StringFormat='Restant : {0:N0} FCFA'}" TextColor="#16A34A" />
-                                </HorizontalStackLayout>
+                                    <Label
+                                        Text="Statut :"
+                                        TextColor="#92400E"
+                                        VerticalOptions="Center" />
 
-
-
-                                <HorizontalStackLayout
-                                    Grid.Row="4"
-                                    Grid.ColumnSpan="2"
-                                    HorizontalOptions="End"
-                                    Spacing="15">
                                     <Frame
-                                        Padding="8"
+                                        Padding="6,2"
                                         BackgroundColor="{Binding BackgroundColorStatut}"
-                                        CornerRadius="15">
+                                        BorderColor="{Binding BackgroundColorStatut}"
+                                        CornerRadius="4"
+                                        HasShadow="False"
+                                        VerticalOptions="Center">
+
                                         <Label
                                             FontAttributes="Bold"
+                                            FontSize="13"
                                             Text="{Binding StatutBudget}"
-                                            TextColor="White" />
+                                            TextColor="White"
+                                            VerticalOptions="Center"
+                                            VerticalTextAlignment="Center" />
                                     </Frame>
-                                    <!--<Label
-                                        FontAttributes="Italic"
-                                        Text="{Binding StatutBudget}"
-                                        TextColor="Red" />-->
                                 </HorizontalStackLayout>
 
+
                             </Grid>
+
 
                         </Frame>
                     </DataTemplate>

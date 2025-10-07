@@ -24,6 +24,7 @@ public partial class BudgetManageView : ContentPage
                 //options.Add("💳 Mode de paiement");   // carte pour paiement
                 options.Add("✎ Modifier");   // stylo
                 options.Add("🗑 Supprimer"); // poubelle
+                options.Add("📄 Détails du budget");
                 options.Add("💰 Allocation budgétaire");
                 options.Add("⏳ Mettre en cours");
             }
@@ -31,10 +32,18 @@ public partial class BudgetManageView : ContentPage
             {
                 options.Add("✎ Modifier");   // stylo
                 options.Add("🗑 Supprimer"); // poubelle
+                options.Add("📄 Détails du budget");
                 options.Add("💰 Allocation budgétaire");
+                options.Add("♻️ Réajustement budgétaire");              
                 options.Add("🔒 Clôturer");
-            }else
+            }
+            else
+            {
+                
+                options.Add("📄 Détails du budget");
                 options.Add("💰 Allocation budgétaire");
+                options.Add("♻️ Réajustement budgétaire");
+            }
             //else
             //{
             //    options.Add("Supprimer");
@@ -76,6 +85,13 @@ public partial class BudgetManageView : ContentPage
                     case "💰 Allocation budgétaire":
                         vm.BudgetDetailCommand.Execute(item);
                         break;
+                    case "♻️ Réajustement budgétaire":
+                        vm.ReajusterCommand.Execute(item);
+                        break;
+                    case "📄 Détails du budget":
+                        vm.DetailsBudgetCommand.Execute(item);
+                        break;
+
                 }
             }
         }

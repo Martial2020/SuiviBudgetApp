@@ -128,9 +128,11 @@ namespace SuiviBuget.Mobile.ViewModels
         public ICommand EditCommand { get; }
         public ICommand DeleteCommand { get; }
         public ICommand BudgetDetailCommand { get; }
+        public ICommand ReajusterCommand { get; }
         public ICommand CloturerCommand { get; }
         public ICommand EncoursCommand { get; }
         public ICommand FilterStatutCommand { get; }
+        public ICommand DetailsBudgetCommand { get; }
 
         public BudgetManageViewModel()
         {
@@ -146,10 +148,13 @@ namespace SuiviBuget.Mobile.ViewModels
             EditCommand = new RelayCommand<BudgetManageModel>(OnEdit);
             DeleteCommand = new RelayCommand<BudgetManageModel>(OnDelete);
             BudgetDetailCommand = new RelayCommand<BudgetManageModel>(OnBudgetDetailCommand);
+            ReajusterCommand = new RelayCommand<BudgetManageModel>(OnReajusterCommand);
             CloturerCommand = new RelayCommand<BudgetManageModel>(OnCloturerCommand);
             EncoursCommand = new RelayCommand<BudgetManageModel>(OnEncoursCommand);
             FilterStatutCommand = new RelayCommand<string>(OnFilterStatutCommand);
+            DetailsBudgetCommand= new RelayCommand<BudgetManageModel>(OnDetailsBudgetCommand);
         }
+        private async void OnDetailsBudgetCommand(BudgetManageModel budget) => await _navigationService.NavigateToAsync("DetailsBudgetView",budget.CodeBudget);
         private async void ActualiserNombreBudget()
         {
             var statuts = new List<string> { StatutBudgetConst.Ouvert, StatutBudgetConst.Encours, StatutBudgetConst.Cloture };
@@ -170,8 +175,17 @@ namespace SuiviBuget.Mobile.ViewModels
                 ClotureLabel = $"{ClotureLabel.Trim()} {budgets.Where(e => e.StatutBudget == StatutBudgetConst.Cloture).Count()}";
         }
 
-        private void OnFilterStatutCommand(string statut) => SelectedFilter = statut;
+        private async void OnReajusterCommand(BudgetManageModel budget)
+        {
+            if (budget == null)
+            {
+                await _alertService.ShowAlertAsync("Information", "Veuillez selectionner un budget.");
+                return;
+            }
+            await _navigationService.NavigateToAsync("ReajusterManageView", budget.CodeBudget);
 
+        }
+        private void OnFilterStatutCommand(string statut) => SelectedFilter = statut;
         private async void OnEncoursCommand(BudgetManageModel budget)
         {
             var confirm = await Shell.Current.CurrentPage.DisplayAlert("Confirmation", $"Changer le statut du budget [{budget.CodeBudget}] ?", "Oui", "Non");
@@ -325,6 +339,9 @@ namespace SuiviBuget.Mobile.ViewModels
                     StatutBudget = x.StatutBudget,
                     MontantUtilise = x.MontantUtilise,
                     MontantRestant = x.MontantRestant,
+                    MontantAlloue=x.MontantAlloue,
+                    MontantNonAlloue=x.MontantNonAlloue,
+                    MontantReajustement=x.MontantReajustement,
                     BackgroundColorStatut = Helper.GetBackgroundColor(x.StatutBudget)
                 }));
             ActualiserNombreBudget();

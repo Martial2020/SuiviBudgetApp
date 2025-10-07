@@ -29,6 +29,7 @@ namespace SuiviBudget.Mobile.Interfaces
         Task<bool> DeleteBudgetAsync(Budget budget);
         Task<bool> UpdateBudgetAsync(BudgetModel budget);
         Task<BudgetModel> GetBudgetByCode(string codeBudget);
+        Task<BudgetManageModel> GetBudgetByCode1(string codeBudget);
         Task<List<BudgetManageModel>> GetBudgetItems(string searchText);
         Task<Budget> GetBudgetByCodeBudget(string codeBudget);
         Task<List<BudgetManageModel>> GetBudgetItemsByStatus(string searchText, List<string> statuts);
@@ -45,6 +46,15 @@ namespace SuiviBudget.Mobile.Interfaces
 
         Task<BudgetDetail> GetBudgetDetailByCodeLigneBudgetaire(string codeLigne);
         Task<BudgetDetail> GetBudgetDetailByBudgetLigne(string codeBudget, string codeLigneBudgetaire);
+        #endregion
+
+
+        #region Reajustement 
+        Task<bool> DeleteReajustementAsync(Reajustement reajustement);
+        Task<Reajustement> GetReajustementByCode(string codeBudget,string ligne);
+
+        Task<List<ReajusterManageModel>> GetReajustementItems(string codeBudget, string searchText);
+        Task<bool> AddReajustementAsync(Reajustement reajustement);
         #endregion
 
         #region Execution budgetaire
