@@ -297,6 +297,7 @@ namespace SuiviBuget.Mobile.Services
         {
 
             await DeleteBudgetDetailByCodeBudgetAsync(budget.CodeBudget);
+            await DeleteReajustementByCodeBudgetAsync(budget.CodeBudget);
             await _db.DeleteAsync(budget);
             return true;
         }
@@ -357,7 +358,7 @@ namespace SuiviBuget.Mobile.Services
                     DateCreationBudget = budgetItem.DateCreationBudget,
                     DateDebutBudget = budgetItem.DateDebutBudget,
                     DateFinBudget = budgetItem.DateFinBudget,
-                    //DescriptionBudget = budgetItem.DescriptionBudget,
+                    Description = budgetItem.DescriptionBudget,
                     LibelleBudget = budgetItem.LibelleBudget,
                     MontantBudget = budgetItem.MontantBudget,
                     NbreLigneBudgetaire = budgetItem.NbreLigneBudgetaire,
@@ -396,7 +397,7 @@ namespace SuiviBuget.Mobile.Services
                     MontantReajustement = budgetItem.MontantReajustement,
                     MontantRestant = budgetItem.MontantRestant,
                     MontantUtilise = budgetItem.MontantUtilise,
-                    BackgroundColorStatut= Helper.GetBackgroundColor(budgetItem.StatutBudget)
+                    BackgroundColorStatut = Helper.GetBackgroundColor(budgetItem.StatutBudget)
                 };
             }
             catch (Exception ex)
@@ -573,6 +574,20 @@ namespace SuiviBuget.Mobile.Services
                 return false;
             }
         }
+        public async Task<bool> UpdateBudgetDetailAsync(BudgetDetail detail)
+        {
+            try
+            {
+                await _db.UpdateAsync(detail);
+                MisAjourBudget(detail.CodeBudget);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors de la mise à jour: {ex.Message}");
+                return false;
+            }
+        }
         public async Task<BudgetDetail> GetBudgetDetailByCode(Guid detailID)
         {
             try
@@ -666,20 +681,22 @@ namespace SuiviBuget.Mobile.Services
         #endregion
 
         #region Reajustement
-        public async Task<List<ReajusterManageModel>> GetReajustementItems(string codeBudget, string searchText)
+        public async Task<List<ReajusterManageModel>> GetReajustementItems(List<string> codeBudgets, string searchText)
         {
             try
             {
                 var isSearchEmpty = string.IsNullOrWhiteSpace(searchText?.ToLower() ?? "");
                 var lignes = await _db.Table<LigneBudgetaire>().ToListAsync();
                 var budgetDetails = await _db.Table<Reajustement>()
-                    .Where(b => b.CodeBudget == codeBudget)
+                    .Where(b => codeBudgets.Contains(b.CodeBudget))
                     .ToListAsync();
 
                 var query = (from b in budgetDetails
                              join l in lignes on b.CodeLigneBudgetaire equals l.CodeLigneBudgetaire
                              where (string.IsNullOrEmpty(searchText)
-                                    || l.LibelleLigneBudgetaire.ToLower().Contains(searchText.ToLower()))
+                                    || l.LibelleLigneBudgetaire.ToLower().Contains(searchText.ToLower())
+                                    || l.CodeLigneBudgetaire.ToLower().Contains(searchText.ToLower())
+                                    )
                              select new ReajusterManageModel
                              {
                                  ReajusterID = b.ReajustementID,
@@ -687,7 +704,8 @@ namespace SuiviBuget.Mobile.Services
                                  CodeLigneBudgetaire = l.CodeLigneBudgetaire,
                                  LibelleLigneBudgetaire = l.LibelleLigneBudgetaire,
                                  Montant = b.Montant,
-                                 Motif=b.Motif
+                                 Motif = b.Motif,
+                                 DateReajustement=b.DateReajustement
                              }).ToList();
 
                 return query;
@@ -704,7 +722,9 @@ namespace SuiviBuget.Mobile.Services
             try
             {
                 await _db.InsertAsync(reajustement);
-                MisAjourBudget(reajustement.CodeBudget);
+                var typeDepense = await GetBudgetDetailByBudgetLigne(reajustement.CodeBudget, reajustement.CodeLigneBudgetaire);
+                typeDepense.Montant += reajustement.Montant;
+                var ok = UpdateBudgetDetailAsync(typeDepense);
                 return true;
             }
             catch (Exception ex)
@@ -722,16 +742,27 @@ namespace SuiviBuget.Mobile.Services
                 return false; // Ligne non trouvée
 
             await _db.DeleteAsync(reaj);
-            MisAjourBudget(reajustement.CodeBudget);
+            var typeDepense = await GetBudgetDetailByBudgetLigne(reajustement.CodeBudget, reajustement.CodeLigneBudgetaire);
+            typeDepense.Montant -= reajustement.Montant;
+            var ok = UpdateBudgetDetailAsync(typeDepense);
             return true;
         }
+        public async Task DeleteReajustementByCodeBudgetAsync(string codeBudget)
+        {
+            var getDetail = await _db.Table<Reajustement>()
+                 .FirstOrDefaultAsync(x => x.CodeBudget == codeBudget);
 
+            if (getDetail == null)
+                return; // Ligne non trouvée
+
+            await _db.DeleteAsync(getDetail);
+        }
         public async Task<Reajustement> GetReajustementByCode(string codeBudget, string ligne)
         {
             try
             {
-               return await _db.Table<Reajustement>()
-                .FirstOrDefaultAsync(x => x.CodeBudget == codeBudget && x.CodeLigneBudgetaire==ligne);
+                return await _db.Table<Reajustement>()
+                 .FirstOrDefaultAsync(x => x.CodeBudget == codeBudget && x.CodeLigneBudgetaire == ligne);
             }
             catch (Exception ex)
             {
@@ -1070,6 +1101,7 @@ namespace SuiviBuget.Mobile.Services
         {
             try
             {
+                _db.DeleteAllAsync<Reajustement>().Wait();
                 _db.DeleteAllAsync<ExecutionBudgetaire>().Wait();
                 _db.DeleteAllAsync<BudgetDetail>().Wait();
                 _db.DeleteAllAsync<BudgetDetail>().Wait();
@@ -1126,7 +1158,7 @@ namespace SuiviBuget.Mobile.Services
             {
                 budget.MontantReajustement = 0;
             }
-            budget.MontantNonAlloue = budget.MontantBudget - budget.MontantAlloue - budget.MontantReajustement;
+            budget.MontantNonAlloue = budget.MontantBudget - (budget.MontantAlloue + budget.MontantReajustement);
             budget.NbreLigneBudgetaire = ligneBudgetaire.Count();
             var isUpdate = await UpdateBudgetAsync(budget);
         }

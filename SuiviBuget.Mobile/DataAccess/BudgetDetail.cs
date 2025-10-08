@@ -14,8 +14,7 @@ namespace SuiviBuget.Mobile.DataAccess
         public string CodeBudget { get; set; }
         public string CodeLigneBudgetaire { get; set; }
         public decimal Montant { get; set; }
-        public bool Depassement { get; set; }
-        public string MotifDepassement { get; set; }
+     
 
     }
 }

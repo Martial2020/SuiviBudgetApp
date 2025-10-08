@@ -35,7 +35,7 @@ namespace SuiviBuget.Mobile.ViewModels
         private Chart topDepensesChart;
 
         [ObservableProperty]
-        public ObservableCollection<GrapheModel> depassementsItems;
+        public ObservableCollection<ReajusterManageModel> depassementsItems;
 
         [ObservableProperty]
         private ObservableCollection<ExecutionBudgetaireDetailManageModel> executionBudgetaireItems;
@@ -215,7 +215,7 @@ namespace SuiviBuget.Mobile.ViewModels
                 LabelTextSize = 26
             };
 
-            Depassements(resultat);
+            Depassements(datas);
         }
 
         private async Task DepensesByPeriodeItems(List<Budget> budgets)
@@ -248,18 +248,25 @@ namespace SuiviBuget.Mobile.ViewModels
                 throw ex;
             }
         }
-        private async void Depassements(List<GrapheModel> datas)
+        private async void Depassements(List<Budget> datas)
         {
-            DepassementsItems = new ObservableCollection<GrapheModel>(
-            datas.Select(x => new GrapheModel
-            {
-                LigneBudgetaire = x.LigneBudgetaire,
-                MontantLigneBudgetaire = x.MontantLigneBudgetaire,
-                MontantLigneUtilise = x.MontantLigneUtilise,
-                Depassement = Math.Abs(x.MontantLigneBudgetaire - x.MontantLigneUtilise)
-            }).Where(g => g.MontantLigneBudgetaire - g.MontantLigneUtilise < 0).OrderBy(d => d.LigneBudgetaire)); // garde uniquement les dépassements
+            //DepassementsItems = new ObservableCollection<GrapheModel>(
+            //datas.Select(x => new GrapheModel
+            //{
+            //    LigneBudgetaire = x.LigneBudgetaire,
+            //    MontantLigneBudgetaire = x.MontantLigneBudgetaire,
+            //    MontantLigneUtilise = x.MontantLigneUtilise,
+            //    Depassement = Math.Abs(x.MontantLigneBudgetaire - x.MontantLigneUtilise)
+            //}).Where(g => g.MontantLigneBudgetaire - g.MontantLigneUtilise < 0).OrderBy(d => d.LigneBudgetaire)); // garde uniquement les dépassements
+          
+            List<string> listeCodes = datas.Select(x => x.CodeBudget).ToList();
 
-            TotalDepassement = Math.Abs((decimal)DepassementsItems.Sum(x => x.Depassement));
+            DepassementsItems = new ObservableCollection<ReajusterManageModel>();
+            DepassementsItems.Clear();
+            var reajustement = await _service.GetReajustementItems(listeCodes, string.Empty);
+            DepassementsItems = new ObservableCollection<ReajusterManageModel>(
+reajustement.GroupBy(x => new { x.CodeLigneBudgetaire, x.LibelleLigneBudgetaire }).Select(g => g.First()));
+            TotalDepassement = DepassementsItems.Sum(x => x.Montant);
         }
             
         public async Task ClassementBudgetAsync()
@@ -273,7 +280,7 @@ namespace SuiviBuget.Mobile.ViewModels
                 // Laisser Chart = null quand il n’y a pas de données
                 Chart = null;
                 TopDepensesChart = null;
-                DepassementsItems = new ObservableCollection<GrapheModel>();
+                DepassementsItems = new ObservableCollection<ReajusterManageModel>();
                 return;
             }
 

@@ -30,7 +30,7 @@ namespace SuiviBuget.Mobile.ViewModels
         private ObservableCollection<ExecutionBudgetaireDetailManageModel> executionBudgetaireItems;
 
         [ObservableProperty]
-        private ObservableCollection<ExecutionBudgetaireDetailManageModel> depassementItems;
+        private ObservableCollection<ReajusterManageModel> depassementItems;
 
         [ObservableProperty]
         public ObservableCollection<BudgetManageModel> budgetItems;
@@ -102,7 +102,7 @@ namespace SuiviBuget.Mobile.ViewModels
             _service = new Services.Services(dbPath);
             ExecutionBudgetaireItems = new ObservableCollection<ExecutionBudgetaireDetailManageModel>();
             BudgetItems = new ObservableCollection<BudgetManageModel>();
-            DepassementItems = new ObservableCollection<ExecutionBudgetaireDetailManageModel>();
+            DepassementItems = new ObservableCollection<ReajusterManageModel>();
             ChartHeight = Helper.CalculerHauteurChart();
             LoadBudgetAsync();
             //LoadDashbordByDate(DateTime.Now);
@@ -243,42 +243,12 @@ namespace SuiviBuget.Mobile.ViewModels
         {
             try
             {
-                DepassementItems = new ObservableCollection<ExecutionBudgetaireDetailManageModel>();
+                DepassementItems = new ObservableCollection<ReajusterManageModel>();
                 DepassementItems.Clear();
-
-
-                var budgetDetails = await _service.GetBudgetDetailItems(SelectedBudget.CodeBudget, string.Empty);
-
-                foreach (var item in budgetDetails)
-                {
-
-                    var depense = await _service.GetExecutionBudgetaireDetailsItems(item.CodeBudget, item.CodeLigneBudgetaire);
-
-                    if (depense != null)
-                    {
-                        decimal montantTotal = depense.Sum(d => d.Montant);
-                        var difference = item.Montant - montantTotal;
-                        if (difference < 0)
-                        {
-                            var nouvelItem = new ExecutionBudgetaireDetailManageModel
-                            {
-                                DateExecution = DateTime.Now,
-                                ExecutionBudgetaireID = Guid.NewGuid(),
-                                LibelleLigneBudgetaire = item.LibelleLigneBudgetaire,
-                                ModePaiement = "Cash",
-                                Montant = Math.Abs(difference),
-                                CodeBudget = item.CodeBudget,
-                                CodeLigneBudgetaire = item.CodeLigneBudgetaire,
-                                Description = "",
-                                LibelleBudget = "",
-                            };
-                            // Ajouter à la collection
-                            DepassementItems.Add(nouvelItem);
-                        }
-                    }
-                }
-                DepassementItems = new ObservableCollection<ExecutionBudgetaireDetailManageModel>(
-  DepassementItems.GroupBy(x => new { x.CodeBudget, x.CodeLigneBudgetaire }).Select(g => g.First()));
+                var code = new List<string> { SelectedBudget.CodeBudget };
+                var budgetDetails = await _service.GetReajustementItems(code, string.Empty);
+                DepassementItems = new ObservableCollection<ReajusterManageModel>(
+ budgetDetails.GroupBy(x => new { x.CodeBudget, x.CodeLigneBudgetaire,x.LibelleLigneBudgetaire }).Select(g => g.First()));
                 TotalDepassement = DepassementItems.Sum(x => x.Montant);
             }
             catch (Exception ex)

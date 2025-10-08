@@ -52,8 +52,7 @@ namespace SuiviBudget.Mobile.Interfaces
         #region Reajustement 
         Task<bool> DeleteReajustementAsync(Reajustement reajustement);
         Task<Reajustement> GetReajustementByCode(string codeBudget,string ligne);
-
-        Task<List<ReajusterManageModel>> GetReajustementItems(string codeBudget, string searchText);
+        Task<List<ReajusterManageModel>> GetReajustementItems(List<string> codeBudgets, string searchText);
         Task<bool> AddReajustementAsync(Reajustement reajustement);
         #endregion
 

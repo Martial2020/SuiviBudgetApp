@@ -150,22 +150,12 @@ namespace SuiviBudge.Validators
             if (getLigne != null)
                 return (false, $"Le type de dépense [{ligneBugetaire.CodeLigneBudgetaire}] existe dejà dans notre base de donnée pour ce budget");
 
-            var budget = await adminService.GetBudgetByCode(ligneBugetaire.CodeBudget);
+            var budget = await adminService.GetBudgetByCode1(ligneBugetaire.CodeBudget);
             if (budget == null)
                 return (false, $"Le budget sur lequel vous souhaitez ajouté ce detail n'existe pas dans notre système.");
 
-            var details = await adminService.GetBudgetDetailItems(budget.CodeBudget, string.Empty);
-            if (details == null)
-            {
-                if (budget.MontantBudget < ligneBugetaire.Montant)
-                    return (false, $"Impossible, car le montant  du type de depense est superieur au montant du budget .");
-            }
-            else
-            {
-                var mtntTotal = details.Sum(x => x.Montant) + ligneBugetaire.Montant;
-                if (budget.MontantBudget < mtntTotal)
-                    return (false, $"Impossible, car le montant des types de depense est superieur au montant du budget .");
-            }
+            if (budget.MontantNonAlloue < ligneBugetaire.Montant)
+                return (false, $"Impossible, Le montant non alloué [{budget.MontantNonAlloue}] disponible est inferieur au montant saisi pour l'allocation.");
 
             var typeDepense = await adminService.GetExecutionBudgetaireDetailsByBudgetDetail(ligneBugetaire.CodeBudget, ligneBugetaire.CodeLigneBudgetaire);
             if (typeDepense != null)
@@ -188,26 +178,15 @@ namespace SuiviBudge.Validators
             if (getLigne == null)
                 return (false, $"Modification impossible.Le type de dépense[{ligneBugetaire.CodeLigneBudgetaire}] existe pas;");
 
-            var budget = await adminService.GetBudgetByCode(ligneBugetaire.CodeBudget);
+            var budget = await adminService.GetBudgetByCode1(ligneBugetaire.CodeBudget);
             if (budget == null)
                 return (false, $"Le budget sur lequel vous souhaitez ajouté ce detail n'existe pas dans notre système.");
 
-            var details = await adminService.GetBudgetDetailItems(budget.CodeBudget, string.Empty);
-            if (details == null)
-            {
-                if (budget.MontantBudget < ligneBugetaire.Montant)
-                    return (false, $"Impossible, car le montant  du type de depense est superieur au montant du budget .");
-            }
-            else
-            {
-                details = details.Where(d => d.BudgetDetailID != ligneBugetaire.BudgetDetailID).ToList();
-                var mtntTotal = details.Sum(x => x.Montant) + ligneBugetaire.Montant;
-                if (budget.MontantBudget < mtntTotal)
-                    return (false, $"Impossible, car le montant total des types de depense est superieur au montant du budget .");
-            }
+            if (budget.MontantNonAlloue < ligneBugetaire.Montant)
+                return (false, $"Impossible, Le montant non alloué [{budget.MontantNonAlloue}] disponible est inferieur au montant saisi pour l'allocation.");
             return (true, string.Empty);
         }
-
+        
         public static async Task<(bool isSuccess, string message)> ValidateBudgetDetailDelete(BudgetDetailManageModel ligneBugetaire)
         {
             if (ligneBugetaire == null)
@@ -326,6 +305,7 @@ namespace SuiviBudge.Validators
                 return (false, "Veuillez saisir une date valide");
 
             var typeDepense = await adminService.GetBudgetDetailByBudgetLigne(execution.CodeBudget, execution.CodeLigneBudgetaire);
+
             if (typeDepense == null)
                 return (false, "Cette type de depense n'existe pas dans la liste definie dans notre système.");
 
@@ -335,7 +315,7 @@ namespace SuiviBudge.Validators
             {
                 if (typeDepense.Montant < execution.Montant)
                 {
-                    return (false, $"Impossible, car le montant saisi est superieur au montant defini pour ce type de depense qui est {typeDepense.Montant}.");
+                    return (false, $"Impossible, car le montant disponible pour cette depense est [{typeDepense.Montant}], il est inferieur au montant saisi");
                 }
             }
             else
@@ -343,7 +323,7 @@ namespace SuiviBudge.Validators
                 var total = depense.Sum(x => x.Montant) + execution.Montant;
                 if (typeDepense.Montant < total)
                 {
-                    return (false, $"Impossible, car le montant total des depenses est superieur au montant defini pour ce type de depense qui est {typeDepense.Montant}.");
+                    return (false, $"Impossible, car vous avez epuisé votre solde pour ce type de depense.");
                 }
             }
 
@@ -352,7 +332,6 @@ namespace SuiviBudge.Validators
 
             if (budget == null) // si getLigne existe déjà, le budget est dupliqué
                 return (false, "Le budget choisit n'existe pas");
-
 
             if (budget.DateDebutBudget > execution.DateExecution)
                 return (false, "Impossible que l'execution du buget soit faite avant la création du budget");

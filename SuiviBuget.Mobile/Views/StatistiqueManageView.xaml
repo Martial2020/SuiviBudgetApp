@@ -170,7 +170,7 @@
                                             Spacing="2">
                                             <Label
                                                 FontAttributes="Bold"
-                                                Text="{Binding LigneBudgetaire}"
+                                                Text="{Binding LibelleLigneBudgetaire}"
                                                 TextColor="#C0392B" />
                                         </VerticalStackLayout>
 
@@ -179,7 +179,7 @@
                                             Grid.Row="0"
                                             Grid.Column="1"
                                             FontAttributes="Bold"
-                                            Text="{Binding Depassement, StringFormat='{0:N0} FCFA'}"
+                                            Text="{Binding Montant, StringFormat='{0:N0} FCFA'}"
                                             TextColor="#E74C3C"
                                             VerticalOptions="Center" />
                                     </Grid>

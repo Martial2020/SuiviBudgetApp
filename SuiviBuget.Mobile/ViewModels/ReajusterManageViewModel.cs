@@ -66,9 +66,17 @@ namespace SuiviBuget.Mobile.ViewModels
             _alertService = new AlertService();
             RegisterMessenger();
             DeleteCommand = new RelayCommand<ReajusterManageModel>(OnDelete);
+            ResetAppMessage();
 
         }
 
+        private void ResetAppMessage()
+        {
+            WeakReferenceMessenger.Default.Register<ResetAppMessage>(this, (r, m) =>
+            {
+                reajustementItems.Clear();
+            });
+        }
         private async void OnDelete(ReajusterManageModel model)
         {
             var confirm = await Shell.Current.CurrentPage.DisplayAlert("Confirmation", "Voulez vous supprimer ce réajustement ?", "Oui", "Non");
@@ -83,7 +91,9 @@ namespace SuiviBuget.Mobile.ViewModels
                 var entity = new Reajustement
                 {
                     ReajustementID = model.ReajusterID,
-                    CodeBudget=model.CodeBudget
+                    CodeBudget = model.CodeBudget,
+                    CodeLigneBudgetaire = model.CodeLigneBudgetaire,
+                    Montant = model.Montant
                 };
                 var isOk = await service.DeleteReajustementAsync(entity);
                 if (!isOk)
@@ -100,11 +110,12 @@ namespace SuiviBuget.Mobile.ViewModels
         {
             WeakReferenceMessenger.Default.Register<RefreshList>(this, async (r, m) =>
             {
-                 LoadReajustementAsync(SearchText);
+                LoadReajustementAsync(SearchText);
             });
         }
+
         [RelayCommand]
-        private async void AddReajusstement(string codeBudget)
+        private async void AddReajustement(string codeBudget)
         {
             await _navigationService.NavigateToAsync("ReajusterView", codeBudget);
         }
@@ -112,7 +123,7 @@ namespace SuiviBuget.Mobile.ViewModels
         {
             CodeBudget = code;
             Title = $"Réajustement du {CodeBudget}";
-             LoadReajustementAsync(SearchText); // Charge la liste initialement
+            LoadReajustementAsync(SearchText); // Charge la liste initialement
             var budget = await service.GetBudgetByCode(CodeBudget);
             if (budget != null && budget.StatutBudget == StatutBudgetConst.Cloture)
                 ActionPossible = false;
@@ -122,7 +133,9 @@ namespace SuiviBuget.Mobile.ViewModels
             IsBusy = true;
             try
             {
-                var details = await service.GetReajustementItems(CodeBudget, searchText);
+                var code = new List<string> { CodeBudget };
+
+                var details = await service.GetReajustementItems(code, searchText);
 
                 // Vérifie si details est null avant le Select
                 if (details == null)
@@ -132,15 +145,19 @@ namespace SuiviBuget.Mobile.ViewModels
                 }
 
                 ReajustementItems = new ObservableCollection<ReajusterManageModel>(
-                    details.Select(x => new ReajusterManageModel
-                    {
-                        CodeLigneBudgetaire = x.CodeLigneBudgetaire,
-                        LibelleLigneBudgetaire = x.LibelleLigneBudgetaire,
-                        Montant = x.Montant,
-                        ReajusterID = x.ReajusterID,
-                        CodeBudget = x.CodeBudget,
-                        Motif = x.Motif
-                    }));
+                  details.Select(x => new ReajusterManageModel
+                  {
+                      CodeLigneBudgetaire = x.CodeLigneBudgetaire,
+                      LibelleLigneBudgetaire = x.LibelleLigneBudgetaire,
+                      Montant = x.Montant,
+                      ReajusterID = x.ReajusterID,
+                      CodeBudget = x.CodeBudget,
+                      Motif = x.Motif,
+                      DateReajustement= x.DateReajustement
+                  })
+                  .OrderByDescending(x => x.DateReajustement)
+              );
+
             }
             catch (Exception ex)
             {

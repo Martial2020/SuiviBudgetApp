@@ -49,10 +49,12 @@
                                     Grid.Row="0"
                                     Grid.Column="0"
                                     Spacing="4">
-                                    <Label Text="{Binding CodeLigneBudgetaire}" />
+                                    <!--  Date  -->
+                                    <Label Text="{Binding DateReajustement, StringFormat='{0:dd/MM/yyyy}'}" TextColor="#2C3E50" />
+                                    <!--<Label Text="{Binding CodeLigneBudgetaire}" />-->
                                     <Label FontAttributes="Bold" Text="{Binding LibelleLigneBudgetaire}" />
                                     <Label Text="{Binding Montant, StringFormat='{0:N0} FCFA'}" />
-                                    <Label FontAttributes="Italic" Text="{Binding Motif, StringFormat='{0:N0} FCFA'}" />
+                                    <Label FontAttributes="Italic" Text="{Binding Motif}" />
                                 </VerticalStackLayout>
 
                                 <!--  Bouton Actions modernisé (menu ⋮)  -->

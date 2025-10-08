@@ -14,5 +14,6 @@ namespace SuiviBuget.Mobile.Models
         public string LibelleLigneBudgetaire { get; set; }
         public decimal Montant { get; set; }
         public string Motif { get; set; }
+        public DateTime DateReajustement { get; set; }
     }
 }

@@ -95,13 +95,19 @@ namespace SuiviBuget.Mobile.ViewModels
                     Title = "Modifier un budget";
                     LabelButton = "✎ Modifier";
                     var budget = await adminService.GetBudgetByCode(code);
-                    if (budget == null) { return; }
-                    DataItem.CodeBudget = budget.CodeBudget;
-                    DataItem.LibelleBudget = budget.LibelleBudget;
-                    DataItem.DateDebutBudget = budget.DateDebutBudget;
-                    DataItem.DateFinBudget = budget.DateFinBudget;
-                    DataItem.StatutBudget = budget.StatutBudget;
-                    DataItem.MontantBudget = budget.MontantBudget;
+                    if (budget == null)
+                        return;
+
+                    DataItem = new BudgetModel
+                    {
+                        CodeBudget = budget.CodeBudget,
+                        LibelleBudget = budget.LibelleBudget,
+                        DateDebutBudget = budget.DateDebutBudget,
+                        DateFinBudget = budget.DateFinBudget,
+                        StatutBudget = budget.StatutBudget,
+                        MontantBudget = budget.MontantBudget,
+                        Description = budget.Description
+                    };
                     break;
                 default:
                     break;
