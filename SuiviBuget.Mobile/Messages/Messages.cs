@@ -9,6 +9,7 @@ namespace SuiviBuget.Mobile.Messages
     internal class Messages
     {
         public record RefreshList;
+        public record RefreshLicenceList;
         public record RefreshListDepense(string CodeLigneBudgetaire);
         public record ResetAppMessage;
         public record BudgetCloturerMessage;

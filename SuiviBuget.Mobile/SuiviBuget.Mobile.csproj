@@ -123,12 +123,21 @@
 		<Compile Update="Views\ParametreManageView.xaml.cs">
 			<DependentUpon>ParametreManageView.xaml</DependentUpon>
 		</Compile>
+		<Compile Update="Views\ActivationLicenceView.xaml.cs">
+		  <DependentUpon>ActivationLicenceView.xaml</DependentUpon>
+		</Compile>
 		<Compile Update="Views\ReinitilaiserView.xaml.cs">
 			<DependentUpon>ReinitilaiserView.xaml</DependentUpon>
 		</Compile>
 	</ItemGroup>
 
 	<ItemGroup>
+		<MauiXaml Update="Views\ActivationLicenceManageView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\AproposView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="Views\BudgetManageView.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
@@ -153,6 +162,9 @@
 		<MauiXaml Update="Views\BudgetDetailView.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
+		<MauiXaml Update="Views\LicenceView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="Views\LigneBudgetaireManageView.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
@@ -167,6 +179,9 @@
 		</MauiXaml>
 		<MauiXaml Update="Views\ParametreManageView.xaml">
 			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\ActivationLicenceView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Views\PopUpMenuView.xaml">
 			<Generator>MSBuild:Compile</Generator>

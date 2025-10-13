@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SuiviBuget.Mobile.Views.AproposView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewModels="clr-namespace:SuiviBuget.Mobile.ViewModels;assembly=SuiviBuget.Mobile"
+    Title="À propos de l’application">
+    <!--  Liaison du ViewModel à la page  -->
+    <ContentPage.BindingContext>
+        <viewModels:AproposViewModel />
+    </ContentPage.BindingContext>
+    <ScrollView>
+        <VerticalStackLayout Padding="25" Spacing="20">
+
+            <!--  Carte application  -->
+            <Frame
+                Padding="15"
+                BackgroundColor="#F8F9FA"
+                CornerRadius="15"
+                HasShadow="True">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="{Binding NomApplication, StringFormat='Nom de l’application : {0}'}" />
+                    <Label Text="{Binding Version, StringFormat='Version : {0}'}" />
+                    <Label Text="{Binding Developpeur, StringFormat='Développeur : {0}'}" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!--  Carte licence  -->
+            <Frame
+                Padding="15"
+                BackgroundColor="#F8F9FA"
+                CornerRadius="15"
+                HasShadow="True">
+                <VerticalStackLayout Spacing="8">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="18"
+                        Text="Informations de licence"
+                        TextColor="#2C3E50" />
+
+                    <Label Text="{Binding Licence, StringFormat='Clé de licence : {0}'}" />
+                    <Label Text="{Binding DateActivation, StringFormat='Date d’activation : {0:dd/MM/yyyy}'}" TextColor="Gray" />
+                    <Label Text="{Binding Expiration, StringFormat='Date d’expiration : {0:dd/MM/yyyy}'}" TextColor="Gray" />
+                    <Label Text="{Binding Statut, StringFormat='Statut : {0}'}" TextColor="Green" />
+
+                    <!--  🔥 Texte sur l’expiration  -->
+                    <Label
+                        FontAttributes="Italic"
+                        FontSize="14"
+                        Text="{Binding MessageExpiration}"
+                        TextColor="Red" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!--  Pied de page  -->
+            <Label
+                FontSize="12"
+                HorizontalOptions="Center"
+                Text="© 2025 Martial Zoua - Tous droits réservés"
+                TextColor="Gray" />
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

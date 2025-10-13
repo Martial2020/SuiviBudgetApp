@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using SuiviBudget.Mobile.Constants;
@@ -14,6 +15,27 @@ namespace SuiviBuget.Mobile.Helpers
         public static string GetDatabaseFullPath()
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), GlobalConst.DbPath);
+        }
+        public static string ComputeSha256Hash(string rawData)
+        {
+            using (SHA256 sha256Hash = SHA256.Create())
+            {
+                // Convertit la chaîne en bytes et calcule le hash
+                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
+
+                // Convertit le hash en chaîne hexadécimale
+                StringBuilder builder = new StringBuilder();
+                foreach (var b in bytes)
+                    builder.Append(b.ToString("x2"));
+
+                return builder.ToString();
+            }
+        }
+        public static string GetCodeActivation()
+        {
+            var codeGenere = Guid.NewGuid().ToString();
+            var parts = codeGenere.Split('-');
+            return parts[parts.Length - 1].ToUpper().Trim();
         }
 
         public static Color GetBackgroundColor(string statut)
@@ -90,5 +112,47 @@ namespace SuiviBuget.Mobile.Helpers
             //return screenWidth * 0.6;
         }
 
+
+        #region Cryptage et Decryptage
+        // 🔒 Fonction pour crypter un texte avec une clé
+        public static string Encrypt(string plainText, string key)
+        {
+            using (Aes aes = Aes.Create())
+            {
+                // Génère clé et IV à partir de la clé fournie
+                using var sha = SHA256.Create();
+                aes.Key = sha.ComputeHash(Encoding.UTF8.GetBytes(key));
+                aes.IV = new byte[16]; // IV vide (simple, pas le plus sûr mais pratique)
+
+                using var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+                using var ms = new MemoryStream();
+                using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
+                using (var sw = new StreamWriter(cs))
+                {
+                    sw.Write(plainText);
+                }
+                return Convert.ToBase64String(ms.ToArray());
+            }
+        }
+
+        // 🔓 Fonction pour décrypter un texte avec une clé
+        public static string Decrypt(string cipherText, string key)
+        {
+            using (Aes aes = Aes.Create())
+            {
+                using var sha = SHA256.Create();
+                aes.Key = sha.ComputeHash(Encoding.UTF8.GetBytes(key));
+                aes.IV = new byte[16]; // même IV que pour le cryptage
+
+                using var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+                byte[] buffer = Convert.FromBase64String(cipherText);
+
+                using var ms = new MemoryStream(buffer);
+                using var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read);
+                using var sr = new StreamReader(cs);
+                return sr.ReadToEnd();
+            }
+        }
+        #endregion
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,13 @@ namespace SuiviBudget.Mobile.Interfaces
 {
     public interface IServices
     {
+        Task<bool> UpdateActivationLicenceAsync(ActivationLicence licence);
+        Task<ObservableCollection<ActivationLicence>> GetLicenceItems(string searchText);
+        Task<bool> DeleteActivationLicenceAsync(ActivationLicence licence);
+        Task<bool> AddActivationLicenceAsync(ActivationLicence licence);
+        Task<bool> UpdateLicenceAsync(Licence licence);
+        Task<bool> CreateLicenceAsync(Licence licence);
+        Task<Licence> GetLicence();
         Task<List<GrapheModel>> GetConsommationByLigneBudgetaire(List<Budget> budgets,DateTime dateDebut,DateTime dateFin);
         void ReinitialiseApp();
         Task<List<Budget>> GetBudgetItems(DateTime dateDebut, DateTime dateFin, string codeBudget);

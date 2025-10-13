@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SuiviBuget.Mobile.Views.ActivationLicenceManageView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewModels="clr-namespace:SuiviBuget.Mobile.ViewModels;assembly=SuiviBuget.Mobile"
+    Title="Activation de licence">
+    <!--  Liaison du ViewModel à la page  -->
+    <ContentPage.BindingContext>
+        <viewModels:ActivationLicenceManageViewModel />
+    </ContentPage.BindingContext>
+
+    <Grid RowDefinitions="Auto, *">
+        <!--  Première ligne pour la barre de recherche  -->
+        <SearchBar
+            Grid.Row="0"
+            Margin="10,20,10,0"
+            BackgroundColor="White"
+            HeightRequest="50"
+            HorizontalOptions="FillAndExpand"
+            Placeholder="Rechercher d'une licence..."
+            Text="{Binding SearchText, Mode=TwoWay}"
+            TextColor="Black"
+            VerticalOptions="Start"
+            VerticalTextAlignment="Center" />
+        <!--  Contenu  -->
+        <AbsoluteLayout Grid.Row="1">
+            <!--  CollectionView  -->
+            <CollectionView
+                x:Name="Ligne"
+                Margin="10,0,10,10"
+                AbsoluteLayout.LayoutBounds="0,0,1,1"
+                AbsoluteLayout.LayoutFlags="All"
+                ItemsSource="{Binding LicenceItems}">
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame
+                            Margin="5"
+                            Padding="5"
+                            BackgroundColor="AliceBlue"
+                            CornerRadius="10"
+                            HasShadow="True">
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+
+                                <VerticalStackLayout>
+                                    <Label
+                                        FontAttributes="Italic"
+                                        Text="{Binding Statut, StringFormat='Statut : {0}'}"
+                                        TextColor="Red" />
+                                    <Label Text="{Binding Identifiant, StringFormat='Identifiant : {0}'}" />
+                                    <Label Text="{Binding DateActivation, StringFormat='Date activation : {0:dd/MM/yyyy}'}" TextColor="Gray" />
+                                    <Label Text="{Binding DateExpiration, StringFormat='Date Expiration : {0:dd/MM/yyyy}'}" TextColor="Gray" />
+                                    <Label Text="{Binding CodeActivation, StringFormat='Code Activation : {0}'}" />
+                                </VerticalStackLayout>
+                                <!--  Bouton Actions modernisé (menu ⋮)  -->
+                                <Button
+                                    x:Name="LigneBtn"
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    BackgroundColor="Transparent"
+                                    BorderColor="#4682B4"
+                                    BorderWidth="1"
+                                    Clicked="OnActionsLicenceClicked"
+                                    CornerRadius="20"
+                                    FontSize="20"
+                                    HeightRequest="40"
+                                    HorizontalOptions="End"
+                                    Text="⋮"
+                                    TextColor="#4682B4"
+                                    VerticalOptions="Center"
+                                    WidthRequest="40" />
+                            </Grid>
+
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+
+            <!--  Bouton "+" flottant  -->
+            <Button
+                x:Name="AddLigne"
+                AbsoluteLayout.LayoutBounds="0.9,0.9,60,60"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                BackgroundColor="#FF7F50"
+                Command="{Binding OpenLicenceCommand}"
+                CornerRadius="30"
+                FontSize="30"
+                HeightRequest="60"
+                Text="+"
+                TextColor="White"
+                WidthRequest="60"
+                ZIndex="5" />
+
+            <!--  Loader  -->
+            <ActivityIndicator
+                AbsoluteLayout.LayoutBounds="0.5,0.5,50,50"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                HeightRequest="50"
+                HorizontalOptions="Center"
+                IsRunning="{Binding IsBusy}"
+                IsVisible="{Binding IsBusy}"
+                VerticalOptions="Center"
+                WidthRequest="50"
+                Color="DodgerBlue" />
+        </AbsoluteLayout>
+    </Grid>
+</ContentPage>

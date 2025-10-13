@@ -1,0 +1,55 @@
+<toolkit:Popup
+    x:Class="SuiviBuget.Mobile.Views.Popups.ActivationLicenceView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:viewModels="clr-namespace:SuiviBuget.Mobile.ViewModels"
+    CanBeDismissedByTappingOutsideOfPopup="False"
+    HorizontalOptions="Center"
+    Size="300,330"
+    VerticalOptions="Center">
+    <!--  Liaison du ViewModel  -->
+    <toolkit:Popup.BindingContext>
+        <viewModels:ActivationLicenceViewModel />
+    </toolkit:Popup.BindingContext>
+    <Frame
+        Padding="20"
+        BackgroundColor="White"
+        HasShadow="True">
+
+        <VerticalStackLayout Spacing="15">
+
+            <Label
+                FontAttributes="Bold"
+                FontSize="20"
+                HorizontalOptions="Center"
+                Text="Activation de licence"
+                TextColor="#2E86DE" />
+
+            <!--  Identifiant appareil  -->
+            <Label FontAttributes="Bold" Text="Identifiant de l'appareil :" />
+            <Entry
+                x:Name="DeviceIdEntry"
+                IsReadOnly="True"
+                Text="{Binding DataItem.Identifiant}"
+                TextColor="Gray" />
+
+            <!--  Code d'activation  -->
+            <Label FontAttributes="Bold" Text="Code d'activation :" />
+            <Entry
+                x:Name="ActivationCodeEntry"
+                Keyboard="Text"
+                Placeholder="Entrez le code d’activation"
+                Text="{Binding DataItem.CodeActivation}" />
+            <!--  Bouton Activer  -->
+            <Button
+                BackgroundColor="#FF7F50"
+                Command="{Binding SubmitCommand}"
+                CornerRadius="10"
+                Text="🔑 Activation de licence"
+                TextColor="White" />
+
+        </VerticalStackLayout>
+
+    </Frame>
+</toolkit:Popup>

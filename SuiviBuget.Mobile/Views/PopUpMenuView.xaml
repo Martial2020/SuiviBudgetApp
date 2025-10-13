@@ -52,6 +52,19 @@
                 </Button.GestureRecognizers>
             </Button>
 
+            <!--  Ligne Budgétaire  -->
+            <Button
+                Padding="10"
+                BackgroundColor="Transparent"
+                BorderColor="LightBlue"
+                BorderWidth="0.5"
+                HorizontalOptions="Fill"
+                Text="Activation de licence"
+                TextColor="Black">
+                <Button.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding LigneBudgetCommand}" />
+                </Button.GestureRecognizers>
+            </Button>
             <!--  À propos  -->
             <Button
                 Padding="10"

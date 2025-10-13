@@ -14,11 +14,13 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using Microsoft.Maui.Storage;
+using SuiviBudget.Mobile.Constants;
 using SuiviBudget.Mobile.Interfaces;
 using SuiviBuget.Mobile.Helpers;
 using SuiviBuget.Mobile.Interfaces;
 using SuiviBuget.Mobile.Services;
 using SuiviBuget.Mobile.Views.Popups;
+using static Microsoft.Maui.ApplicationModel.Permissions;
 
 #if ANDROID
 using Android.OS;
@@ -34,12 +36,14 @@ namespace SuiviBuget.Mobile.ViewModels
         IDialogService _service;
         IAlertService _alert;
         private readonly INavigationService _navigationService;
-
+        IServices _context;
         public AppShellViewModel()
         {
             _navigationService = new NavigationService();
             _service = new DialogService();
             _alert = new AlertService();
+            var dbPath = Helper.GetDatabaseFullPath();
+            _context = new Services.Services(dbPath);
             // Initialiser la commande
             ShowMenuCommand = new RelayCommand(OnShowMenuClicked);
         }
@@ -48,12 +52,26 @@ namespace SuiviBuget.Mobile.ViewModels
         {
             const string typeDepense = "💰 Type de dépense";
             const string modePaiement = "💳 Mode de paiement";
-            const string general = "🧰 Général";
+            const string activationLicence = "🔑 Activation de licence";
             const string backupBD = "💾 Sauvegarder ses données";
             const string restaurationBD = "🗂️ Restaurer ses données";
+            const string Apropos = "ℹ️ À propos";
             const string reinitialiser = "🔄 Réinitialiser";
-
-            var options = new List<string> { typeDepense, modePaiement, backupBD, restaurationBD, general, reinitialiser };
+            var options = new List<string>();
+            var licence = await _context.GetLicence();
+            if (licence == null)
+            {
+                _alert.ShowAlertAsync("Information", "Aucune licence disponible");
+                return;
+            }
+            if (licence.CodeActivation == GlobalConst.AdministratorCodeActive)
+            {
+                options = new List<string> { typeDepense, modePaiement, activationLicence, backupBD, restaurationBD, Apropos, reinitialiser };
+            }
+            else
+            {
+                options = new List<string> { typeDepense, modePaiement, backupBD, restaurationBD, Apropos, reinitialiser };
+            }
             string action = await _service.ShowActionSheet(
                    "⚙️ Paramètres",
                    "Fermer",
@@ -83,12 +101,15 @@ namespace SuiviBuget.Mobile.ViewModels
                 case reinitialiser:
                     await _navigationService.NavigateToAsync("ReinitialiserView");
                     break;
-                case general:
-                    await _alert.ShowAlertAsync("Information", "Fonctionnalité en cours");
+                case activationLicence:
+                    await _navigationService.NavigateToAsync("ActivationLicenceManageView");
+                    break;
+                case Apropos:
+                    await _navigationService.NavigateToAsync("AproposView");
                     break;
 
                 default:
-                    // Annuler ou fermer
+                    // Annuler ou fermers
                     break;
             }
             // Crée et affiche le PopUp ici

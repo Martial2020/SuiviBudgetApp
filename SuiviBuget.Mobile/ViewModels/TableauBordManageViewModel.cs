@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using Intuit.Ipp.Data;
@@ -12,11 +13,13 @@ using Microcharts.Maui;
 using Microsoft.Maui.Controls.Shapes;
 using SkiaSharp;
 using SkiaSharp;
+using SQLite;
 using SuiviBudget.Mobile.Constants;
 using SuiviBudget.Mobile.Interfaces;
 using SuiviBudget.Services.DataAccess;
 using SuiviBuget.Mobile.Helpers;
 using SuiviBuget.Mobile.Models;
+using SuiviBuget.Mobile.Views.Popups;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using static SuiviBuget.Mobile.Messages.Messages;
 
@@ -98,6 +101,7 @@ namespace SuiviBuget.Mobile.ViewModels
         IServices _service { get; set; }
         public TableauBordManageViewModel()
         {
+
             string dbPath = Helper.GetDatabaseFullPath();
             _service = new Services.Services(dbPath);
             ExecutionBudgetaireItems = new ObservableCollection<ExecutionBudgetaireDetailManageModel>();
@@ -111,6 +115,13 @@ namespace SuiviBuget.Mobile.ViewModels
             ResetAppMessage();
         }
 
+        private async System.Threading.Tasks.Task CheckLicenceAsync()
+        {
+
+            //Crée et affiche le PopUp ici
+            var menuPopup = new ActivationLicenceView();
+            await Shell.Current.CurrentPage.ShowPopupAsync(menuPopup);
+        }
         public async void ChargerGraphesAsync(BudgetManageModel budget)
         {
 
@@ -141,8 +152,6 @@ namespace SuiviBuget.Mobile.ViewModels
                 BackgroundColor = SKColors.White
             };
         }
-
-
 
         private void ResetAppMessage()
         {

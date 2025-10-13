@@ -93,7 +93,6 @@ namespace SuiviBuget.Mobile.ViewModels
             string dbPath = Helper.GetDatabaseFullPath();
             adminService = new Services.Services(dbPath);
             _navigationService = new NavigationService();
-            _navigationService = new NavigationService();
             _alertService = new AlertService();
             
             SubmitCommand = new RelayCommand(OnSubmitCommand);

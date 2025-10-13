@@ -16,7 +16,15 @@ namespace SuiviBuget.Mobile.Services
         {
             switch (pageName)
             {
-
+                case "AproposView":
+                    await Shell.Current.GoToAsync($"{nameof(AproposView)}");
+                    break;
+                case "LicenceView":
+                    await Shell.Current.GoToAsync($"{nameof(LicenceView)}");
+                    break;
+                case "ActivationLicenceManageView":
+                    await Shell.Current.GoToAsync($"{nameof(ActivationLicenceManageView)}");
+                    break;
                 case "DetailsBudgetView":
                     await Shell.Current.GoToAsync($"{nameof(DetailsBudgetView)}?Code={code}&&Action={action}");
                     break;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,6 +26,9 @@ namespace SuiviBuget.Mobile.Services
         public Services(string dbPath)
         {
             _db = new SQLiteAsyncConnection(dbPath);
+            //_db.DropTableAsync<Licence>().Wait();      // supprime la table
+            _db.CreateTableAsync<ActivationLicence>().Wait();
+            _db.CreateTableAsync<Licence>().Wait();
             _db.CreateTableAsync<ModePaiement>().Wait();
             _db.CreateTableAsync<LigneBudgetaire>().Wait();
             _db.CreateTableAsync<Budget>().Wait();
@@ -35,6 +39,67 @@ namespace SuiviBuget.Mobile.Services
         }
         #endregion
 
+
+        #region Activation de licence
+        public async Task<bool> UpdateActivationLicenceAsync(ActivationLicence licence)
+        {
+            try
+            {             
+                await _db.UpdateAsync(licence);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors de l'ajout: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<bool> AddActivationLicenceAsync(ActivationLicence licence)
+        {
+            try
+            {             
+                await _db.InsertAsync(licence);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors de l'ajout: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteActivationLicenceAsync(ActivationLicence licence)
+        {
+            var getLicence = await _db.Table<ActivationLicence>().FirstOrDefaultAsync(x => x.ID == licence.ID);
+            if (getLicence == null)
+                return false; // Ligne non trouvée
+
+            await _db.DeleteAsync(getLicence);
+            return true;
+        }
+        public async Task<ObservableCollection<ActivationLicence>> GetLicenceItems(string searchText)
+        {
+            try
+            {
+                var search = searchText?.ToLower() ?? string.Empty;
+                var isSearchEmpty = string.IsNullOrWhiteSpace(search);
+
+                var licences = await _db.Table<ActivationLicence>()
+                    .Where(l => isSearchEmpty
+                        || l.Identifiant.ToLower().Contains(search)
+                        || l.CodeActivation.ToLower().Contains(search))
+                    .ToListAsync();
+
+                return new ObservableCollection<ActivationLicence>(licences);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors de la récupération des licences : {ex.Message}");
+                return new ObservableCollection<ActivationLicence>();
+            }
+        }
+
+        #endregion
         #region Ligne budgetaire   
         public async Task<bool> AddLigneBudgetaireAsync(LigneBudgetaireModel ligne)
         {
@@ -705,7 +770,7 @@ namespace SuiviBuget.Mobile.Services
                                  LibelleLigneBudgetaire = l.LibelleLigneBudgetaire,
                                  Montant = b.Montant,
                                  Motif = b.Motif,
-                                 DateReajustement=b.DateReajustement
+                                 DateReajustement = b.DateReajustement
                              }).ToList();
 
                 return query;
@@ -1096,6 +1161,50 @@ namespace SuiviBuget.Mobile.Services
 
         #endregion
 
+        #region Licence 
+        public async Task<Licence> GetLicence()
+        {
+            try
+            {
+                return await _db.Table<Licence>().FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors de la récupération de la licence par code: {ex.Message}");
+                return null;
+            }
+        }
+        public async Task<bool> CreateLicenceAsync(Licence licence)
+        {
+            try
+            {
+                await _db.InsertAsync(licence);     
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors de l'ajout: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> UpdateLicenceAsync(Licence licence)
+        {
+            try
+            {
+                await _db.UpdateAsync(licence);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors de l'ajout: {ex.Message}");
+                return false;
+            }
+        }
+
+
+        #endregion
+
         #region Other Functions
         public async void ReinitialiseApp()
         {
@@ -1158,7 +1267,7 @@ namespace SuiviBuget.Mobile.Services
             {
                 budget.MontantReajustement = 0;
             }
-            budget.MontantNonAlloue = budget.MontantBudget - (budget.MontantAlloue + budget.MontantReajustement);
+            budget.MontantNonAlloue = budget.MontantBudget - budget.MontantAlloue;
             budget.NbreLigneBudgetaire = ligneBudgetaire.Count();
             var isUpdate = await UpdateBudgetAsync(budget);
         }
