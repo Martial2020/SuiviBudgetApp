@@ -200,7 +200,10 @@ namespace SuiviBuget.Mobile.ViewModels
                     NbreLigneBudgetaire = x.NbreLigneBudgetaire,
                     StatutBudget = x.StatutBudget,
                     MontantUtilise = x.MontantUtilise,
-                    MontantRestant = x.MontantRestant
+                    MontantRestant = x.MontantRestant,
+                    MontantAlloue=x.MontantAlloue,
+                    MontantNonAlloue=x.MontantNonAlloue,
+                    MontantReajustement=x.MontantReajustement
                 }));
 
             if (BudgetItems.Count() > 0)

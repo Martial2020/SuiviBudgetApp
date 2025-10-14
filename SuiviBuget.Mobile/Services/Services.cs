@@ -1193,6 +1193,7 @@ namespace SuiviBuget.Mobile.Services
         {
             try
             {
+                
                 await _db.UpdateAsync(licence);
                 return true;
             }
@@ -1211,6 +1212,7 @@ namespace SuiviBuget.Mobile.Services
         {
             try
             {
+                _db.DeleteAllAsync<ActivationLicence>().Wait();
                 _db.DeleteAllAsync<Reajustement>().Wait();
                 _db.DeleteAllAsync<ExecutionBudgetaire>().Wait();
                 _db.DeleteAllAsync<BudgetDetail>().Wait();

@@ -39,7 +39,7 @@ namespace SuiviBuget.Mobile.ViewModels
             _alert = new AlertService();
             try
             {
-                GetInfoLicence();
+                _ = GetInfoLicence();
             }
             catch (Exception ex)
             {
@@ -48,7 +48,7 @@ namespace SuiviBuget.Mobile.ViewModels
 
         }
 
-        private async void GetInfoLicence()
+        private async Task GetInfoLicence()
         {
             var licence = await _service.GetLicence();
             if (licence == null)

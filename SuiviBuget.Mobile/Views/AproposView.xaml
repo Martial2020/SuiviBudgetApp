@@ -21,8 +21,7 @@
                 <VerticalStackLayout Spacing="8">
                     <Label
                         FontAttributes="Bold"
-                        FontSize="18"
-                        Text="Informations de l'application"
+                        Text="📱 Informations de l'application"
                         TextColor="#2C3E50" />
                     <Label Text="{Binding NomApplication, StringFormat='Nom de l’application : {0}'}" />
                     <Label Text="{Binding Version, StringFormat='Version : {0}'}" />
@@ -39,8 +38,7 @@
                 <VerticalStackLayout Spacing="8">
                     <Label
                         FontAttributes="Bold"
-                        FontSize="18"
-                        Text="Informations de licence"
+                        Text="🔑 Informations de licence"
                         TextColor="#2C3E50" />
 
                     <Label Text="{Binding Licence, StringFormat='Clé de licence : {0}'}" />

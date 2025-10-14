@@ -70,7 +70,6 @@ namespace SuiviBuget.Mobile.ViewModels
                     //DataItem.CodeActivation = "+IMJjzR6vRIwuCQ20b+WwI1pFeUtlZ8yPJaatAxxOJYQDPHUEvRiri5UgZFYcYqC";
                     var codeActivationChiffre = DataItem.CodeActivation;
                     var codeActivationDechiffre = Helper.Decrypt(DataItem.CodeActivation, GlobalConst.MaCleSecrete);
-
                     if (string.IsNullOrEmpty(codeActivationDechiffre))
                     {
                         await _alertService.ShowAlertAsync("Erreur", "Code d'activaition dechiffré est invalide.");
@@ -107,9 +106,16 @@ namespace SuiviBuget.Mobile.ViewModels
                         IsActive = true
                     };
                 }
+                var nbreJours = (DataItem.DateExpiration - DateTime.Today).Value.TotalDays + 1;
+
+                var existing = await _service.GetLicence();
+                if (existing == null)
+                    await _service.CreateLicenceAsync(DataItem);
+                else
+                    await _service.UpdateLicenceAsync(DataItem);
+
+                await _alertService.ShowAlertAsync("Information", $"🎉 La licence a été activée avec succès ! Elle restera valide pendant {nbreJours} jours.");
                 ClosePopupAction?.Invoke(); // Ferme le popup
-                await _service.UpdateLicenceAsync(DataItem);
-                await _alertService.ShowAlertAsync("Information", "Licence activée avec succès !!!");
             }
             catch (Exception ex)
             {

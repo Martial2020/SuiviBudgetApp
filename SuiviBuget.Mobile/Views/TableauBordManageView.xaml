@@ -35,7 +35,7 @@
                             ColumnDefinitions="Auto,*"
                             ColumnSpacing="5"
                             IsVisible="{Binding IsVisibleBudgetDetail}"
-                            RowDefinitions="*,*"
+                            RowDefinitions="*,*,*"
                             RowSpacing="5">
                             <!--  Badge Montant  -->
                             <Frame
@@ -45,29 +45,10 @@
                                 BackgroundColor="AliceBlue"
                                 CornerRadius="12"
                                 HasShadow="True">
-                                <Label Text="{Binding SelectedBudget.MontantBudget, StringFormat='💰 Budget : {0:N0} CFA'}" TextColor="Black" />
+                                <Label Text="{Binding SelectedBudget.MontantBudget, StringFormat='💰 Total : {0:N0} CFA'}" TextColor="Black" />
                             </Frame>
                             <Frame
                                 Grid.Row="0"
-                                Grid.Column="1"
-                                Padding="8,4"
-                                BackgroundColor="AliceBlue"
-                                CornerRadius="12"
-                                HasShadow="True">
-                                <Label Text="{Binding SelectedBudget.MontantUtilise, StringFormat='💳 Utilisé : {0:N0} CFA'}" TextColor="Black" />
-                            </Frame>
-                            <Frame
-                                Grid.Row="1"
-                                Grid.Column="0"
-                                Padding="8,4"
-                                BackgroundColor="AliceBlue"
-                                CornerRadius="12"
-                                HasShadow="True">
-                                <Label Text="{Binding SelectedBudget.MontantRestant, StringFormat='💵 Reste : {0:N0} CFA'}" TextColor="Black" />
-                            </Frame>
-                            <!--  Badge Période  -->
-                            <Frame
-                                Grid.Row="1"
                                 Grid.Column="1"
                                 Padding="8,4"
                                 BackgroundColor="AliceBlue"
@@ -81,6 +62,45 @@
                                     <Label Text="{Binding SelectedBudget.DateFinBudget, StringFormat=' - {0:dd/MM/yyyy}'}" TextColor="Black" />
                                 </HorizontalStackLayout>
                             </Frame>
+                            <Frame
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Padding="8,4"
+                                BackgroundColor="AliceBlue"
+                                CornerRadius="12"
+                                HasShadow="True">
+                                <Label Text="{Binding SelectedBudget.MontantAlloue, StringFormat='📊 Alloué : {0:N0} CFA'}" TextColor="Black" />
+                            </Frame>
+                            <Frame
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Padding="8,4"
+                                BackgroundColor="AliceBlue"
+                                CornerRadius="12"
+                                HasShadow="True">
+                                <Label Text="{Binding SelectedBudget.MontantNonAlloue, StringFormat='🏦 Non alloué : {0:N0} CFA'}" TextColor="Black" />
+                            </Frame>
+                            <Frame
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                Padding="8,4"
+                                BackgroundColor="AliceBlue"
+                                CornerRadius="12"
+                                HasShadow="True">
+                                <Label Text="{Binding SelectedBudget.MontantUtilise, StringFormat='🟢 Utilisé : {0:N0} CFA'}" TextColor="Black" />
+                            </Frame>
+                            <Frame
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Padding="8,4"
+                                BackgroundColor="AliceBlue"
+                                CornerRadius="12"
+                                HasShadow="True">
+                                <Label Text="{Binding SelectedBudget.MontantRestant, StringFormat='🔴 Restant : {0:N0} CFA'}" TextColor="Black" />
+                            </Frame>
+                            <!--  Badge Période  -->
+
+
                         </Grid>
                     </VerticalStackLayout>
 
