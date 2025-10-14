@@ -88,6 +88,7 @@ namespace SuiviBuget.Mobile.Services
                     .Where(l => isSearchEmpty
                         || l.Identifiant.ToLower().Contains(search)
                         || l.CodeActivation.ToLower().Contains(search))
+                    .OrderByDescending(x=>x.DateActivation)
                     .ToListAsync();
 
                 return new ObservableCollection<ActivationLicence>(licences);

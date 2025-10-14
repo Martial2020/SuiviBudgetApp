@@ -186,7 +186,7 @@ namespace SuiviBudge.Validators
                 return (false, $"Impossible, Le montant non alloué [{budget.MontantNonAlloue}] disponible est inferieur au montant saisi pour l'allocation.");
             return (true, string.Empty);
         }
-        
+
         public static async Task<(bool isSuccess, string message)> ValidateBudgetDetailDelete(BudgetDetailManageModel ligneBugetaire)
         {
             if (ligneBugetaire == null)

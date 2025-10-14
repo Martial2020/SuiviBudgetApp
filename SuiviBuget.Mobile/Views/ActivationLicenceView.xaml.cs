@@ -30,4 +30,6 @@ public partial class ActivationLicenceView : Popup
             Debug.WriteLine("ERREUR : " + (ex.InnerException?.Message ?? ex.Message));
         }
     }
+
+   
 }

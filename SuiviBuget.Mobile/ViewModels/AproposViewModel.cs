@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using SuiviBudget.Mobile.Interfaces;
 using SuiviBuget.Mobile.Helpers;
+using SuiviBuget.Mobile.Interfaces;
 using SuiviBuget.Mobile.Services;
 
 namespace SuiviBuget.Mobile.ViewModels
@@ -17,7 +18,7 @@ namespace SuiviBuget.Mobile.ViewModels
         public string Developpeur => "Martial Bleu";
 
         [ObservableProperty]
-        public string licence ;
+        public string licence;
         public string Statut => "Active ✅";
 
         [ObservableProperty]
@@ -29,13 +30,22 @@ namespace SuiviBuget.Mobile.ViewModels
         [ObservableProperty]
         public string messageExpiration;
 
-
+        IAlertService _alert;
         IServices _service;
         public AproposViewModel()
         {
             var dbPath = Helper.GetDatabaseFullPath();
             _service = new Services.Services(dbPath);
-            GetInfoLicence();
+            _alert = new AlertService();
+            try
+            {
+                GetInfoLicence();
+            }
+            catch (Exception ex)
+            {
+                _alert.ShowAlertAsync("Erreur", ex.Message);
+            }
+
         }
 
         private async void GetInfoLicence()
@@ -48,7 +58,7 @@ namespace SuiviBuget.Mobile.ViewModels
             Licence = licence.CodeActivation;
             DateActivation = licence.DateActivation.Value;
 
-            var nbreJours = (Expiration - DateTime.Today).Days;
+            var nbreJours = (Expiration - DateTime.Today).Days + 1;
             MessageExpiration = $"Votre licence expire dans {nbreJours} jour(s).";
         }
     }

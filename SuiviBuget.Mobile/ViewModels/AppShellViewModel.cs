@@ -66,11 +66,11 @@ namespace SuiviBuget.Mobile.ViewModels
             }
             if (licence.CodeActivation == GlobalConst.AdministratorCodeActive)
             {
-                options = new List<string> { typeDepense, modePaiement, activationLicence, backupBD, restaurationBD, Apropos, reinitialiser };
+                options = new List<string> { typeDepense, modePaiement, activationLicence, backupBD, restaurationBD, reinitialiser, Apropos };
             }
             else
             {
-                options = new List<string> { typeDepense, modePaiement, backupBD, restaurationBD, Apropos, reinitialiser };
+                options = new List<string> { typeDepense, modePaiement, backupBD, restaurationBD, reinitialiser, Apropos };
             }
             string action = await _service.ShowActionSheet(
                    "⚙️ Paramètres",

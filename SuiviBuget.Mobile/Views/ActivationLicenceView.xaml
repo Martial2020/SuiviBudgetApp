@@ -16,23 +16,34 @@
         Padding="20"
         BackgroundColor="White"
         HasShadow="True">
-
         <VerticalStackLayout Spacing="15">
 
             <Label
                 FontAttributes="Bold"
-                FontSize="20"
+                FontSize="15"
                 HorizontalOptions="Center"
                 Text="Activation de licence"
                 TextColor="#2E86DE" />
 
             <!--  Identifiant appareil  -->
             <Label FontAttributes="Bold" Text="Identifiant de l'appareil :" />
-            <Entry
-                x:Name="DeviceIdEntry"
-                IsReadOnly="True"
-                Text="{Binding DataItem.Identifiant}"
-                TextColor="Gray" />
+
+            <HorizontalStackLayout Spacing="10">
+                <Entry
+                    x:Name="DeviceIdEntry"
+                    IsReadOnly="True"
+                    Text="{Binding DataItem.Identifiant}"
+                    TextColor="Gray"
+                    WidthRequest="220" />
+
+                <Button
+                    Padding="5"
+                    BackgroundColor="White"
+                    Command="{Binding CopyIdCommand}"
+                    CornerRadius="8"
+                    Text="📋"
+                    TextColor="White" />
+            </HorizontalStackLayout>
 
             <!--  Code d'activation  -->
             <Label FontAttributes="Bold" Text="Code d'activation :" />
@@ -41,6 +52,7 @@
                 Keyboard="Text"
                 Placeholder="Entrez le code d’activation"
                 Text="{Binding DataItem.CodeActivation}" />
+
             <!--  Bouton Activer  -->
             <Button
                 BackgroundColor="#FF7F50"

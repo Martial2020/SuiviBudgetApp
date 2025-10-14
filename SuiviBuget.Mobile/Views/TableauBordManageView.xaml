@@ -113,7 +113,7 @@
                                 Grid.Column="0"
                                 FontAttributes="Bold"
                                 HorizontalOptions="Start"
-                                Text="🚨 Dépassements :"
+                                Text="🚨 Réajustements :"
                                 TextColor="Red" />
 
                             <Label

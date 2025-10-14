@@ -68,7 +68,7 @@ namespace SuiviBuget.Mobile.ViewModels
                 DateExpiration = DataItem.DateExpiration,
                 DateActivation = DataItem.DateActivation,
                 Identifiant = DataItem.Identifiant,
-                Statut = DataItem.DateExpiration.Value.Date > DateTime.Now.Date
+                Statut = DataItem.DateExpiration.Value.Date >= DateTime.Now.Date
             };
 
             var isOk = await _service.AddActivationLicenceAsync(data);

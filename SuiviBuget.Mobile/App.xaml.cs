@@ -36,7 +36,7 @@ namespace SuiviBuget.Mobile
                     var activation = new Licence
                     {
                         Identifiant = Helper.GetCodeActivation(),
-                        CodeActivation = null,
+                        CodeActivation = "",
                         DateActivation = null,
                         DateExpiration = null,
                         IsActive = false

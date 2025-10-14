@@ -19,9 +19,14 @@
                 CornerRadius="15"
                 HasShadow="True">
                 <VerticalStackLayout Spacing="8">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="18"
+                        Text="Informations de l'application"
+                        TextColor="#2C3E50" />
                     <Label Text="{Binding NomApplication, StringFormat='Nom de l’application : {0}'}" />
                     <Label Text="{Binding Version, StringFormat='Version : {0}'}" />
-                    <Label Text="{Binding Developpeur, StringFormat='Développeur : {0}'}" />
+                    <Label Text="{Binding Developpeur, StringFormat='Concepteur : {0}'}" />
                 </VerticalStackLayout>
             </Frame>
 
@@ -53,11 +58,17 @@
             </Frame>
 
             <!--  Pied de page  -->
-            <Label
-                FontSize="12"
-                HorizontalOptions="Center"
-                Text="© 2025 Martial Zoua - Tous droits réservés"
-                TextColor="Gray" />
+            <!--  Pied de page  -->
+            <VerticalStackLayout HorizontalOptions="Center" Spacing="2">
+                <Label
+                    FontSize="12"
+                    Text="© 2025 Martial Bleu - Tous droits réservés"
+                    TextColor="Gray" />
+                <Label
+                    FontSize="12"
+                    Text="Tel: +225 07 79 09 54 69 / +225 01 70 43 63 47"
+                    TextColor="Gray" />
+            </VerticalStackLayout>
         </VerticalStackLayout>
     </ScrollView>
 
