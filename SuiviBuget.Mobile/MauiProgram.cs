@@ -37,7 +37,7 @@ namespace SuiviBuget.Mobile
             builder.Services.AddSingleton<INavigationService, NavigationService>();
             builder.Services.AddSingleton<IAlertService, AlertService>();
             builder.Services.AddSingleton<IDialogService, DialogService>();
-
+            //builder.UseMauiApp<App>().UseLocalNotification();
             // Configuration des logs en mode DEBUG
 #if DEBUG
             builder.Logging.AddDebug();

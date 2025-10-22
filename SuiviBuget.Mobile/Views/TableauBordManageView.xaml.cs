@@ -74,7 +74,6 @@ public partial class TableauBordManageView : ContentPage
             throw ex;
         }
 
-
     }
 
 }

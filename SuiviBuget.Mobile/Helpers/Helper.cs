@@ -14,7 +14,8 @@ namespace SuiviBuget.Mobile.Helpers
 
         public static string GetDatabaseFullPath()
         {
-            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), GlobalConst.DbPath);
+            //return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), GlobalConst.DbPath);
+            return Path.Combine(FileSystem.AppDataDirectory, GlobalConst.DbPath);      
         }
         public static string ComputeSha256Hash(string rawData)
         {

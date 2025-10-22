@@ -47,8 +47,8 @@
                     x:Name="LblMontant"
                     FontAttributes="Bold"
                     HorizontalOptions="Center"
-                    Text="{Binding MontantBudget, StringFormat='Montant : {0:N0} FCFA'}"
-                    TextColor="Green" />
+                    Text="{Binding MontantBudget, StringFormat='Total : {0:N0} FCFA'}"
+                    TextColor="#1565C0" />
 
                 <!--  Deuxième ligne : Utilisé et Restant  -->
                 <Grid
@@ -61,7 +61,7 @@
                         FontAttributes="Bold"
                         HorizontalOptions="Start"
                         Text="{Binding MontantUtilise, StringFormat='Utilisé : {0:N0} FCFA'}"
-                        TextColor="#1565C0" />
+                        TextColor="#D32F2F" />
 
                     <Label
                         x:Name="LblRestant"
@@ -69,7 +69,7 @@
                         FontAttributes="Bold"
                         HorizontalOptions="End"
                         Text="{Binding MontantRestant, StringFormat='Restant : {0:N0} FCFA'}"
-                        TextColor="#D32F2F" />
+                        TextColor="Green" />
                 </Grid>
                 <!--  Barre de progression  -->
                 <VerticalStackLayout>
@@ -123,10 +123,10 @@
                                         TextColor="#2C3E50" />
 
                                     <!--  Libelle ligne budgetaire  -->
-                                    <Label
+                                    <!--<Label
                                         FontAttributes="Bold"
                                         Text="{Binding LibelleLigneBudgetaire}"
-                                        TextColor="Black" />
+                                        TextColor="Black" />-->
 
 
                                     <!--  Mode paiement + montant  -->

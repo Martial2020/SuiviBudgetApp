@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using SuiviBudget.Mobile.Interfaces;
 using SuiviBuget.Mobile.Helpers;
+using SuiviBuget.Mobile.Services;
 
 namespace SuiviBuget.Mobile.ViewModels
 {
@@ -31,9 +33,12 @@ namespace SuiviBuget.Mobile.ViewModels
                 }
             }
         }
+
+        IServices _service;
         public RestaurationViewModel()
         {
-
+            var context = Helper.GetDatabaseFullPath();
+            _service = new Services.Services(context);
         }
         private async Task PickFileAsync()
         {
@@ -71,14 +76,20 @@ namespace SuiviBuget.Mobile.ViewModels
             if (string.IsNullOrEmpty(backupPath))
             {
                 IsBusy = false;
-                await App.Current.MainPage.DisplayAlert("Erreur", "Veuillez d'abord choisir le fichier de donnée à restaurer.", "OK");    
+                await App.Current.MainPage.DisplayAlert("Erreur", "Veuillez d'abord choisir le fichier de donnée à restaurer.", "OK");
                 return;
             }
 
             try
             {
+                var licenceEnCours = await _service.GetLicence();
                 string dbPath = Helper.GetDatabaseFullPath();
                 File.Copy(backupPath, dbPath, true);
+                var licenceBackup = await _service.GetLicence();
+                if (licenceBackup != null)
+                    await _service.DeleteLicenceAsync(licenceBackup);
+                if (licenceEnCours != null)
+                    await _service.CreateLicenceAsync(licenceEnCours);
                 IsBusy = false;
                 await App.Current.MainPage.DisplayAlert("Succès", "Restauration terminée. Votre application se fermera, nous vous prions de relancer afin qu'elle prenne en compte les nouvelles données restaurées.", "OK");
                 Application.Current.Quit();

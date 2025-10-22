@@ -18,14 +18,15 @@ namespace SuiviBuget.Mobile
             string dbPath = Helper.GetDatabaseFullPath();
             _service = new Services.Services(dbPath);
             UserAppTheme = AppTheme.Light;
-            InitializeDataBase();          
+            // ⚡ Faire attendre la création de la licence avant de continuer
+            Task.Run(async () => await InitializeDataBase()).Wait();
         }
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
             return new Window(new AppShell());
         }
-        private async void InitializeDataBase()
+        private async Task InitializeDataBase()
         {
             try
             {

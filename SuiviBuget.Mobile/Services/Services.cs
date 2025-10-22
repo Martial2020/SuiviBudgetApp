@@ -44,7 +44,7 @@ namespace SuiviBuget.Mobile.Services
         public async Task<bool> UpdateActivationLicenceAsync(ActivationLicence licence)
         {
             try
-            {             
+            {
                 await _db.UpdateAsync(licence);
                 return true;
             }
@@ -57,7 +57,7 @@ namespace SuiviBuget.Mobile.Services
         public async Task<bool> AddActivationLicenceAsync(ActivationLicence licence)
         {
             try
-            {             
+            {
                 await _db.InsertAsync(licence);
                 return true;
             }
@@ -88,7 +88,7 @@ namespace SuiviBuget.Mobile.Services
                     .Where(l => isSearchEmpty
                         || l.Identifiant.ToLower().Contains(search)
                         || l.CodeActivation.ToLower().Contains(search))
-                    .OrderByDescending(x=>x.DateActivation)
+                    .OrderByDescending(x => x.DateActivation)
                     .ToListAsync();
 
                 return new ObservableCollection<ActivationLicence>(licences);
@@ -879,7 +879,7 @@ namespace SuiviBuget.Mobile.Services
                 var query = (from e in executions
                              join l in lignes on e.CodeLigneBudgetaire equals l.CodeLigneBudgetaire
                              join m in paiement on e.CodeModePaiement equals m.CodeModePaiement
-                             orderby e.DateCreation descending
+                             orderby e.DateExecution descending, e.DateCreation descending
                              select new ExecutionBudgetaireDetailManageModel
                              {
                                  DateExecution = e.DateExecution,
@@ -889,7 +889,8 @@ namespace SuiviBuget.Mobile.Services
                                  Montant = e.Montant,
                                  CodeLigneBudgetaire = l.CodeLigneBudgetaire,
                                  CodeBudget = e.CodeBudget,
-                                 Description = e.Description
+                                 Description = e.Description,
+                                 DateCreation = e.DateCreation
                              }).ToList();
 
                 return query;
@@ -1179,7 +1180,7 @@ namespace SuiviBuget.Mobile.Services
         {
             try
             {
-                await _db.InsertAsync(licence);     
+                await _db.InsertAsync(licence);
                 return true;
             }
             catch (Exception ex)
@@ -1193,8 +1194,23 @@ namespace SuiviBuget.Mobile.Services
         {
             try
             {
-                
+
                 await _db.UpdateAsync(licence);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors de l'ajout: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteLicenceAsync(Licence licence)
+        {
+            try
+            {
+
+                await _db.DeleteAsync(licence);
                 return true;
             }
             catch (Exception ex)

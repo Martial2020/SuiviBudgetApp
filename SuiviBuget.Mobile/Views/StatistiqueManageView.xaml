@@ -102,6 +102,12 @@
                                     CornerRadius="10">
                                     <Grid ColumnDefinitions="*,Auto,Auto">
                                         <VerticalStackLayout Spacing="2">
+                                            <!--  Date  -->
+                                            <Label
+                                                FontAttributes="Bold"
+                                                Text="{Binding DateExecution, StringFormat='{0:dd/MM/yyyy}'}"
+                                                TextColor="#2C3E50" />
+
                                             <Label
                                                 FontAttributes="Bold"
                                                 Text="{Binding LibelleLigneBudgetaire}"

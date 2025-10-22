@@ -17,6 +17,7 @@ namespace SuiviBudget.Mobile.Interfaces
         Task<bool> DeleteActivationLicenceAsync(ActivationLicence licence);
         Task<bool> AddActivationLicenceAsync(ActivationLicence licence);
         Task<bool> UpdateLicenceAsync(Licence licence);
+        Task<bool> DeleteLicenceAsync(Licence licence);
         Task<bool> CreateLicenceAsync(Licence licence);
         Task<Licence> GetLicence();
         Task<List<GrapheModel>> GetConsommationByLigneBudgetaire(List<Budget> budgets,DateTime dateDebut,DateTime dateFin);
