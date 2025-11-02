@@ -44,7 +44,8 @@ public partial class BudgetManageView : ContentPage
                 options.Add("🗑 Supprimer"); // poubelle
                 options.Add("📄 Détails du budget");
                 options.Add("💰 Allocation budgétaire");
-                options.Add("♻️ Réajustement budgétaire");              
+                options.Add("💸 Depenses");
+                options.Add("♻️ Réajustement budgétaire");
                 options.Add("🔒 Clôturer");
             }
             else
@@ -52,6 +53,7 @@ public partial class BudgetManageView : ContentPage
                 
                 options.Add("📄 Détails du budget");
                 options.Add("💰 Allocation budgétaire");
+                options.Add("💸 Depenses");
                 options.Add("♻️ Réajustement budgétaire");
             }
             //else
@@ -98,6 +100,9 @@ public partial class BudgetManageView : ContentPage
                     case "♻️ Réajustement budgétaire":
                         vm.ReajusterCommand.Execute(item);
                         break;
+                    case "💸 Depenses":
+                        vm.DepenseCommand.Execute(item);
+                        break;                      
                     case "📄 Détails du budget":
                         vm.DetailsBudgetCommand.Execute(item);
                         break;

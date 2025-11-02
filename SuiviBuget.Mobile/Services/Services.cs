@@ -29,6 +29,8 @@ namespace SuiviBuget.Mobile.Services
             //_db.DropTableAsync<Licence>().Wait();      // supprime la table
             _db.CreateTableAsync<ActivationLicence>().Wait();
             _db.CreateTableAsync<Licence>().Wait();
+            _db.CreateTableAsync<TypeRevenu>().Wait();
+            _db.CreateTableAsync<Devise>().Wait();
             _db.CreateTableAsync<ModePaiement>().Wait();
             _db.CreateTableAsync<LigneBudgetaire>().Wait();
             _db.CreateTableAsync<Budget>().Wait();

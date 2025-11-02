@@ -15,6 +15,7 @@ namespace SuiviBuget.Mobile
         public App()
         {
             InitializeComponent();
+            _ = Helper.PlanifierNotificationsQuotidiennes(); // lance la tâche sans attendre
             string dbPath = Helper.GetDatabaseFullPath();
             _service = new Services.Services(dbPath);
             UserAppTheme = AppTheme.Light;
@@ -50,9 +51,9 @@ namespace SuiviBuget.Mobile
 
                 throw ex;
             }
- 
+
         }
 
-     
+
     }
 }

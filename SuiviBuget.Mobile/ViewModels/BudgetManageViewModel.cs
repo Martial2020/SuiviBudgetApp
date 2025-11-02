@@ -133,6 +133,7 @@ namespace SuiviBuget.Mobile.ViewModels
         public ICommand EncoursCommand { get; }
         public ICommand FilterStatutCommand { get; }
         public ICommand DetailsBudgetCommand { get; }
+        public ICommand DepenseCommand { get; }
 
         public BudgetManageViewModel()
         {
@@ -153,7 +154,12 @@ namespace SuiviBuget.Mobile.ViewModels
             EncoursCommand = new RelayCommand<BudgetManageModel>(OnEncoursCommand);
             FilterStatutCommand = new RelayCommand<string>(OnFilterStatutCommand);
             DetailsBudgetCommand= new RelayCommand<BudgetManageModel>(OnDetailsBudgetCommand);
+            DepenseCommand = new RelayCommand<BudgetManageModel>(OnDepenseCommand);
         }
+
+   
+        private async void OnDepenseCommand(BudgetManageModel budget) => await _navigationService.NavigateToAsync("ExecutionBudgetaireManageDetailView", budget.CodeBudget);
+
         private async void OnDetailsBudgetCommand(BudgetManageModel budget) => await _navigationService.NavigateToAsync("DetailsBudgetView",budget.CodeBudget);
         private async void ActualiserNombreBudget()
         {

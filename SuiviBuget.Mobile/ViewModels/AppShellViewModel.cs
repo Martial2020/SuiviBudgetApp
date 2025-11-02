@@ -50,7 +50,10 @@ namespace SuiviBuget.Mobile.ViewModels
 
         private async void OnShowMenuClicked()
         {
+
+            const string devise = "💱 Devise";
             const string typeDepense = "💰 Type de dépense";
+            const string typeRevenu = "💼 Type de source de revenu";
             const string modePaiement = "💳 Mode de paiement";
             const string activationLicence = "🔑 Activation de licence";
             const string backupBD = "💾 Sauvegarder ses données";
@@ -66,14 +69,15 @@ namespace SuiviBuget.Mobile.ViewModels
             }
             if (licence.CodeActivation == GlobalConst.AdministratorCodeActive)
             {
-                options = new List<string> { typeDepense, modePaiement, activationLicence, backupBD, restaurationBD, reinitialiser, Apropos };
+                options = new List<string> { devise, typeRevenu, typeDepense, modePaiement, activationLicence, backupBD, restaurationBD, reinitialiser, Apropos };
             }
             else
             {
-                options = new List<string> { typeDepense, modePaiement, backupBD, restaurationBD, reinitialiser, Apropos };
+                options = new List<string> { devise, typeRevenu, typeDepense, modePaiement, backupBD, restaurationBD, reinitialiser, Apropos };
             }
+            //⚙️ 
             string action = await _service.ShowActionSheet(
-                   "⚙️ Paramètres",
+                   "Paramètres",
                    "Fermer",
                    null,
                    options.ToArray()
@@ -81,6 +85,12 @@ namespace SuiviBuget.Mobile.ViewModels
             // Gestion de l'action choisie
             switch (action)
             {
+                case devise:
+                    await _navigationService.NavigateToAsync("DeviseManageView");
+                    break;
+                case typeRevenu:
+                    await _navigationService.NavigateToAsync("TypeSourceRevenuManageView");
+                    break;
                 case typeDepense:
                     await _navigationService.NavigateToAsync("LigneBudgetaireManageView");
                     break;

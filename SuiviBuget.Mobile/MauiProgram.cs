@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Maui;
 using Microcharts.Maui;
 using Microsoft.Extensions.Logging;
+using Plugin.LocalNotification;
 using SuiviBudget.Mobile.Interfaces;
 using SuiviBudget.Services;
 using SuiviBuget.Mobile.Interfaces;
@@ -20,6 +21,7 @@ namespace SuiviBuget.Mobile
             // Utilisation du toolkit MAUI
             builder
                 .UseMauiApp<App>()
+                 .UseLocalNotification() // 🔔 Ajout ici
                 .UseMauiCommunityToolkit()
                 .UseMicrocharts()  // <-- c'est cette ligne qui manquait
                 .ConfigureFonts(fonts =>

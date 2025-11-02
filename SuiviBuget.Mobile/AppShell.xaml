@@ -27,17 +27,20 @@
             Icon="accueil.png">
             <ShellContent ContentTemplate="{DataTemplate local:TableauBordManageView}" />
         </Tab>
+        <Tab Title="Source de revenu" Icon="revenu.png">
+            <ShellContent ContentTemplate="{DataTemplate local:RevenuManageView}" />
+        </Tab>
         <Tab Title="Budgets" Icon="budget.png">
             <ShellContent ContentTemplate="{DataTemplate local:BudgetManageView}" />
         </Tab>
 
-        <Tab Title="Dépenses" Icon="execution.png">
+        <!--<Tab Title="Dépenses" Icon="execution.png">
             <ShellContent ContentTemplate="{DataTemplate local:ExecutionBudgetaireManageView}" />
-        </Tab>
+        </Tab>-->
 
-        <Tab Title="Statistiques" Icon="report.png">
+        <!--<Tab Title="Statistiques" Icon="report.png">
             <ShellContent ContentTemplate="{DataTemplate local:StatistiqueManageView}" />
-        </Tab>
+        </Tab>-->
     </TabBar>
 
 </Shell>

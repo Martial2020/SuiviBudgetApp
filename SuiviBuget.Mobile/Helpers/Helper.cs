@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Plugin.LocalNotification;
 using SuiviBudget.Mobile.Constants;
 
 namespace SuiviBuget.Mobile.Helpers
@@ -12,10 +13,40 @@ namespace SuiviBuget.Mobile.Helpers
     {
         private static int _colorIndex = 0;
 
+
+        public static async  Task PlanifierNotificationsQuotidiennes()
+        {
+            // Heures fixes dans la journée
+            var heures = new int[] { 6, 10, 14, 18, 22 };
+
+            foreach (var heure in heures)
+            {
+                var notificationTime = DateTime.Today.AddHours(heure);
+
+                // Si l’heure d’aujourd’hui est déjà passée, on planifie pour demain
+                if (notificationTime < DateTime.Now)
+                    notificationTime = notificationTime.AddDays(1);
+
+                var notification = new NotificationRequest
+                {
+                    NotificationId = heure, // id unique (6,10,16,22)
+                    Title = "Rappel journalier",
+                    Description = $"N'oublie pas de noter tes dépenses et revenus du jour pour garder ton budget sous contrôle !s",
+                    Schedule = new NotificationRequestSchedule
+                    {
+                        NotifyTime = notificationTime,
+                        RepeatType = NotificationRepeat.Daily // 🔁 répète chaque jour
+                    }
+                };
+
+                await LocalNotificationCenter.Current.Show(notification);
+            }
+        }
+
         public static string GetDatabaseFullPath()
         {
             //return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), GlobalConst.DbPath);
-            return Path.Combine(FileSystem.AppDataDirectory, GlobalConst.DbPath);      
+            return Path.Combine(FileSystem.AppDataDirectory, GlobalConst.DbPath);
         }
         public static string ComputeSha256Hash(string rawData)
         {
@@ -108,7 +139,7 @@ namespace SuiviBuget.Mobile.Helpers
             var minSize = Math.Min(screenWidth, screenHeight);
 
             // 60% de la plus petite dimension
-          return minSize * 0.6;
+            return minSize * 0.6;
             //var screenWidth = DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;
             //return screenWidth * 0.6;
         }
