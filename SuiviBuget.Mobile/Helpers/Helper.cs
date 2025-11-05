@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Plugin.LocalNotification;
+using Plugin.LocalNotification.AndroidOption;
 using SuiviBudget.Mobile.Constants;
 
 namespace SuiviBuget.Mobile.Helpers
@@ -13,36 +14,66 @@ namespace SuiviBuget.Mobile.Helpers
     {
         private static int _colorIndex = 0;
 
-
-        public static async  Task PlanifierNotificationsQuotidiennes()
+        public static async Task PlanifierNotificationsQuotidiennes()
         {
-            // Heures fixes dans la journée
-            var heures = new int[] { 6, 10, 14, 18, 22 };
-
-            foreach (var heure in heures)
+            try
             {
-                var notificationTime = DateTime.Today.AddHours(heure);
-
-                // Si l’heure d’aujourd’hui est déjà passée, on planifie pour demain
-                if (notificationTime < DateTime.Now)
-                    notificationTime = notificationTime.AddDays(1);
-
-                var notification = new NotificationRequest
+                var status = await Permissions.RequestAsync<Permissions.PostNotifications>();
+                if (status != PermissionStatus.Granted)
                 {
-                    NotificationId = heure, // id unique (6,10,16,22)
-                    Title = "Rappel journalier",
-                    Description = $"N'oublie pas de noter tes dépenses et revenus du jour pour garder ton budget sous contrôle !s",
-                    Schedule = new NotificationRequestSchedule
-                    {
-                        NotifyTime = notificationTime,
-                        RepeatType = NotificationRepeat.Daily // 🔁 répète chaque jour
-                    }
+                    await Application.Current.MainPage.DisplayAlert(
+                        "Permission requise",
+                        "Les notifications sont nécessaires pour te rappeler d'enregistrer tes dépenses.",
+                        "OK");
+                    return;
+                }
+                LocalNotificationCenter.Current.CancelAll();
+                var messages = new Dictionary<int, string>
+                {
+                    { 7,  "🌅 Bonjour ! Commence la journée en enregistrant tes revenus et dépenses du matin." },
+                    { 10, "⏰ Petit rappel : n'oublie pas d'ajouter toutes tes dépenses et revenus de la matinée." },
+                    { 12, "🍽️ Midi : prends un moment pour noter tes dépenses et revenus avant le déjeuner." },
+                    { 15, "☕ Après-midi : pense à mettre à jour tes dépenses et revenus du jour." },
+                    { 18, "🏠 Fin de journée : enregistre toutes tes dépenses et revenus pour clôturer la journée." },
+                    { 21, "🌙 Avant de dormir : assure-toi que toutes tes dépenses et revenus du jour sont enregistrés." },
+                    { 23, "🌌 Dernier rappel : vérifie et enregistre toutes tes dépenses et revenus pour aujourd'hui." }
                 };
 
-                await LocalNotificationCenter.Current.Show(notification);
-            }
-        }
 
+                foreach (var heure in messages.Keys)
+                {
+                    DateTime notificationTime = DateTime.Today.AddHours(heure);
+
+                    // Si l’heure est déjà passée, on décale à demain
+                    if (notificationTime < DateTime.Now)
+                        notificationTime = notificationTime.AddDays(1);
+
+                    // 🔔 4. Crée la notification planifiéea
+                    var notification = new NotificationRequest
+                    {
+                        NotificationId = heure,
+                        Title = "Rappel journalier 💡",
+                        Description = messages[heure],
+                        Schedule = new NotificationRequestSchedule
+                        {
+                            NotifyTime = notificationTime,
+                            RepeatType = NotificationRepeat.Daily,
+                        }
+                    };
+
+                    await LocalNotificationCenter.Current.Show(notification);
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            // 🔐 1. Demande de permission de notification
+
+        }
         public static string GetDatabaseFullPath()
         {
             //return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), GlobalConst.DbPath);
@@ -184,7 +215,8 @@ namespace SuiviBuget.Mobile.Helpers
                 using var sr = new StreamReader(cs);
                 return sr.ReadToEnd();
             }
+
+            #endregion
         }
-        #endregion
     }
 }

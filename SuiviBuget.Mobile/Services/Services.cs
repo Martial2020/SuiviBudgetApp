@@ -103,6 +103,33 @@ namespace SuiviBuget.Mobile.Services
         }
 
         #endregion
+
+        #region Devise
+        public Task<bool> AddDeviseAsync(Devise devise)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> DeleteDeviseAsync(Devise devise)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UpdateDeviseAsync(ModePaiement devise)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Devise> GetDeviseByCode(string codeDevise)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Devise>> GetDeviseItems(string searchText)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
         #region Ligne budgetaire   
         public async Task<bool> AddLigneBudgetaireAsync(LigneBudgetaireModel ligne)
         {

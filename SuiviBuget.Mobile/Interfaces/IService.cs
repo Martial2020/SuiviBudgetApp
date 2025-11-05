@@ -24,6 +24,15 @@ namespace SuiviBudget.Mobile.Interfaces
         void ReinitialiseApp();
         Task<List<Budget>> GetBudgetItems(DateTime dateDebut, DateTime dateFin, string codeBudget);
         Task<string> GetNumeroForCodeEntityAsync(string codeParametre);
+
+        #region Devise
+        Task<bool> AddDeviseAsync(Devise devise);
+        Task<bool> DeleteDeviseAsync(Devise devise);
+        Task<bool> UpdateDeviseAsync(ModePaiement devise);
+        Task<Devise> GetDeviseByCode(string codeDevise);
+        Task<List<Devise>> GetDeviseItems(string searchText);
+        #endregion
+        
         #region Ligne budgetaire
         Task<List<LigneBudgetaireModel>> GetLigneBudgetaireItems(string searchText);
         Task<List<LigneBudgetaireModel>> GetLigneBudgetaireExclusionItems(string code,string ligne);
