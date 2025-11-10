@@ -12,6 +12,7 @@ namespace SuiviBudget.Mobile.Interfaces
 {
     public interface IServices
     {
+        #region Others
         Task<bool> UpdateActivationLicenceAsync(ActivationLicence licence);
         Task<ObservableCollection<ActivationLicence>> GetLicenceItems(string searchText);
         Task<bool> DeleteActivationLicenceAsync(ActivationLicence licence);
@@ -24,15 +25,18 @@ namespace SuiviBudget.Mobile.Interfaces
         void ReinitialiseApp();
         Task<List<Budget>> GetBudgetItems(DateTime dateDebut, DateTime dateFin, string codeBudget);
         Task<string> GetNumeroForCodeEntityAsync(string codeParametre);
+        #endregion
 
         #region Devise
-        Task<bool> AddDeviseAsync(Devise devise);
-        Task<bool> DeleteDeviseAsync(Devise devise);
-        Task<bool> UpdateDeviseAsync(ModePaiement devise);
+        //Task<bool> AddDeviseAsync(Devise devise);
+        //Task<bool> DeleteDeviseAsync(Devise devise);
+        //Task<bool> UpdateDeviseAsync(ModePaiement devise);
         Task<Devise> GetDeviseByCode(string codeDevise);
         Task<List<Devise>> GetDeviseItems(string searchText);
+         Task AddOrUpdateDevise();
+        Task<bool> UpdateDeviseStatutAsync(Devise devise);
         #endregion
-        
+
         #region Ligne budgetaire
         Task<List<LigneBudgetaireModel>> GetLigneBudgetaireItems(string searchText);
         Task<List<LigneBudgetaireModel>> GetLigneBudgetaireExclusionItems(string code,string ligne);
@@ -66,7 +70,6 @@ namespace SuiviBudget.Mobile.Interfaces
         Task<BudgetDetail> GetBudgetDetailByBudgetLigne(string codeBudget, string codeLigneBudgetaire);
         #endregion
 
-
         #region Reajustement 
         Task<bool> DeleteReajustementAsync(Reajustement reajustement);
         Task<Reajustement> GetReajustementByCode(string codeBudget,string ligne);
@@ -94,6 +97,14 @@ namespace SuiviBudget.Mobile.Interfaces
         Task<bool> UpdateModePaiementAsync(ModePaiement paiement);
         Task<ModePaiement> GetModePaiementByCode(string codeModePaiement);
         Task<List<ModePaiement>> GetModePaiementItems(string searchText);
+        #endregion
+
+        #region TypeResource
+        Task<bool> AddSourceRevenuAsync(TypeRevenu revenu);
+        Task<bool> DeleteSourceRevenuAsync(TypeRevenu revenu);
+        Task<bool> UpdateSourceRevenuAsync(TypeRevenu revenu);
+        Task<TypeRevenu> GetSourceRevenuByCode(string codeRevenu);
+        Task<List<TypeRevenu>> GetSourceRevenuItems(string searchText);
         #endregion
     }
 }

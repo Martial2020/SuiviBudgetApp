@@ -6,4 +6,9 @@ public partial class TypeSourceRevenuManageView : ContentPage
 	{
 		InitializeComponent();
 	}
+
+    private void TypeRevenu_Clicked(object sender, EventArgs e)
+    {
+
+    }
 }

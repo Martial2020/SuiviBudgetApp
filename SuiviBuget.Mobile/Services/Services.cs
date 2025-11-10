@@ -19,6 +19,8 @@ namespace SuiviBuget.Mobile.Services
     {
         #region propriete
         private readonly SQLiteAsyncConnection _db;
+        private List<Devise> _devises;
+
 
         #endregion
 
@@ -26,7 +28,7 @@ namespace SuiviBuget.Mobile.Services
         public Services(string dbPath)
         {
             _db = new SQLiteAsyncConnection(dbPath);
-            //_db.DropTableAsync<Licence>().Wait();      // supprime la table
+            //_db.DropTableAsync<Devise>().Wait();      // supprime la table
             _db.CreateTableAsync<ActivationLicence>().Wait();
             _db.CreateTableAsync<Licence>().Wait();
             _db.CreateTableAsync<TypeRevenu>().Wait();
@@ -104,32 +106,149 @@ namespace SuiviBuget.Mobile.Services
 
         #endregion
 
+        #region TypeRevenu
+        public async Task<bool> AddSourceRevenuAsync(TypeRevenu revenu)
+        {
+            try
+            {
+                await _db.InsertAsync(revenu);
+                AddCompteurAsync(revenu.CodeTypeRevenu);
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public async  Task<bool> DeleteSourceRevenuAsync(TypeRevenu revenu)
+        {
+            try
+            {
+                await _db.DeleteAsync(revenu);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public async  Task<bool> UpdateSourceRevenuAsync(TypeRevenu revenu)
+        {
+            try
+            {
+                await _db.UpdateAsync(revenu);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+          
+        }
+
+        public async Task<TypeRevenu> GetSourceRevenuByCode(string codeRevenu)
+        {
+            try
+            {
+                return await _db.Table<TypeRevenu>()
+                             .FirstOrDefaultAsync(x => x.CodeTypeRevenu == codeRevenu);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors de la devise par code: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<List<TypeRevenu>> GetSourceRevenuItems(string searchText)
+        {
+            var search = searchText?.ToLower() ?? "";
+            var isSearchEmpty = string.IsNullOrWhiteSpace(search);
+
+            var revenus = await _db.Table<TypeRevenu>()
+                .Where(l => isSearchEmpty
+                    || l.CodeTypeRevenu.ToLower().Contains(searchText)
+                    || l.LibelleTypeRevenu.ToLower().Contains(searchText))
+                .ToListAsync();
+            return revenus;
+        }
+
+        #endregion
+
         #region Devise
-        public Task<bool> AddDeviseAsync(Devise devise)
+
+        public async Task<Devise> GetDeviseByCode(string codeDevise)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _db.Table<Devise>()
+                                           .Where(x => x.CodeDevise == codeDevise).FirstOrDefaultAsync();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors de la devise par code: {ex.Message}");
+                return null;
+            }
         }
 
-        public Task<bool> DeleteDeviseAsync(Devise devise)
+        public async Task<List<Devise>> GetDeviseItems(string searchText)
         {
-            throw new NotImplementedException();
+            var isSearchEmpty = string.IsNullOrEmpty(searchText);
+
+            return await _db.Table<Devise>()
+                .Where(l => isSearchEmpty
+                    || l.CodeDevise.ToLower().Contains(searchText.ToLower())
+                    || l.LibelleDevise.ToLower().Contains(searchText.ToLower()))
+                .OrderByDescending(l => l.EstActive)   // d’abord ceux actifs (true)
+                .ThenBy(l => l.LibelleDevise)             // ensuite tri alphabétique
+                .ToListAsync();
         }
 
-        public Task<bool> UpdateDeviseAsync(ModePaiement devise)
+        public async Task AddOrUpdateDevise()
         {
-            throw new NotImplementedException();
+            // Liste initiale
+            _devises = new List<Devise>
+            {
+                new Devise { CodeDevise = "XOF", LibelleDevise = "Franc CFA", EstActive = true },
+                new Devise { CodeDevise = "USD", LibelleDevise = "Dollar Américain", EstActive = false },
+                new Devise { CodeDevise = "EUR", LibelleDevise = "Euro", EstActive = false },
+                new Devise { CodeDevise = "GBP", LibelleDevise = "Livre Sterling", EstActive = false },
+                new Devise { CodeDevise = "CAD", LibelleDevise = "Dollar Canadien", EstActive = false },
+                new Devise { CodeDevise = "JPY", LibelleDevise = "Yen Japonais", EstActive = false },
+                new Devise { CodeDevise = "CNY", LibelleDevise = "Yuan Chinois", EstActive = false },
+                new Devise { CodeDevise = "CHF", LibelleDevise = "Franc Suisse", EstActive = false },
+                new Devise { CodeDevise = "AUD", LibelleDevise = "Dollar Australien", EstActive = false },
+                new Devise { CodeDevise = "NZD", LibelleDevise = "Dollar Néo-Zélandais", EstActive = false },
+            };
+            foreach (var item in _devises)
+            {
+                var devise = await GetDeviseByCode(item.CodeDevise);
+                if (devise == null)
+                    await _db.InsertAsync(item);
+           }
+
         }
 
-        public Task<Devise> GetDeviseByCode(string codeDevise)
+        public async Task<bool> UpdateDeviseStatutAsync(Devise devise)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<Devise>> GetDeviseItems(string searchText)
-        {
-            throw new NotImplementedException();
+            try
+            {
+                await _db.UpdateAsync(devise);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors de la mise à jour: {ex.Message}");
+                return false;
+            }
         }
         #endregion
+
         #region Ligne budgetaire   
         public async Task<bool> AddLigneBudgetaireAsync(LigneBudgetaireModel ligne)
         {
@@ -1320,6 +1439,7 @@ namespace SuiviBuget.Mobile.Services
             var isUpdate = await UpdateBudgetAsync(budget);
         }
 
+        
         #endregion
     }
 }

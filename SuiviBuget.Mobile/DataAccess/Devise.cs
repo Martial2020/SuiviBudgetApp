@@ -13,5 +13,6 @@ namespace SuiviBuget.Mobile.DataAccess
 
         public string CodeDevise { get; set; }
         public string LibelleDevise { get; set; }
+        public bool EstActive { get; set; }
     }
 }

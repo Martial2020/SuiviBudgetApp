@@ -31,7 +31,7 @@ namespace SuiviBuget.Mobile
             _ = InitializeDataBase();
 
             // 5️⃣ Lancer la planification des notifications en tâche de fond
-            //_ = Helper.PlanifierNotificationsQuotidiennes();
+           _ = Helper.PlanifierNotificationsQuotidiennes();
         }
 
 
@@ -67,6 +67,10 @@ namespace SuiviBuget.Mobile
                     };
                     await _service.CreateLicenceAsync(activation);
                 }
+
+
+                //Charger les devises
+                await _service.AddOrUpdateDevise();
             }
             catch (Exception ex)
             {

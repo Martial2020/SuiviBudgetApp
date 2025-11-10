@@ -4,15 +4,85 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Maui.Controls;
 using Plugin.LocalNotification;
 using Plugin.LocalNotification.AndroidOption;
 using SuiviBudget.Mobile.Constants;
+using SuiviBudget.Mobile.Interfaces;
+using SuiviBuget.Mobile.Services;
+
 
 namespace SuiviBuget.Mobile.Helpers
 {
     public static class Helper
     {
         private static int _colorIndex = 0;
+
+        static string dbPath = Helper.GetDatabaseFullPath();
+        static IServices service;
+        static Helper()
+        {
+            service = new Services.Services(dbPath);
+        }
+
+        private static void Notifications()
+        {
+            _ = PlanifierNotificationsQuotidiennes();
+        }
+        public static async Task PlanifierNotificationExpirationLicence()
+        {
+            try
+            {
+                // Heures des rappels de licence (matin, midi, soir)
+                int[] heuresLicence = { 8, 13, 19 };
+
+                // 3️⃣ Récupérer la licence
+                var licence = await service.GetLicence(); // ta méthode pour récupérer la licence
+                if (licence?.DateExpiration == null)
+                    return;
+
+                DateTime aujourdHui = DateTime.Today;
+                int joursRestants = (licence.DateExpiration.Value - aujourdHui).Days;
+
+                // 4️⃣ Vérifier si joursRestants correspond aux jours d’avertissement
+                int[] joursAvertissement = { 1, 2, 3 };
+                if (!joursAvertissement.Contains(joursRestants))
+                    return;
+
+                // 5️⃣ Message à envoyer
+                string message = $"Ta licence expire dans {joursRestants} jour{(joursRestants > 1 ? "s" : "")}. Pense à la renouveler pour éviter toute interruption.";
+
+                // 6️⃣ Planifier sur 30 jours
+                for (int i = 0; i < 30; i++)
+                {
+                    foreach (var heure in heuresLicence)
+                    {
+                        DateTime notificationTime = DateTime.Today.AddDays(i).AddHours(heure);
+
+                        // Créer un ID unique par jour + heure
+                        int notificationId = int.Parse($"{DateTime.Today.AddDays(i):MMdd}{heure}4000");
+
+                        var notification = new NotificationRequest
+                        {
+                            NotificationId = notificationId,
+                            Title = "⚠️ Avertissement de licence",
+                            Description = message,
+                            Schedule = new NotificationRequestSchedule
+                            {
+                                NotifyTime = notificationTime,
+                                RepeatType = NotificationRepeat.No // notification unique
+                            }
+                        };
+
+                        await LocalNotificationCenter.Current.Show(notification);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Erreur notifications", ex.Message, "OK");
+            }
+        }
 
         public static async Task PlanifierNotificationsQuotidiennes()
         {
@@ -40,28 +110,31 @@ namespace SuiviBuget.Mobile.Helpers
                 };
 
 
-                foreach (var heure in messages.Keys)
+                for (int i = 0; i <= 30; i++)
                 {
-                    DateTime notificationTime = DateTime.Today.AddHours(heure);
-
-                    // Si l’heure est déjà passée, on décale à demain
-                    if (notificationTime < DateTime.Now)
-                        notificationTime = notificationTime.AddDays(1);
-
-                    // 🔔 4. Crée la notification planifiéea
-                    var notification = new NotificationRequest
+                    foreach (var heure in messages.Keys)
                     {
-                        NotificationId = heure,
-                        Title = "Rappel journalier 💡",
-                        Description = messages[heure],
-                        Schedule = new NotificationRequestSchedule
-                        {
-                            NotifyTime = notificationTime,
-                            RepeatType = NotificationRepeat.Daily,
-                        }
-                    };
+                        DateTime notificationTime = DateTime.Today.AddDays(i).AddHours(heure);
 
-                    await LocalNotificationCenter.Current.Show(notification);
+                        // Si l’heure est déjà passée, on décale à demain
+                        if (notificationTime < DateTime.Now)
+                            notificationTime = notificationTime.AddDays(1);
+
+                        // 🔔 4. Crée la notification planifiéea
+                        var notification = new NotificationRequest
+                        {
+                            NotificationId = heure,
+                            Title = "Rappel journalier 💡",
+                            Description = messages[heure],
+                            Schedule = new NotificationRequestSchedule
+                            {
+                                NotifyTime = notificationTime,
+                                RepeatType = NotificationRepeat.Daily,
+                            }
+                        };
+
+                        await LocalNotificationCenter.Current.Show(notification);
+                    }
                 }
 
 
