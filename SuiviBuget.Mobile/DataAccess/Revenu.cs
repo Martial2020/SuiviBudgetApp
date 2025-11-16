@@ -7,12 +7,13 @@ using SQLite;
 
 namespace SuiviBuget.Mobile.DataAccess
 {
-    public class TypeRevenu
+    public class Revenu
     {
         [PrimaryKey]
 
+        public string CodeRevenu { get; set; }
         public string CodeTypeRevenu { get; set; }
-        public string LibelleTypeRevenu{ get; set; }
-        public bool EstActive { get; set; } = false;
+        public decimal Montant { get; set; }
+        public DateTime DateDernierMisAJour { get; set; }
     }
 }

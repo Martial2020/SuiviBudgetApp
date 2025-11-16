@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SuiviBuget.Mobile.Views.TypeSourceRevenuView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewModels="clr-namespace:SuiviBuget.Mobile.ViewModels;assembly=SuiviBuget.Mobile"
+    Title="{Binding Title}"
+    BackgroundColor="White">
+    <!--  Liaison du ViewModel à la page  -->
+    <ContentPage.BindingContext>
+        <viewModels:TypeSourceRevenuViewModel />
+    </ContentPage.BindingContext>
+
+    <VerticalStackLayout Padding="20" Spacing="5">
+        <Label FontAttributes="Bold" Text="Code :" />
+        <Entry
+            x:Name="CodeEntry"
+            IsEnabled="{Binding CodeLTypeRevenuIsEnabled, Mode=TwoWay}"
+            Placeholder="Entrez le code du type de revenu"
+            Text="{Binding DataItem.CodeTypeRevenu, Mode=TwoWay}" />
+        <Label FontAttributes="Bold" Text="Libellé :" />
+        <Entry
+            x:Name="LibelleEntry"
+            Placeholder="Entrez le libellé  du type de revenu"
+            Text="{Binding DataItem.LibelleTypeRevenu, Mode=TwoWay}" />
+        <Button
+            BackgroundColor="#FF7F50"
+            Command="{Binding SubmitCommand}"
+            CornerRadius="8"
+            Text="{Binding LabelButton}"
+            TextColor="White" />
+
+    </VerticalStackLayout>
+</ContentPage>

@@ -3,11 +3,93 @@
     x:Class="SuiviBuget.Mobile.Views.RevenuManageView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="RevenuManageView">
-    <VerticalStackLayout>
-        <Label
-            HorizontalOptions="Center"
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" />
-    </VerticalStackLayout>
+    xmlns:viewModels="clr-namespace:SuiviBuget.Mobile.ViewModels;assembly=SuiviBuget.Mobile"
+    Title="Liste des revenus">
+
+    <!--  Liaison du ViewModel à la page  -->
+    <ContentPage.BindingContext>
+        <viewModels:RevenuManageViewModel />
+    </ContentPage.BindingContext>
+
+    <Grid RowDefinitions="Auto, *">
+        <!--  Première ligne pour la barre de recherche  -->
+        <SearchBar
+            Grid.Row="0"
+            Margin="10,20,10,0"
+            BackgroundColor="White"
+            FontSize="16"
+            HeightRequest="50"
+            HorizontalOptions="FillAndExpand"
+            Placeholder="Rechercher d'une source..."
+            Text="{Binding SearchText, Mode=TwoWay}"
+            TextColor="Black"
+            VerticalOptions="Start"
+            VerticalTextAlignment="Center" />
+        <!--  Contenu  -->
+        <AbsoluteLayout Grid.Row="1">
+            <!--  CollectionView  -->
+            <CollectionView
+                x:Name="modepList"
+                Margin="10,0,10,10"
+                AbsoluteLayout.LayoutBounds="0,0,1,1"
+                AbsoluteLayout.LayoutFlags="All"
+                ItemsSource="{Binding RevenuItems}">
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame
+                            Margin="5"
+                            Padding="5"
+                            BackgroundColor="AliceBlue"
+                            CornerRadius="10"
+                            HasShadow="True">
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                                <VerticalStackLayout>
+                                    <Label Text="{Binding CodeRevenu}" />
+                                    <Label FontAttributes="Bold" Text="{Binding LibelleTypeRevenu}" />
+                                    <Label Text="{Binding MontantAvecDevise}" />
+                                    <!--<Label Text="{Binding Montant, StringFormat='Montant : {0:N0}'}" />-->
+                                    <Label Text="{Binding DateDernierMisAJour, StringFormat='Dernière mise à jour : {0}'}" />
+
+                                </VerticalStackLayout>
+
+                                <!--  Bouton Actions modernisé (menu ⋮)  -->
+                                <Button
+                                    x:Name="Action"
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    BackgroundColor="Transparent"
+                                    BorderColor="#4682B4"
+                                    BorderWidth="1"
+                                    Clicked="Action_Clicked"
+                                    CornerRadius="20"
+                                    FontSize="20"
+                                    HeightRequest="40"
+                                    HorizontalOptions="End"
+                                    Text="⋮"
+                                    TextColor="#4682B4"
+                                    VerticalOptions="Center"
+                                    WidthRequest="40" />
+                            </Grid>
+
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!--  Loader  -->
+            <ActivityIndicator
+                AbsoluteLayout.LayoutBounds="0.5,0.5,50,50"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                HeightRequest="50"
+                HorizontalOptions="Center"
+                IsRunning="{Binding IsBusy}"
+                IsVisible="{Binding IsBusy}"
+                VerticalOptions="Center"
+                WidthRequest="50"
+                Color="DodgerBlue" />
+        </AbsoluteLayout>
+    </Grid>
+
+
 </ContentPage>

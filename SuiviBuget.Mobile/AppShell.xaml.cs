@@ -8,6 +8,7 @@ namespace SuiviBuget.Mobile
         {
             InitializeComponent();
             
+            Routing.RegisterRoute(nameof(TypeSourceRevenuView), typeof(TypeSourceRevenuView));
             Routing.RegisterRoute(nameof(TypeSourceRevenuManageView), typeof(TypeSourceRevenuManageView));          
             Routing.RegisterRoute(nameof(DeviseManageView), typeof(DeviseManageView));
             Routing.RegisterRoute(nameof(AproposView), typeof(AproposView));

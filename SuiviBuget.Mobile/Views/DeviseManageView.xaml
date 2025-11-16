@@ -15,8 +15,8 @@
         <ResourceDictionary>
             <helpers:BoolToTextConverter
                 x:Key="ActiveConverter"
-                FalseText="Non utilisé"
-                TrueText="Utilisé" />
+                FalseText="Inactive ⚪"
+                TrueText="Activé ✅" />
             <helpers:BoolToColorConverter x:Key="BadgeColorConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>

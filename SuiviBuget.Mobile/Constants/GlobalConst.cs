@@ -35,6 +35,8 @@ namespace SuiviBudget.Mobile.Constants
         public const string BG = "BG";
         public const string LB = "TD";
         public const string MP = "MP";
+        public const string TR = "TR";
+        public const string SR = "SR";
     }
-
+    
 }

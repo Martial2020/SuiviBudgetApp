@@ -40,9 +40,10 @@ namespace SuiviBuget.Mobile.Services
             _db.CreateTableAsync<BudgetDetail>().Wait();
             _db.CreateTableAsync<ExecutionBudgetaire>().Wait();
             _db.CreateTableAsync<Reajustement>().Wait();
+            _db.CreateTableAsync<Revenu>().Wait();
+            _db.CreateTableAsync<RevenuDetail>().Wait();
         }
         #endregion
-
 
         #region Activation de licence
         public async Task<bool> UpdateActivationLicenceAsync(ActivationLicence licence)
@@ -106,6 +107,176 @@ namespace SuiviBuget.Mobile.Services
 
         #endregion
 
+        #region Revenu Detail 
+        public async Task<bool> AddRevenuDetailAsync(RevenuDetail revenu)
+        {
+            try
+            {
+                await _db.InsertAsync(revenu);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+        public async Task<bool> DeleteRevenuDetailAsync(RevenuDetail revenu)
+        {
+            try
+            {
+                await _db.DeleteAsync(revenu);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+        public async Task<bool> UpdateRevenuDetailAsync(RevenuDetail revenu)
+        {
+            try
+            {
+                await _db.UpdateAsync(revenu);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+        }
+
+        public async Task<RevenuDetail> GetRevenuDetailByCode(Guid revenuDetailID)
+        {
+            try
+            {
+                return await _db.Table<RevenuDetail>()
+                             .FirstOrDefaultAsync(x => x.RevenuDetailID == revenuDetailID);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors de la devise par code: {ex.Message}");
+                return null;
+            }
+        }
+        public async Task<RevenuDetail> GetRevenuDetailByCode(string typeRevenu)
+        {
+            try
+            {
+                return await _db.Table<RevenuDetail>()
+                             .FirstOrDefaultAsync(x => x.CodeTypeRevenu == typeRevenu);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors de la devise par code: {ex.Message}");
+                return null;
+            }
+        }
+
+
+        public async Task<List<RevenuDetailManageModel>> GetSourceRevenuItems(string typeRevenu,string searchText)
+        {
+            try
+            {
+                var isSearchEmpty = string.IsNullOrWhiteSpace(searchText?.ToLower() ?? "");
+                var type = await GetSourceRevenuItems(string.Empty);
+                var mode = await GetModePaiementItems(string.Empty);
+                var revenuDetails = await _db.Table<RevenuDetail>()
+                    .Where(b => b.CodeTypeRevenu == typeRevenu)
+                    .ToListAsync();
+
+                var query = (from r in revenuDetails
+                             join t in type on r.CodeTypeRevenu equals t.CodeTypeRevenu
+                             join m in mode on r.CodeModePaiement equals m.CodeModePaiement
+                             where (string.IsNullOrEmpty(searchText)
+                                    || t.LibelleTypeRevenu.ToLower().Contains(searchText.ToLower()))
+                             select new RevenuDetailManageModel
+                             {
+                                 CodeTypeRevenu = t.CodeTypeRevenu,
+                                 LibelleTypeRevenu = t.LibelleTypeRevenu,
+                                 DateReception = r.DateReception,
+                                 Description = r.Description,
+                                 Montant = r.Montant,
+                                 LibelleModePaiement = m.LibelleModePaiement
+                             }).ToList();
+
+                return query;
+            }
+            catch (Exception ex)
+            {
+                // Log erreur (peut-être un fichier ou un service de journalisation)
+                Console.WriteLine($"Erreur lors de la récupération des lignes budgétaires: {ex.Message}");
+                return new List<RevenuDetailManageModel>();
+            }
+        }
+        #endregion
+
+        #region Revenu 
+        public async Task<bool> AddRevenuAsync(Revenu revenu)
+        {
+            try
+            {
+                await _db.InsertAsync(revenu);
+                AddCompteurAsync(revenu.CodeRevenu);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+        public async Task<bool> DeleteRevenuAsync(Revenu revenu)
+        {
+            try
+            {
+                var rev = await _db.Table<Revenu>()
+                .FirstOrDefaultAsync(x => x.CodeTypeRevenu == revenu.CodeTypeRevenu);
+                if (rev == null)
+                    return false;
+
+                await _db.DeleteAsync(rev);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+        public async Task<List<RevenuManageModel>> GetRevenuItems(string searchText)
+        {
+            try
+            {
+                var isSearchEmpty = string.IsNullOrWhiteSpace(searchText?.ToLower() ?? "");
+                var source = await GetSourceRevenuItems(string.Empty);
+                var revenus = await _db.Table<Revenu>().ToListAsync();
+
+
+
+                var query = (from r in revenus
+                             join s in source on r.CodeTypeRevenu equals s.CodeTypeRevenu
+                             where (string.IsNullOrEmpty(searchText)
+                                    || s.LibelleTypeRevenu.ToLower().Contains(searchText.ToLower()))
+                             select new RevenuManageModel
+                             {
+                                 CodeRevenu = r.CodeRevenu,
+                                 DateDernierMisAJour = r.DateDernierMisAJour,
+                                 LibelleTypeRevenu=s.LibelleTypeRevenu,
+                                 Montant=r.Montant
+                             }).ToList();
+
+                return query;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        #endregion
+
         #region TypeRevenu
         public async Task<bool> AddSourceRevenuAsync(TypeRevenu revenu)
         {
@@ -121,8 +292,7 @@ namespace SuiviBuget.Mobile.Services
                 return false;
             }
         }
-
-        public async  Task<bool> DeleteSourceRevenuAsync(TypeRevenu revenu)
+        public async Task<bool> DeleteSourceRevenuAsync(TypeRevenu revenu)
         {
             try
             {
@@ -134,8 +304,7 @@ namespace SuiviBuget.Mobile.Services
                 return false;
             }
         }
-
-        public async  Task<bool> UpdateSourceRevenuAsync(TypeRevenu revenu)
+        public async Task<bool> UpdateSourceRevenuAsync(TypeRevenu revenu)
         {
             try
             {
@@ -146,7 +315,7 @@ namespace SuiviBuget.Mobile.Services
             {
                 return false;
             }
-          
+
         }
 
         public async Task<TypeRevenu> GetSourceRevenuByCode(string codeRevenu)
@@ -171,8 +340,9 @@ namespace SuiviBuget.Mobile.Services
 
             var revenus = await _db.Table<TypeRevenu>()
                 .Where(l => isSearchEmpty
-                    || l.CodeTypeRevenu.ToLower().Contains(searchText)
-                    || l.LibelleTypeRevenu.ToLower().Contains(searchText))
+                    || l.CodeTypeRevenu.ToLower().Contains(search)
+                    || l.LibelleTypeRevenu.ToLower().Contains(search))
+                .OrderBy(x => x.LibelleTypeRevenu)
                 .ToListAsync();
             return revenus;
         }
@@ -180,6 +350,20 @@ namespace SuiviBuget.Mobile.Services
         #endregion
 
         #region Devise
+        public async Task<Devise> GetDeviseActive()
+        {
+            try
+            {
+                return await _db.Table<Devise>()
+                          .FirstOrDefaultAsync(x => x.EstActive == true);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors de la devise par code: {ex.Message}");
+                return null;
+            }
+        }
 
         public async Task<Devise> GetDeviseByCode(string codeDevise)
         {
@@ -212,27 +396,29 @@ namespace SuiviBuget.Mobile.Services
         public async Task AddOrUpdateDevise()
         {
             // Liste initiale
-            _devises = new List<Devise>
+            var devisesInit = new List<Devise>
             {
-                new Devise { CodeDevise = "XOF", LibelleDevise = "Franc CFA", EstActive = true },
+                new Devise { CodeDevise = "FCFA", LibelleDevise = "Franc CFA", EstActive = true },
                 new Devise { CodeDevise = "USD", LibelleDevise = "Dollar Américain", EstActive = false },
                 new Devise { CodeDevise = "EUR", LibelleDevise = "Euro", EstActive = false },
                 new Devise { CodeDevise = "GBP", LibelleDevise = "Livre Sterling", EstActive = false },
                 new Devise { CodeDevise = "CAD", LibelleDevise = "Dollar Canadien", EstActive = false },
-                new Devise { CodeDevise = "JPY", LibelleDevise = "Yen Japonais", EstActive = false },
-                new Devise { CodeDevise = "CNY", LibelleDevise = "Yuan Chinois", EstActive = false },
                 new Devise { CodeDevise = "CHF", LibelleDevise = "Franc Suisse", EstActive = false },
-                new Devise { CodeDevise = "AUD", LibelleDevise = "Dollar Australien", EstActive = false },
-                new Devise { CodeDevise = "NZD", LibelleDevise = "Dollar Néo-Zélandais", EstActive = false },
             };
-            foreach (var item in _devises)
-            {
-                var devise = await GetDeviseByCode(item.CodeDevise);
-                if (devise == null)
-                    await _db.InsertAsync(item);
-           }
 
+            // Charger toutes les devises existantes en une seule requête
+            var existingDevises = await _db.Table<Devise>().ToListAsync();
+
+            // Trouver celles qui n'existent pas encore
+            var devisesToInsert = devisesInit
+                .Where(d => !existingDevises.Any(e => e.CodeDevise == d.CodeDevise))
+                .ToList();
+
+            // Insertion en une seule opération (si la lib le permet)
+            if (devisesToInsert.Any())
+                await _db.InsertAllAsync(devisesToInsert);
         }
+        
 
         public async Task<bool> UpdateDeviseStatutAsync(Devise devise)
         {
@@ -1385,6 +1571,10 @@ namespace SuiviBuget.Mobile.Services
                 _db.DeleteAllAsync<LigneBudgetaire>().Wait();
                 _db.DeleteAllAsync<ModePaiement>().Wait();
                 _db.DeleteAllAsync<ParametreCompteur>().Wait();
+                _db.DeleteAllAsync<Revenu>().Wait();
+                _db.DeleteAllAsync<RevenuDetail>().Wait();
+                _db.DeleteAllAsync<TypeRevenu>().Wait();
+                _db.DeleteAllAsync<Devise>().Wait();
 
 
             }
@@ -1439,7 +1629,7 @@ namespace SuiviBuget.Mobile.Services
             var isUpdate = await UpdateBudgetAsync(budget);
         }
 
-        
+
         #endregion
     }
 }

@@ -8,11 +8,11 @@ using SQLite;
 
 namespace SuiviBuget.Mobile.Models
 {
-    public partial class TypeRevenuModel : ObservableObject
+    public partial class ModePaiementModel : ObservableObject
     {
         [ObservableProperty]
-        public string codeTypeRevenu;
+        public string codeModePaiement;
         [ObservableProperty]
-        public string libelleTypeRevenu;
+        public string libelleModePaiement;
     }
 }

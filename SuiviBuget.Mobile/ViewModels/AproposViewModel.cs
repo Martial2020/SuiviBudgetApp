@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using SuiviBudget.Mobile.Interfaces;
 using SuiviBuget.Mobile.Helpers;
 using SuiviBuget.Mobile.Interfaces;
@@ -45,8 +47,9 @@ namespace SuiviBuget.Mobile.ViewModels
             {
                 _alert.ShowAlertAsync("Erreur", ex.Message);
             }
-
         }
+
+  
 
         private async Task GetInfoLicence()
         {

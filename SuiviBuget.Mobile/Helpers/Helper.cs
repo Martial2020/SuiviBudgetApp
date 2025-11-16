@@ -25,6 +25,13 @@ namespace SuiviBuget.Mobile.Helpers
             service = new Services.Services(dbPath);
         }
 
+        public static async void OpenWhatsApp()
+        {
+            string phone = "2250779095469"; // mets ton numéro SANS le +
+            string url = $"https://wa.me/{phone}";
+            await Launcher.OpenAsync(url);
+        }
+
         private static void Notifications()
         {
             _ = PlanifierNotificationsQuotidiennes();

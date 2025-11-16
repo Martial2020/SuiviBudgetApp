@@ -53,7 +53,7 @@ namespace SuiviBuget.Mobile.ViewModels
 
             const string devise = "💱 Devise";
             const string typeDepense = "💰 Type de dépense";
-            const string typeRevenu = "💼 Type de source de revenu";
+            const string typeRevenu = "💼 Type de revenu";
             const string modePaiement = "💳 Mode de paiement";
             const string activationLicence = "🔑 Activation de licence";
             const string backupBD = "💾 Sauvegarder ses données";

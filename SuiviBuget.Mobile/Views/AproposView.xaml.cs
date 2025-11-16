@@ -1,3 +1,5 @@
+using SuiviBuget.Mobile.Helpers;
+
 namespace SuiviBuget.Mobile.Views;
 
 public partial class AproposView : ContentPage
@@ -6,4 +8,10 @@ public partial class AproposView : ContentPage
 	{
 		InitializeComponent();
 	}
+
+    private void Button_Clicked(object sender, EventArgs e)
+    {
+        Helper.OpenWhatsApp();
+
+    }
 }

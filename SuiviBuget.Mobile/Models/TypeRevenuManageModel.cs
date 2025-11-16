@@ -5,14 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using SQLite;
 
-namespace SuiviBuget.Mobile.DataAccess
+namespace SuiviBuget.Mobile.Models
 {
-    public class TypeRevenu
+    public partial class TypeRevenuManageModel
     {
-        [PrimaryKey]
-
         public string CodeTypeRevenu { get; set; }
-        public string LibelleTypeRevenu{ get; set; }
-        public bool EstActive { get; set; } = false;
+        public string LibelleTypeRevenu { get; set; }
+        public bool EstActive { get; set; }
     }
 }

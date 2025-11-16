@@ -67,6 +67,16 @@
                     Text="Tel: +225 07 79 09 54 69 / +225 01 70 43 63 47"
                     TextColor="Gray" />
             </VerticalStackLayout>
+
+            <!--  Bouton de réinitialisation  -->
+            <Button
+                BackgroundColor="#25D366"
+                Clicked="Button_Clicked"
+                CornerRadius="10"
+                FontAttributes="Bold"
+                HeightRequest="50"
+                Text="📱 Contacter sur WhatsApp"
+                TextColor="White" />
         </VerticalStackLayout>
     </ScrollView>
 

@@ -3,6 +3,7 @@
     x:Class="SuiviBuget.Mobile.Views.TypeSourceRevenuManageView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:helpers="clr-namespace:SuiviBuget.Mobile.Helpers"
     xmlns:viewModels="clr-namespace:SuiviBuget.Mobile.ViewModels;assembly=SuiviBuget.Mobile"
     Title="Liste des types de revenu">
 
@@ -11,6 +12,16 @@
     <ContentPage.BindingContext>
         <viewModels:TypeSourceRevenuManageViewModel />
     </ContentPage.BindingContext>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <helpers:BoolToTextConverter
+                x:Key="ActiveConverter"
+                FalseText="Source inactive ⚪"
+                TrueText="Source active ✅" />
+            <helpers:BoolToColorConverter x:Key="BadgeColorConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <Grid RowDefinitions="Auto, *">
         <!--  Première ligne pour la barre de recherche  -->
@@ -21,7 +32,7 @@
             FontSize="16"
             HeightRequest="50"
             HorizontalOptions="FillAndExpand"
-            Placeholder="Rechercher d'une ligne..."
+            Placeholder="Rechercher d'un type de revenu..."
             Text="{Binding SearchText, Mode=TwoWay}"
             TextColor="Black"
             VerticalOptions="Start"
@@ -34,7 +45,7 @@
                 Margin="10,0,10,10"
                 AbsoluteLayout.LayoutBounds="0,0,1,1"
                 AbsoluteLayout.LayoutFlags="All"
-                ItemsSource="{Binding ModePaiementItems}">
+                ItemsSource="{Binding TypeRevenuItems}">
 
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
@@ -46,8 +57,24 @@
                             HasShadow="True">
                             <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
                                 <VerticalStackLayout>
-                                    <Label Text="{Binding CodeModePaiement}" />
-                                    <Label FontAttributes="Bold" Text="{Binding LibelleModePaiement}" />
+                                    <Label Text="{Binding CodeTypeRevenu}" />
+                                    <Label FontAttributes="Bold" Text="{Binding LibelleTypeRevenu}" />
+                                    <Frame
+                                        Padding="5"
+                                        BackgroundColor="{Binding EstActive, Converter={StaticResource BadgeColorConverter}}"
+                                        HeightRequest="30"
+                                        HorizontalOptions="Start"
+                                        VerticalOptions="Center">
+                                        <!--  largeur minimum adaptée au texte  -->
+
+                                        <Label
+                                            FontAttributes="None"
+                                            HorizontalOptions="Start"
+                                            HorizontalTextAlignment="Start"
+                                            Text="{Binding EstActive, Converter={StaticResource ActiveConverter}}"
+                                            TextColor="Black"
+                                            VerticalOptions="Center" />
+                                    </Frame>
                                 </VerticalStackLayout>
 
                                 <!--  Bouton Actions modernisé (menu ⋮)  -->
@@ -81,7 +108,7 @@
                 AbsoluteLayout.LayoutBounds="0.9,0.9,60,60"
                 AbsoluteLayout.LayoutFlags="PositionProportional"
                 BackgroundColor="#FF7F50"
-                Command="{Binding AddModePaiementCommand}"
+                Command="{Binding AddCommand}"
                 CornerRadius="30"
                 FontSize="30"
                 HeightRequest="60"

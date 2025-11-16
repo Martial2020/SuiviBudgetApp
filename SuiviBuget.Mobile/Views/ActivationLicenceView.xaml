@@ -61,6 +61,13 @@
                 Text="🔑 Activation de licence"
                 TextColor="White" />
 
+            <Button
+                BackgroundColor="#25D366"
+                CornerRadius="10"
+                Clicked="Button_Clicked"
+                Text="📱 Contacter sur WhatsApp"
+                TextColor="White" />
+
         </VerticalStackLayout>
 
     </Frame>

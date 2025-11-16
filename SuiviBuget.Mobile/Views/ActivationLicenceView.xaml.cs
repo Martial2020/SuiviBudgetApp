@@ -1,4 +1,5 @@
 using CommunityToolkit.Maui.Views;
+using SuiviBuget.Mobile.Helpers;
 using SuiviBuget.Mobile.ViewModels;
 using System.Diagnostics;
 
@@ -31,5 +32,8 @@ public partial class ActivationLicenceView : Popup
         }
     }
 
-   
+    private void Button_Clicked(object sender, EventArgs e)
+    {
+        Helper.OpenWhatsApp();
+    }
 }

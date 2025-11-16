@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Intuit.Ipp.Data;
 using SuiviBudget.Mobile.Constants;
 using SuiviBudget.Mobile.Interfaces;
 using SuiviBuget.Mobile.Helpers;
@@ -21,7 +22,55 @@ namespace SuiviBudge.Validators
         {
             adminService = new Services(dbPath);
         }
+        #region Type Revenu source
+        public static async Task<(bool isSuccess, string message)> ValidateTypeSourceCreate(TypeRevenuModel type)
+        {
+            if (type == null)
+                return (false, "Aucune donnée disponible pour la creation du type de source de revenu");
 
+            if (string.IsNullOrEmpty(type.CodeTypeRevenu) || string.IsNullOrEmpty(type.LibelleTypeRevenu))
+                return (false, "Veuillez saisir obligatoirement le code ou libellé du type de source de revenu");
+
+            var getType = await adminService.GetSourceRevenuByCode(type.CodeTypeRevenu);
+            if (getType != null)
+                return (false, $"Le type de source [{type.CodeTypeRevenu}] existe dejà dans notre base de donnée");
+
+            return (true, string.Empty);
+
+        }
+        public static async Task<(bool isSuccess, string message)> ValidateTypeSourceUpdate(TypeRevenuModel type)
+        {
+
+            if (type == null)
+                return (false, "Aucune donnée disponible pour la modification du type de dépense");
+
+            if (string.IsNullOrEmpty(type.CodeTypeRevenu) || string.IsNullOrEmpty(type.LibelleTypeRevenu))
+                return (false, "Veuillez saisir obligatoirement le code ou libellé du type de source de revenu");
+
+            var getType = await adminService.GetSourceRevenuByCode(type.CodeTypeRevenu);
+            if (getType == null)
+                return (false, "Le type de source de revenu à modifier n'existe pas dans la base de donnée");
+
+            return (true, string.Empty);
+        }
+        public static async Task<(bool isSuccess, string message)> ValidateTypeSourceDelete(TypeRevenuManageModel type)
+        {
+            if (type == null)
+                return (false, "Aucune donnée disponible pour la suppression du type de source de revenu");
+
+            var getType = await adminService.GetSourceRevenuByCode(type.CodeTypeRevenu);
+            if (getType == null)
+                return (false, "Le type de source de revenu à supprimer n'existe pas dans la base de donnée");
+
+            //var executionLigne = await adminService.GetBudgetDetailByCodeLigneBudgetaire(ligneBugetaire.CodeLigneBudgetaire);
+            //if (executionLigne != null)
+            //    return (false, "Impossible de supprimer ce type de dépense , car il appartient dejà a un budget.");
+
+
+            return (true, string.Empty);
+        }
+
+        #endregion
         #region Ligne budgetaire
         public static async Task<(bool isSuccess, string message)> ValidateLigneBugetaireCreate(LigneBudgetaireModel ligneBugetaire)
         {

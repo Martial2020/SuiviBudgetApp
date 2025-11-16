@@ -21,10 +21,26 @@ namespace SuiviBudget.Mobile.Interfaces
         Task<bool> DeleteLicenceAsync(Licence licence);
         Task<bool> CreateLicenceAsync(Licence licence);
         Task<Licence> GetLicence();
-        Task<List<GrapheModel>> GetConsommationByLigneBudgetaire(List<Budget> budgets,DateTime dateDebut,DateTime dateFin);
+        Task<List<GrapheModel>> GetConsommationByLigneBudgetaire(List<Budget> budgets, DateTime dateDebut, DateTime dateFin);
         void ReinitialiseApp();
         Task<List<Budget>> GetBudgetItems(DateTime dateDebut, DateTime dateFin, string codeBudget);
         Task<string> GetNumeroForCodeEntityAsync(string codeParametre);
+        #endregion
+
+        #region Revenu
+        Task<bool> AddRevenuAsync(Revenu revenu);
+        Task<bool> DeleteRevenuAsync(Revenu revenu);
+        Task<List<RevenuManageModel>> GetRevenuItems(string searchText);
+        #endregion
+
+        #region Revenu detail
+        Task<bool> AddRevenuDetailAsync(RevenuDetail revenu);
+        Task<bool> DeleteRevenuDetailAsync(RevenuDetail revenu);
+        Task<bool> UpdateRevenuDetailAsync(RevenuDetail revenu);
+        Task<RevenuDetail> GetRevenuDetailByCode(Guid revenuDetailID);
+        Task<RevenuDetail> GetRevenuDetailByCode(string typeRevenu);
+        Task<List<RevenuDetailManageModel>> GetSourceRevenuItems(string typeRevenu, string searchText);
+
         #endregion
 
         #region Devise
@@ -32,14 +48,15 @@ namespace SuiviBudget.Mobile.Interfaces
         //Task<bool> DeleteDeviseAsync(Devise devise);
         //Task<bool> UpdateDeviseAsync(ModePaiement devise);
         Task<Devise> GetDeviseByCode(string codeDevise);
+        Task<Devise> GetDeviseActive();
         Task<List<Devise>> GetDeviseItems(string searchText);
-         Task AddOrUpdateDevise();
+        Task AddOrUpdateDevise();
         Task<bool> UpdateDeviseStatutAsync(Devise devise);
         #endregion
 
         #region Ligne budgetaire
         Task<List<LigneBudgetaireModel>> GetLigneBudgetaireItems(string searchText);
-        Task<List<LigneBudgetaireModel>> GetLigneBudgetaireExclusionItems(string code,string ligne);
+        Task<List<LigneBudgetaireModel>> GetLigneBudgetaireExclusionItems(string code, string ligne);
         Task<LigneBudgetaireModel> GetLigneBudgetaireByCode(string code);
         Task<bool> AddLigneBudgetaireAsync(LigneBudgetaireModel ligne);
         Task<bool> UpdateLigneBudgetaireAsync(LigneBudgetaireModel ligne);
@@ -72,13 +89,13 @@ namespace SuiviBudget.Mobile.Interfaces
 
         #region Reajustement 
         Task<bool> DeleteReajustementAsync(Reajustement reajustement);
-        Task<Reajustement> GetReajustementByCode(string codeBudget,string ligne);
+        Task<Reajustement> GetReajustementByCode(string codeBudget, string ligne);
         Task<List<ReajusterManageModel>> GetReajustementItems(List<string> codeBudgets, string searchText);
         Task<bool> AddReajustementAsync(Reajustement reajustement);
         #endregion
 
         #region Execution budgetaire
-        Task<List<ExecutionBudgetaireDetailManageModel>> GetExecutionBudgetaireDetailsItems(string codeBudget,string ligneBudgetaire);
+        Task<List<ExecutionBudgetaireDetailManageModel>> GetExecutionBudgetaireDetailsItems(string codeBudget, string ligneBudgetaire);
         Task<bool> AddExecutionBudgetaireDetailAsync(ExecutionBudgetaire execution);
         Task<bool> DeleteExecutionBudgetaireDetailAsync(ExecutionBudgetaire execution);
         Task<ExecutionBudgetaire> GetExecutionBudgetaireDetailsById(Guid id);
@@ -87,8 +104,8 @@ namespace SuiviBudget.Mobile.Interfaces
         #endregion
 
         #region Tableau de bord
-        Task<List<ExecutionBudgetaireDetailManageModel>> GetDepenseItemsByDate(DateTime date,string codeBudget);
-        Task<List<ExecutionBudgetaireDetailManageModel>> GetDepenseItemsByPeriode(DateTime dateDebut,DateTime dateFin, List<Budget> budgets);
+        Task<List<ExecutionBudgetaireDetailManageModel>> GetDepenseItemsByDate(DateTime date, string codeBudget);
+        Task<List<ExecutionBudgetaireDetailManageModel>> GetDepenseItemsByPeriode(DateTime dateDebut, DateTime dateFin, List<Budget> budgets);
         #endregion
 
         #region Mode de paiement

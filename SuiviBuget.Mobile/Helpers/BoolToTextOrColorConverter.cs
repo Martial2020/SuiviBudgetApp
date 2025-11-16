@@ -6,7 +6,7 @@ namespace SuiviBuget.Mobile.Helpers
 {
     public class BoolToColorConverter : IValueConverter
     {
-        public Color TrueColor { get; set; } = Colors.LightGreen;
+        public Color TrueColor { get; set; } = Color.FromArgb("#FF7F50");
         public Color FalseColor { get; set; } = Colors.LightGray;
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

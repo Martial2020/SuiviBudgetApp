@@ -54,6 +54,9 @@ namespace SuiviBuget.Mobile.Services
                 case "LigneBudgetaireView":
                     await Shell.Current.GoToAsync($"{nameof(LigneBudgetaireView)}?Code={code}&&Action={action}");
                     break;
+                case "TypeSourceRevenuView":
+                    await Shell.Current.GoToAsync($"{nameof(TypeSourceRevenuView)}?Code={code}&&Action={action}");
+                    break;
                 case "ModePaiementManageView":
                     await Shell.Current.GoToAsync(nameof(ModePaiementManageView));
                     break;
