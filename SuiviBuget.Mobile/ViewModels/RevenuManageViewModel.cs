@@ -54,9 +54,12 @@ namespace SuiviBuget.Mobile.ViewModels
             ResetAppMessage();
         }
 
-        private void OnDetailCommand(RevenuManageModel? model)
+        private async void OnDetailCommand(RevenuManageModel? model)
         {
-            throw new NotImplementedException();
+            if (model == null)
+                throw new NotImplementedException();
+
+            await _navigationService.NavigateToAsync("RevenuDetailManageView", model.CodeRevenu);
         }
 
         private void ResetAppMessage()
@@ -92,15 +95,15 @@ namespace SuiviBuget.Mobile.ViewModels
             if (deviseData != null)
                 devise = deviseData.CodeDevise;
 
-                RevenuItems = new ObservableCollection<RevenuManageModel>(
-                 revenus.Select(x => new RevenuManageModel
-                 {
-                     CodeRevenu = x.CodeRevenu,
-                     LibelleTypeRevenu = x.LibelleTypeRevenu,
-                     Montant = x.Montant,
-                     DateDernierMisAJour = x.DateDernierMisAJour,
-                     MontantAvecDevise = $"Total : {x.Montant:N0} {devise}"
-                 }));
+            RevenuItems = new ObservableCollection<RevenuManageModel>(
+             revenus.Select(x => new RevenuManageModel
+             {
+                 CodeRevenu = x.CodeRevenu,
+                 LibelleTypeRevenu = x.LibelleTypeRevenu,
+                 Montant = x.Montant,
+                 DateDernierMisAJour = x.DateDernierMisAJour,
+                 MontantAvecDevise = $"Total : {x.Montant:N0} {devise}"
+             }));
         }
 
     }

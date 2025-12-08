@@ -29,20 +29,37 @@ namespace SuiviBuget.Mobile.Services
         {
             _db = new SQLiteAsyncConnection(dbPath);
             //_db.DropTableAsync<Devise>().Wait();      // supprime la table
-            _db.CreateTableAsync<ActivationLicence>().Wait();
-            _db.CreateTableAsync<Licence>().Wait();
-            _db.CreateTableAsync<TypeRevenu>().Wait();
-            _db.CreateTableAsync<Devise>().Wait();
-            _db.CreateTableAsync<ModePaiement>().Wait();
-            _db.CreateTableAsync<LigneBudgetaire>().Wait();
-            _db.CreateTableAsync<Budget>().Wait();
-            _db.CreateTableAsync<ParametreCompteur>().Wait();
-            _db.CreateTableAsync<BudgetDetail>().Wait();
-            _db.CreateTableAsync<ExecutionBudgetaire>().Wait();
-            _db.CreateTableAsync<Reajustement>().Wait();
-            _db.CreateTableAsync<Revenu>().Wait();
-            _db.CreateTableAsync<RevenuDetail>().Wait();
+            //_db.CreateTableAsync<ActivationLicence>().Wait();
+            //_db.CreateTableAsync<Licence>().Wait();
+            //_db.CreateTableAsync<TypeRevenu>().Wait();
+            //_db.CreateTableAsync<Devise>().Wait();
+            //_db.CreateTableAsync<ModePaiement>().Wait();
+            //_db.CreateTableAsync<LigneBudgetaire>().Wait();
+            //_db.CreateTableAsync<Budget>().Wait();
+            //_db.CreateTableAsync<ParametreCompteur>().Wait();
+            //_db.CreateTableAsync<BudgetDetail>().Wait();
+            //_db.CreateTableAsync<ExecutionBudgetaire>().Wait();
+            //_db.CreateTableAsync<Reajustement>().Wait();s
+            //_db.CreateTableAsync<Revenu>().Wait();
+            //_db.CreateTableAsync<RevenuDetail>().Wait();
         }
+        public async Task InitDatabaseAsync()
+        {
+            await _db.CreateTableAsync<ActivationLicence>();
+            await _db.CreateTableAsync<Licence>();
+            await _db.CreateTableAsync<TypeRevenu>();
+            await _db.CreateTableAsync<Devise>();
+            await _db.CreateTableAsync<ModePaiement>();
+            await _db.CreateTableAsync<LigneBudgetaire>();
+            await _db.CreateTableAsync<Budget>();
+            await _db.CreateTableAsync<ParametreCompteur>();
+            await _db.CreateTableAsync<BudgetDetail>();
+            await _db.CreateTableAsync<ExecutionBudgetaire>();
+            await _db.CreateTableAsync<Reajustement>();
+            await _db.CreateTableAsync<Revenu>();
+            await _db.CreateTableAsync<RevenuDetail>();
+        }
+
         #endregion
 
         #region Activation de licence
@@ -176,7 +193,7 @@ namespace SuiviBuget.Mobile.Services
         }
 
 
-        public async Task<List<RevenuDetailManageModel>> GetSourceRevenuItems(string typeRevenu,string searchText)
+        public async Task<List<RevenuDetailManageModel>> GetSourceRevenuItems(string codeRevenu, string searchText)
         {
             try
             {
@@ -184,7 +201,7 @@ namespace SuiviBuget.Mobile.Services
                 var type = await GetSourceRevenuItems(string.Empty);
                 var mode = await GetModePaiementItems(string.Empty);
                 var revenuDetails = await _db.Table<RevenuDetail>()
-                    .Where(b => b.CodeTypeRevenu == typeRevenu)
+                    .Where(b => b.CodeRevenu == codeRevenu)
                     .ToListAsync();
 
                 var query = (from r in revenuDetails
@@ -262,8 +279,8 @@ namespace SuiviBuget.Mobile.Services
                              {
                                  CodeRevenu = r.CodeRevenu,
                                  DateDernierMisAJour = r.DateDernierMisAJour,
-                                 LibelleTypeRevenu=s.LibelleTypeRevenu,
-                                 Montant=r.Montant
+                                 LibelleTypeRevenu = s.LibelleTypeRevenu,
+                                 Montant = r.Montant
                              }).ToList();
 
                 return query;
@@ -409,7 +426,7 @@ namespace SuiviBuget.Mobile.Services
             // Charger toutes les devises existantes en une seule requête
             var existingDevises = await _db.Table<Devise>().ToListAsync();
 
-            // Trouver celles qui n'existent pas encore
+            // Trouver celles qui n'existent paks encore
             var devisesToInsert = devisesInit
                 .Where(d => !existingDevises.Any(e => e.CodeDevise == d.CodeDevise))
                 .ToList();
@@ -418,7 +435,7 @@ namespace SuiviBuget.Mobile.Services
             if (devisesToInsert.Any())
                 await _db.InsertAllAsync(devisesToInsert);
         }
-        
+
 
         public async Task<bool> UpdateDeviseStatutAsync(Devise devise)
         {

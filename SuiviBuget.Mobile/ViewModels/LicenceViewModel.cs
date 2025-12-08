@@ -43,19 +43,19 @@ namespace SuiviBuget.Mobile.ViewModels
         {
             if (DataItem == null)
             {
-                _alert.ShowAlertAsync("Information", "Aucune donnée disponible");
+                await _alert.ShowAlertAsync("Information", "Aucune donnée disponible");
                 return;
             }
 
             if (string.IsNullOrEmpty(DataItem.Identifiant))
             {
-                _alert.ShowAlertAsync("Information", "Veuillez saisir obligatoirement l'identifiant.");
+                await _alert.ShowAlertAsync("Information", "Veuillez saisir obligatoirement l'identifiant.");
                 return;
             }
 
             if (DataItem.DateActivation > DataItem.DateExpiration)
             {
-                _alert.ShowAlertAsync("Information", "La date d'activation ne doit pas etre superieur à la date d'expiration de la licence.");
+                await _alert.ShowAlertAsync("Information", "La date d'activation ne doit pas etre superieur à la date d'expiration de la licence.");
                 return;
 
             }
@@ -75,7 +75,7 @@ namespace SuiviBuget.Mobile.ViewModels
 
             if (!isOk)
             {
-                _alert.ShowAlertAsync("Information", "Nous rencontrons une erreur lors de la creation de la licence.");
+                await _alert.ShowAlertAsync("Information", "Nous rencontrons une erreur lors de la creation de la licence.");
                 return;
             }
             WeakReferenceMessenger.Default.Send(new RefreshLicenceList());

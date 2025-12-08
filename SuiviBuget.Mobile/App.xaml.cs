@@ -13,7 +13,7 @@ namespace SuiviBuget.Mobile
     {
         IServices _service { get; set; }
 
-        public App()
+        public  App()
         {
             InitializeComponent();
 
@@ -27,11 +27,12 @@ namespace SuiviBuget.Mobile
             // 3️⃣ Créer la MainPage
             //MainPage = new AppShell(); // ou ta page principale
 
-            // 4️⃣ Lancer l'initialisation de la DB en tâche de fond
-            _ = InitializeDataBase();
+            Task.Run(async () =>
+            {
+                await InitializeApp();
+            });
 
-            // 5️⃣ Lancer la planification des notifications en tâche de fond
-           _ = Helper.PlanifierNotificationsQuotidiennes();
+
         }
 
 
@@ -40,19 +41,15 @@ namespace SuiviBuget.Mobile
         {
             //return new Window(new AppShell());
             var window = new Window(new AppShell());
-
-            window.Dispatcher.Dispatch(async () =>
-            {
-              
-                await Helper.PlanifierNotificationsQuotidiennes(); // Replanifie proprement
-            });
-
             return window;
         }
-        private async Task InitializeDataBase()
+        private async Task InitializeApp()
         {
             try
             {
+                // 1️⃣ Création des tables (obligatoire avant vérification)
+                await _service.InitDatabaseAsync();
+
                 //Verifier si le code d'activation est dejà crée
                 var existing = await _service.GetLicence();
                 if (existing == null)
@@ -68,6 +65,8 @@ namespace SuiviBuget.Mobile
                     await _service.CreateLicenceAsync(activation);
                 }
 
+                // 5️⃣ Lancer la planification des notifications en tâche de fond
+                _ = Helper.PlanifierNotificationsQuotidiennes();
 
                 //Charger les devises
                 await _service.AddOrUpdateDevise();

@@ -1,4 +1,5 @@
-﻿using SuiviBuget.Mobile.Views;
+﻿using SuiviBuget.Mobile.ViewModels;
+using SuiviBuget.Mobile.Views;
 
 namespace SuiviBuget.Mobile
 {
@@ -6,8 +7,9 @@ namespace SuiviBuget.Mobile
     {
         public AppShell()
         {
-            InitializeComponent();
-            
+            InitializeComponent();         
+            Routing.RegisterRoute(nameof(RevenuDetailView), typeof(RevenuDetailView));
+            Routing.RegisterRoute(nameof(RevenuDetailManageView), typeof(RevenuDetailManageView));
             Routing.RegisterRoute(nameof(TypeSourceRevenuView), typeof(TypeSourceRevenuView));
             Routing.RegisterRoute(nameof(TypeSourceRevenuManageView), typeof(TypeSourceRevenuManageView));          
             Routing.RegisterRoute(nameof(DeviseManageView), typeof(DeviseManageView));

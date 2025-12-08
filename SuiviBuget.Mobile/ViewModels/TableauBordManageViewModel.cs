@@ -260,7 +260,7 @@ namespace SuiviBuget.Mobile.ViewModels
                 var code = new List<string> { SelectedBudget.CodeBudget };
                 var budgetDetails = await _service.GetReajustementItems(code, string.Empty);
                 DepassementItems = new ObservableCollection<ReajusterManageModel>(
- budgetDetails.GroupBy(x => new { x.CodeBudget, x.CodeLigneBudgetaire,x.LibelleLigneBudgetaire }).Select(g => g.First()));
+                budgetDetails.GroupBy(x => new { x.CodeBudget, x.CodeLigneBudgetaire,x.LibelleLigneBudgetaire }).Select(g => g.First()));
                 TotalDepassement = DepassementItems.Sum(x => x.Montant);
             }
             catch (Exception ex)

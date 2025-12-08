@@ -1,3 +1,6 @@
+using SuiviBuget.Mobile.Models;
+using SuiviBuget.Mobile.ViewModels;
+
 namespace SuiviBuget.Mobile.Views;
 
 public partial class RevenuManageView : ContentPage
@@ -12,8 +15,41 @@ public partial class RevenuManageView : ContentPage
 
     }
 
-    private void Action_Clicked(object sender, EventArgs e)
+    private async void Action_Clicked(object sender, EventArgs e)
     {
+        if (sender is Button btn && btn.BindingContext is RevenuManageModel item)
+        {
+            // Crée la liste des options dynamiquement
+            var options = new List<string>();
+            options.Add("Gérer ce revenu");   // stylo
+            //options.Add("?? Supprimer"); // poubelle
 
+            // Affiche l'ActionSheet
+            if (options.Count == 0)
+            {
+                string info = await DisplayActionSheet(
+                   "Actions",
+                   "Fermer",
+                   null,
+                   "Aucune action n'est possible car il est clôturé."
+               );
+                return;
+            }
+            string action = await DisplayActionSheet(
+                     "Actions",
+                     "Fermer",
+                     null,
+                     options.ToArray()
+                 );
+            if (BindingContext is RevenuManageViewModel vm)
+            {
+                switch (action)
+                {
+                    case "Gérer ce revenu":
+                        vm.DetailCommand.Execute(item);
+                        break;                 
+                }
+            }
+        }
     }
 }

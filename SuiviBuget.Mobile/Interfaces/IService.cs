@@ -13,6 +13,7 @@ namespace SuiviBudget.Mobile.Interfaces
     public interface IServices
     {
         #region Others
+        Task InitDatabaseAsync();
         Task<bool> UpdateActivationLicenceAsync(ActivationLicence licence);
         Task<ObservableCollection<ActivationLicence>> GetLicenceItems(string searchText);
         Task<bool> DeleteActivationLicenceAsync(ActivationLicence licence);

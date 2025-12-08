@@ -186,7 +186,7 @@ namespace SuiviBuget.Mobile.ViewModels
 
         private async Task LoadTypeSourceAsync(string searchText)
         {
-            TypeRevenuItems = new ObservableCollection<TypeRevenuManageModel>();
+            //TypeRevenuItems = new ObservableCollection<TypeRevenuManageModel>();
             var revenus = await adminService.GetSourceRevenuItems(searchText);
 
             TypeRevenuItems = new ObservableCollection<TypeRevenuManageModel>(
