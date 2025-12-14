@@ -153,14 +153,14 @@ namespace SuiviBuget.Mobile.ViewModels
             CloturerCommand = new RelayCommand<BudgetManageModel>(OnCloturerCommand);
             EncoursCommand = new RelayCommand<BudgetManageModel>(OnEncoursCommand);
             FilterStatutCommand = new RelayCommand<string>(OnFilterStatutCommand);
-            DetailsBudgetCommand= new RelayCommand<BudgetManageModel>(OnDetailsBudgetCommand);
+            DetailsBudgetCommand = new RelayCommand<BudgetManageModel>(OnDetailsBudgetCommand);
             DepenseCommand = new RelayCommand<BudgetManageModel>(OnDepenseCommand);
         }
 
-   
+
         private async void OnDepenseCommand(BudgetManageModel budget) => await _navigationService.NavigateToAsync("ExecutionBudgetaireManageDetailView", budget.CodeBudget);
 
-        private async void OnDetailsBudgetCommand(BudgetManageModel budget) => await _navigationService.NavigateToAsync("DetailsBudgetView",budget.CodeBudget);
+        private async void OnDetailsBudgetCommand(BudgetManageModel budget) => await _navigationService.NavigateToAsync("DetailsBudgetView", budget.CodeBudget);
         private async void ActualiserNombreBudget()
         {
             var statuts = new List<string> { StatutBudgetConst.Ouvert, StatutBudgetConst.Encours, StatutBudgetConst.Cloture };
@@ -278,7 +278,7 @@ namespace SuiviBuget.Mobile.ViewModels
         }
         private async void OnDelete(BudgetManageModel budget)
         {
-            var result = await  Validator.ValidateBudgeteDelete(budget);
+            var result = await Validator.ValidateBudgeteDelete(budget);
             if (!result.isSuccess)
             {
                 await _alertService.ShowAlertAsync("Erreur", result.message);
@@ -320,16 +320,14 @@ namespace SuiviBuget.Mobile.ViewModels
 
         private async void LoadBudgetAsync(string statut, string searchText)
         {
-
-            List<string> statuts = new List<string>();
-            BudgetItems = new ObservableCollection<BudgetManageModel>();
             IsBusy = true;
-
+            List<string> statuts = new List<string>();
+            var devise = await Helper.GetDeviseActiveAsyn();
+            BudgetItems = new ObservableCollection<BudgetManageModel>();
             if (string.IsNullOrEmpty(statut) || statut == StatutBudgetConst.Tous)
                 statuts = new List<string> { StatutBudgetConst.Ouvert, StatutBudgetConst.Encours, StatutBudgetConst.Cloture };
             else
                 statuts.Add(statut);
-
             var budgets = await service.GetBudgetItemsByStatus(searchText, statuts);
             BudgetItems = new ObservableCollection<BudgetManageModel>(
                 budgets.Select(x => new BudgetManageModel
@@ -345,9 +343,10 @@ namespace SuiviBuget.Mobile.ViewModels
                     StatutBudget = x.StatutBudget,
                     MontantUtilise = x.MontantUtilise,
                     MontantRestant = x.MontantRestant,
-                    MontantAlloue=x.MontantAlloue,
-                    MontantNonAlloue=x.MontantNonAlloue,
-                    MontantReajustement=x.MontantReajustement,
+                    MontantAlloue = x.MontantAlloue,
+                    MontantNonAlloue = x.MontantNonAlloue,
+                    MontantBudgetAvecDevise = $"{x.MontantBudget:N0} {devise}",
+                    MontantReajustement = x.MontantReajustement,
                     BackgroundColorStatut = Helper.GetBackgroundColor(x.StatutBudget)
                 }));
             ActualiserNombreBudget();

@@ -35,11 +35,13 @@ namespace SuiviBudge.Validators
             if (revenu.Montant <= 0)
                 return (false, "Veuillez saisir obligatoirement un montant valide");
 
-            if (revenu.DateReception == DateTime.MinValue)
+           if (revenu.DateReception == DateTime.MinValue)
                 return (false, "Veuillez saisir obligatoirement une date valide");
 
-            return (true, string.Empty);
+            if (string.IsNullOrEmpty(revenu.Description))
+                return (false, "Veuillez saisir une description obligatoirement");
 
+            return (true, string.Empty);
         }
 
         public static async Task<(bool isSuccess, string message)> ValidateSourceDetailDelete(RevenuDetailManageModel revenu)
@@ -95,6 +97,8 @@ namespace SuiviBudge.Validators
             if (getType == null)
                 return (false, "Le type de source de revenu à supprimer n'existe pas dans la base de donnée");
 
+            if (getType.EstActive)
+                return (false, "Impossible de supprimer car il est en cours d'utilisation.");
             //var executionLigne = await adminService.GetBudgetDetailByCodeLigneBudgetaire(ligneBugetaire.CodeLigneBudgetaire);
             //if (executionLigne != null)
             //    return (false, "Impossible de supprimer ce type de dépense , car il appartient dejà a un budget.");

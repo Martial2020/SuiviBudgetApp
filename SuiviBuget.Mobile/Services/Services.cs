@@ -228,7 +228,8 @@ namespace SuiviBuget.Mobile.Services
                                  Description = r.Description,
                                  Montant = r.Montant,
                                  LibelleModePaiement = m.LibelleModePaiement,
-                                 RevenuDetailID = r.RevenuDetailID
+                                 RevenuDetailID = r.RevenuDetailID,
+                                 CodeRevenu=r.CodeRevenu
                              }).ToList();
 
                 return query;
@@ -1137,6 +1138,7 @@ namespace SuiviBuget.Mobile.Services
         {
             try
             {
+                var devise = await Helper.GetDeviseActiveAsyn();
                 var isSearchEmpty = string.IsNullOrWhiteSpace(searchText?.ToLower() ?? "");
                 var lignes = await _db.Table<LigneBudgetaire>().ToListAsync();
                 var budgetDetails = await _db.Table<Reajustement>()
@@ -1157,7 +1159,8 @@ namespace SuiviBuget.Mobile.Services
                                  LibelleLigneBudgetaire = l.LibelleLigneBudgetaire,
                                  Montant = b.Montant,
                                  Motif = b.Motif,
-                                 DateReajustement = b.DateReajustement
+                                 DateReajustement = b.DateReajustement,
+                                 MontantAvecDevise = $"{b.Montant:N0} {devise}"
                              }).ToList();
 
                 return query;

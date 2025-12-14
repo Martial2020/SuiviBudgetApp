@@ -161,6 +161,7 @@ namespace SuiviBuget.Mobile.ViewModels
         private async Task LoadBudgetDetailsAsync(string searchText)
         {
             BudgetDetailsItems = new ObservableCollection<BudgetDetailManageModel>();
+            var devise = await Helper.GetDeviseActiveAsyn();
             IsBusy = true;
             var details = await service.GetBudgetDetailItems(CodeBudget, searchText);
             BudgetDetailsItems = new ObservableCollection<BudgetDetailManageModel>(
@@ -170,7 +171,8 @@ namespace SuiviBuget.Mobile.ViewModels
                     LibelleLigneBudgetaire = x.LibelleLigneBudgetaire,
                     Montant = x.Montant,
                     BudgetDetailID = x.BudgetDetailID,
-                    CodeBudget = x.CodeBudget
+                    CodeBudget = x.CodeBudget,
+                    MontantAvecDevise =$"{x.Montant:N0} {devise}"
                 }));
             IsBusy = false;
         }

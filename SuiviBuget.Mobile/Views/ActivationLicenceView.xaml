@@ -6,9 +6,10 @@
     xmlns:viewModels="clr-namespace:SuiviBuget.Mobile.ViewModels"
     CanBeDismissedByTappingOutsideOfPopup="False"
     HorizontalOptions="Center"
-    Size="300,330"
+    Size="300,350"
     VerticalOptions="Center">
     <!--  Liaison du ViewModel  -->
+
     <toolkit:Popup.BindingContext>
         <viewModels:ActivationLicenceViewModel />
     </toolkit:Popup.BindingContext>
@@ -63,8 +64,8 @@
 
             <Button
                 BackgroundColor="#25D366"
-                CornerRadius="10"
                 Clicked="Button_Clicked"
+                CornerRadius="10"
                 Text="📱 Contacter sur WhatsApp"
                 TextColor="White" />
 

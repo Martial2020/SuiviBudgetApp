@@ -13,6 +13,7 @@ namespace SuiviBuget.Mobile.Models
         public string LibelleLigneBudgetaire { get; set; }
         public string ModePaiement { get; set; }
         public decimal Montant { get; set; }
+        public string MontantAvecDevise { get; set; }
         public string CodeBudget { get; set; }
         public string LibelleBudget { get; set; }
         public string Description { get; set; }

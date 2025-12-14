@@ -13,6 +13,7 @@ namespace SuiviBuget.Mobile.Models
         public string CodeLigneBudgetaire { get; set; }
         public string LibelleLigneBudgetaire { get; set; }
         public decimal Montant { get; set; }
+        public string MontantAvecDevise { get; set; }
         public string Motif { get; set; }
         public DateTime DateReajustement { get; set; }
     }

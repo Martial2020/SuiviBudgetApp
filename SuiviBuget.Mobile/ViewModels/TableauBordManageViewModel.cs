@@ -48,7 +48,13 @@ namespace SuiviBuget.Mobile.ViewModels
         public decimal totalDepassement;
 
         [ObservableProperty]
+        public string totalDepassementAvecDevise;
+
+        [ObservableProperty]
         private decimal totalDepense;
+
+        [ObservableProperty]
+        private string totalDepenseAvecDevise;
 
         [ObservableProperty]
         private double chartHeight;
@@ -182,11 +188,11 @@ namespace SuiviBuget.Mobile.ViewModels
 
         private async void LoadBudgetAsync()
         {
-            List<string> statuts = new List<string> { StatutBudgetConst.Encours }; ;
+            List<string> statuts = new List<string> { StatutBudgetConst.Encours };
             BudgetItems = new ObservableCollection<BudgetManageModel>();
             BudgetItems.Clear();
+            var devise = await Helper.GetDeviseActiveAsyn();
             var budgets = await _service.GetBudgetItemsByStatus("", statuts);
-
             BudgetItems = new ObservableCollection<BudgetManageModel>(
                 budgets.Select(x => new BudgetManageModel
                 {
@@ -201,9 +207,15 @@ namespace SuiviBuget.Mobile.ViewModels
                     StatutBudget = x.StatutBudget,
                     MontantUtilise = x.MontantUtilise,
                     MontantRestant = x.MontantRestant,
-                    MontantAlloue=x.MontantAlloue,
-                    MontantNonAlloue=x.MontantNonAlloue,
-                    MontantReajustement=x.MontantReajustement
+                    MontantAlloue = x.MontantAlloue,
+                    MontantNonAlloue = x.MontantNonAlloue,
+                    MontantReajustement = x.MontantReajustement,
+                    MontantAlloueAvecDevise = $"{x.MontantAlloue:N0} {devise}",
+                    MontantBudgetAvecDevise = $"{x.MontantBudget:N0} {devise}",
+                    MontantNonAlloueAvecDevise = $"{x.MontantNonAlloue:N0} {devise}",
+                    MontantReajustementAvecDevise = $"{x.MontantReajustement:N0} {devise}",
+                    MontantRestantAvecDevise = $"{x.MontantRestant:N0} {devise}",
+                    MontantUtiliseAvecDevise = $"{x.MontantUtilise:N0} {devise}"
                 }));
 
             if (BudgetItems.Count() > 0)
@@ -224,6 +236,7 @@ namespace SuiviBuget.Mobile.ViewModels
         {
             ExecutionBudgetaireItems = new ObservableCollection<ExecutionBudgetaireDetailManageModel>();
             ExecutionBudgetaireItems.Clear();
+            var devise = await Helper.GetDeviseActiveAsyn();
             try
             {
                 var executeItems = await _service.GetDepenseItemsByDate(date, codeBudget);
@@ -238,11 +251,13 @@ namespace SuiviBuget.Mobile.ViewModels
                         CodeBudget = x.CodeBudget,
                         CodeLigneBudgetaire = x.CodeLigneBudgetaire,
                         Description = x.Description,
-                        LibelleBudget = x.LibelleBudget
+                        LibelleBudget = x.LibelleBudget,
+                        MontantAvecDevise = $"{x.Montant:N0} {devise}"
                     })
                 );
 
                 TotalDepense = ExecutionBudgetaireItems.Sum(x => x.Montant);
+                TotalDepenseAvecDevise = $"{TotalDepense:N0} {devise}";
             }
             catch (Exception ex)
             {
@@ -255,13 +270,15 @@ namespace SuiviBuget.Mobile.ViewModels
         {
             try
             {
+                var devise = await Helper.GetDeviseActiveAsyn();
                 DepassementItems = new ObservableCollection<ReajusterManageModel>();
                 DepassementItems.Clear();
                 var code = new List<string> { SelectedBudget.CodeBudget };
                 var budgetDetails = await _service.GetReajustementItems(code, string.Empty);
                 DepassementItems = new ObservableCollection<ReajusterManageModel>(
-                budgetDetails.GroupBy(x => new { x.CodeBudget, x.CodeLigneBudgetaire,x.LibelleLigneBudgetaire }).Select(g => g.First()));
+                budgetDetails.GroupBy(x => new { x.CodeBudget, x.CodeLigneBudgetaire, x.LibelleLigneBudgetaire }).Select(g => g.First()));
                 TotalDepassement = DepassementItems.Sum(x => x.Montant);
+                TotalDepassementAvecDevise = $"{TotalDepassement:N0} {devise}";
             }
             catch (Exception ex)
             {

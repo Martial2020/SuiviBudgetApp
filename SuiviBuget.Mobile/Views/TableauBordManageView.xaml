@@ -45,7 +45,7 @@
                                 BackgroundColor="AliceBlue"
                                 CornerRadius="12"
                                 HasShadow="True">
-                                <Label Text="{Binding SelectedBudget.MontantBudget, StringFormat='💰 Total : {0:N0} CFA'}" TextColor="Black" />
+                                <Label Text="{Binding SelectedBudget.MontantBudgetAvecDevise, StringFormat='💰 Total : {0}'}" TextColor="Black" />
                             </Frame>
                             <Frame
                                 Grid.Row="0"
@@ -69,7 +69,7 @@
                                 BackgroundColor="AliceBlue"
                                 CornerRadius="12"
                                 HasShadow="True">
-                                <Label Text="{Binding SelectedBudget.MontantAlloue, StringFormat='📊 Alloué : {0:N0} CFA'}" TextColor="Black" />
+                                <Label Text="{Binding SelectedBudget.MontantAlloueAvecDevise, StringFormat='📊 Alloué : {0}'}" TextColor="Black" />
                             </Frame>
                             <Frame
                                 Grid.Row="1"
@@ -78,7 +78,7 @@
                                 BackgroundColor="AliceBlue"
                                 CornerRadius="12"
                                 HasShadow="True">
-                                <Label Text="{Binding SelectedBudget.MontantNonAlloue, StringFormat='🏦 Non alloué : {0:N0} CFA'}" TextColor="Black" />
+                                <Label Text="{Binding SelectedBudget.MontantNonAlloueAvecDevise, StringFormat='🏦 Non alloué : {0}'}" TextColor="Black" />
                             </Frame>
                             <Frame
                                 Grid.Row="2"
@@ -87,7 +87,7 @@
                                 BackgroundColor="AliceBlue"
                                 CornerRadius="12"
                                 HasShadow="True">
-                                <Label Text="{Binding SelectedBudget.MontantUtilise, StringFormat='🟢 Utilisé : {0:N0} CFA'}" TextColor="Black" />
+                                <Label Text="{Binding SelectedBudget.MontantUtiliseAvecDevise, StringFormat='🟢 Utilisé : {0}'}" TextColor="Black" />
                             </Frame>
                             <Frame
                                 Grid.Row="2"
@@ -96,7 +96,7 @@
                                 BackgroundColor="AliceBlue"
                                 CornerRadius="12"
                                 HasShadow="True">
-                                <Label Text="{Binding SelectedBudget.MontantRestant, StringFormat='🔴 Restant : {0:N0} CFA'}" TextColor="Black" />
+                                <Label Text="{Binding SelectedBudget.MontantRestantAvecDevise, StringFormat='🔴 Restant : {0}'}" TextColor="Black" />
                             </Frame>
                             <!--  Badge Période  -->
 
@@ -167,7 +167,7 @@
                                             <Label
                                                 Grid.Column="1"
                                                 FontAttributes="Bold"
-                                                Text="{Binding Montant, StringFormat='{0:N0} FCFA'}"
+                                                Text="{Binding MontantAvecDevise, StringFormat='{0:}'}"
                                                 TextColor="#27AE60"
                                                 VerticalOptions="Center" />
 
@@ -198,7 +198,7 @@
                                 Margin="0,0,10,0"
                                 FontAttributes="Bold"
                                 HorizontalOptions="End"
-                                Text="{Binding TotalDepassement, StringFormat='{0:N0} FCFA'}"
+                                Text="{Binding TotalDepassementAvecDevise, StringFormat='{0}'}"
                                 TextColor="Red" />
                         </Grid>
 
@@ -227,7 +227,7 @@
                                                 Grid.Row="0"
                                                 Grid.Column="1"
                                                 FontAttributes="Bold"
-                                                Text="{Binding Montant, StringFormat='{0:N0} FCFA'}"
+                                                Text="{Binding MontantAvecDevise, StringFormat='{0}'}"
                                                 TextColor="#E74C3C"
                                                 VerticalOptions="Center" />
                                         </Grid>

@@ -194,7 +194,7 @@ namespace SuiviBuget.Mobile.ViewModels
                  {
                      CodeTypeRevenu = x.CodeTypeRevenu,
                      LibelleTypeRevenu = x.LibelleTypeRevenu,
-                     EstActive=x.EstActive
+                     EstActive = x.EstActive
                  }));
         }
 

@@ -11,6 +11,7 @@ namespace SuiviBuget.Mobile.Models
     {
         public Guid RevenuDetailID { get; set; }
         public string CodeTypeRevenu { get; set; }
+        public string CodeRevenu { get; set; }
         public string LibelleTypeRevenu { get; set; }
         public string LibelleModePaiement { get; set; }
         public decimal Montant { get; set; }

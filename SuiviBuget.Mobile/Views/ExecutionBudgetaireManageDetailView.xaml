@@ -47,7 +47,7 @@
                     x:Name="LblMontant"
                     FontAttributes="Bold"
                     HorizontalOptions="Center"
-                    Text="{Binding MontantBudget, StringFormat='Total : {0:N0} FCFA'}"
+                    Text="{Binding MontantBudgetAvecDevise, StringFormat='Total : {0}'}"
                     TextColor="#1565C0" />
 
                 <!--  Deuxième ligne : Utilisé et Restant  -->
@@ -60,7 +60,7 @@
                         Grid.Column="0"
                         FontAttributes="Bold"
                         HorizontalOptions="Start"
-                        Text="{Binding MontantUtilise, StringFormat='Utilisé : {0:N0} FCFA'}"
+                        Text="{Binding MontantUtiliseAvecDevise, StringFormat='Utilisé : {0}'}"
                         TextColor="#D32F2F" />
 
                     <Label
@@ -68,7 +68,7 @@
                         Grid.Column="1"
                         FontAttributes="Bold"
                         HorizontalOptions="End"
-                        Text="{Binding MontantRestant, StringFormat='Restant : {0:N0} FCFA'}"
+                        Text="{Binding MontantRestantAvecDevise, StringFormat='Restant : {0}'}"
                         TextColor="Green" />
                 </Grid>
                 <!--  Barre de progression  -->
@@ -131,10 +131,10 @@
 
                                     <!--  Mode paiement + montant  -->
                                     <HorizontalStackLayout Spacing="4">
-                                        <Label Text="{Binding ModePaiement, StringFormat='{0} : '}" TextColor="#2C3E50" />
+                                        <Label Text="{Binding ModePaiement, StringFormat='{0}'}" TextColor="#2C3E50" />
                                         <Label
                                             FontAttributes="Bold"
-                                            Text="{Binding Montant, StringFormat='{0:N0} FCFA'}"
+                                            Text="{Binding MontantAvecDevise, StringFormat='{0}'}"
                                             TextColor="#27AE60" />
 
                                     </HorizontalStackLayout>

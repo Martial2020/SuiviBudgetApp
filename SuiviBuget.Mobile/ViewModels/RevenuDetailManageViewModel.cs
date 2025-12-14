@@ -64,6 +64,8 @@ namespace SuiviBuget.Mobile.ViewModels
                 var entity = new RevenuDetail
                 {
                     RevenuDetailID = model.RevenuDetailID,
+                    Montant = model.Montant,
+                    CodeRevenu=model.CodeRevenu
                 };
                 var isOk = await service.DeleteRevenuDetailAsync(entity);
                 if (!isOk)
@@ -85,10 +87,7 @@ namespace SuiviBuget.Mobile.ViewModels
         {
             IsBusy = true;
             RevenuDetailsItems = new ObservableCollection<RevenuDetailManageModel>();
-            string devise = "FCFA";
-            var deviseData = await service.GetDeviseActive();
-            if (deviseData != null)
-                devise = deviseData.CodeDevise;     
+            var devise = await Helper.GetDeviseActiveAsyn();
             var details = await service.GetSourceRevenuItems(codeRevenu, searchText);
             RevenuDetailsItems = new ObservableCollection<RevenuDetailManageModel>(
                 details.Select(x => new RevenuDetailManageModel
@@ -100,7 +99,8 @@ namespace SuiviBuget.Mobile.ViewModels
                     LibelleTypeRevenu = x.LibelleTypeRevenu,
                     Montant = x.Montant,
                     MontantAvecDevise = $"Montant : {x.Montant:N0} {devise}",
-                    RevenuDetailID = x.RevenuDetailID
+                    RevenuDetailID = x.RevenuDetailID,
+                    CodeRevenu = x.CodeRevenu,
                 }));
             IsBusy = false;
         }

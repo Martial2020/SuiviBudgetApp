@@ -157,7 +157,7 @@
                                     Grid.Row="2"
                                     Grid.ColumnSpan="2"
                                     Spacing="4">
-                                    <Label Text="{Binding MontantBudget, StringFormat='Montant : {0:N0} FCFA'}" TextColor="#1E40AF" />
+                                    <Label Text="{Binding MontantBudgetAvecDevise, StringFormat='Montant : {0}'}" TextColor="#1E40AF" />
                                     <!--  Bleu foncé  -->
                                 </HorizontalStackLayout>
 

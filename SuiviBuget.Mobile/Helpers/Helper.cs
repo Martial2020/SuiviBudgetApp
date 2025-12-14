@@ -25,6 +25,21 @@ namespace SuiviBuget.Mobile.Helpers
             service = new Services.Services(dbPath);
         }
 
+
+        public static async Task<string> GetDeviseActiveAsyn()
+        {
+            const string deviseParDefaut = "FCFA";
+
+            if (service == null)
+                return deviseParDefaut;
+
+            var deviseData = await service.GetDeviseActive();
+
+            return !string.IsNullOrWhiteSpace(deviseData?.CodeDevise)
+                ? deviseData.CodeDevise
+                : deviseParDefaut;
+        }
+
         public static async void OpenWhatsApp()
         {
             string phone = "2250779095469"; // mets ton numéro SANS le +

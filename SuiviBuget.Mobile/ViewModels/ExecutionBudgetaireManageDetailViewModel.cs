@@ -172,6 +172,15 @@ namespace SuiviBuget.Mobile.ViewModels
             }
         }
 
+        [ObservableProperty]
+        private string montantBudgetAvecDevise;
+
+        [ObservableProperty]
+        private string montantUtiliseAvecDevise;
+
+        [ObservableProperty]
+        private string montantRestantAvecDevise;
+
 
         #region Progress Bar
         private double _progressValue;
@@ -228,10 +237,15 @@ namespace SuiviBuget.Mobile.ViewModels
         }
         private async void ActualiserMontants(string codeBudget, string ligne)
         {
+            var devise = await Helper.GetDeviseActiveAsyn();
             var detail = await _service.GetBudgetDetailByBudgetLigne(codeBudget, ligne);
-            MontantBudget = detail == null ? 0 : detail.Montant;
-            MontantUtilise = ExecutionBugetaireDetailItems?.Sum(x => x.Montant) ?? 0;
-            MontantRestant = MontantBudget - MontantUtilise;
+            MontantBudgetAvecDevise = $"{(detail == null ? 0 : detail.Montant):N0} {devise}";
+            MontantUtiliseAvecDevise = $"{(ExecutionBugetaireDetailItems?.Sum(x => x.Montant) ?? 0):N0} {devise}";
+            MontantRestantAvecDevise = $"{(MontantBudget - MontantUtilise):N0} {devise}";
+
+            //MontantBudget = detail == null ? 0 : detail.Montant;s
+            //MontantUtilise = ExecutionBugetaireDetailItems?.Sum(x => x.Montant) ?? 0;
+            //MontantRestant = MontantBudget - MontantUtilise;
 
             var ratio = MontantBudget == 0 ? 0 : (double)(MontantUtilise / MontantBudget);
             ProgressValue = Math.Min(ratio, 1); // ProgressBar = 0.16 (16%)
@@ -270,6 +284,7 @@ namespace SuiviBuget.Mobile.ViewModels
 
         private async Task LoadExecutionBudgetaireAsync(string codeBudget, string ligne)
         {
+            var devise = await Helper.GetDeviseActiveAsyn();
             ExecutionBugetaireDetailItems = new ObservableCollection<ExecutionBudgetaireDetailManageModel>();
             IsBusy = true;
             IsVisibleBadgeFrame = true;
@@ -286,6 +301,7 @@ namespace SuiviBuget.Mobile.ViewModels
                     CodeBudget = x.CodeBudget,
                     CodeLigneBudgetaire = x.CodeLigneBudgetaire,
                     Description = x.Description,
+                    MontantAvecDevise=$"{x.Montant:N0} {devise}"
                 })
             );
 
