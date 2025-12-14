@@ -43,11 +43,31 @@
                             CornerRadius="10"
                             HasShadow="True">
                             <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
-                                <VerticalStackLayout>
-                                    <Label Text="{Binding DateReception}" />
-                                    <Label FontAttributes="Bold" Text="{Binding LibelleModePaiement}" />
-                                    <Label FontAttributes="Bold" Text="{Binding Montant}" />
-                                    <Label FontAttributes="Bold" Text="{Binding Description}" />
+                                <VerticalStackLayout
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Spacing="4">
+
+                                    <!--  Date  -->
+                                    <Label
+                                        FontAttributes="Bold"
+                                        Text="{Binding DateReception, StringFormat='{0:dd/MM/yyyy}'}"
+                                        TextColor="#2C3E50" />
+
+                                    <!--  Mode paiement + montant  -->
+                                    <HorizontalStackLayout Spacing="4">
+                                        <Label Text="{Binding ModePaiement, StringFormat='{0} : '}" TextColor="#2C3E50" />
+                                        <Label FontAttributes="Bold" Text="{Binding MontantAvecDevise}" />
+
+                                    </HorizontalStackLayout>
+                                    <!--  ✅ Description ajoutée  -->
+                                    <Label
+                                        FontAttributes="Italic"
+                                        LineBreakMode="WordWrap"
+                                        Text="{Binding Description}"
+                                        TextColor="#7F8C8D" />
+
+
                                 </VerticalStackLayout>
 
                                 <!--  Bouton Actions modernisé (menu ⋮)  -->

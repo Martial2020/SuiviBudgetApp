@@ -50,7 +50,6 @@ namespace SuiviBuget.Mobile.ViewModels
 
         private async void OnShowMenuClicked()
         {
-
             const string devise = "💱 Devise";
             const string typeDepense = "💰 Type de dépense";
             const string typeRevenu = "💼 Type de revenu";
@@ -64,7 +63,7 @@ namespace SuiviBuget.Mobile.ViewModels
             var licence = await _context.GetLicence();
             if (licence == null)
             {
-                _alert.ShowAlertAsync("Information", "Aucune licence disponible");
+                await _alert.ShowAlertAsync("Information", "Aucune licence disponible");
                 return;
             }
             if (licence.CodeActivation == GlobalConst.AdministratorCodeActive)
@@ -94,20 +93,15 @@ namespace SuiviBuget.Mobile.ViewModels
                 case typeDepense:
                     await _navigationService.NavigateToAsync("LigneBudgetaireManageView");
                     break;
-
                 case modePaiement:
                     await _navigationService.NavigateToAsync("ModePaiementManageView");
                     break;
-
                 case backupBD:
-
                     await ExportDatabaseAsync();
                     break;
-
                 case restaurationBD:
                     await _navigationService.NavigateToAsync("RestaurationView");
                     break;
-
                 case reinitialiser:
                     await _navigationService.NavigateToAsync("ReinitialiserView");
                     break;
@@ -117,7 +111,6 @@ namespace SuiviBuget.Mobile.ViewModels
                 case Apropos:
                     await _navigationService.NavigateToAsync("AproposView");
                     break;
-
                 default:
                     // Annuler ou fermers
                     break;

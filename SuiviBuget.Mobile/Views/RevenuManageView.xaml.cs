@@ -21,7 +21,7 @@ public partial class RevenuManageView : ContentPage
         {
             // Crée la liste des options dynamiquement
             var options = new List<string>();
-            options.Add("Gérer ce revenu");   // stylo
+            options.Add("Gérer cette source de revenus");   // stylo
             //options.Add("?? Supprimer"); // poubelle
 
             // Affiche l'ActionSheet
@@ -45,7 +45,7 @@ public partial class RevenuManageView : ContentPage
             {
                 switch (action)
                 {
-                    case "Gérer ce revenu":
+                    case "Gérer cette source de revenus":
                         vm.DetailCommand.Execute(item);
                         break;                 
                 }

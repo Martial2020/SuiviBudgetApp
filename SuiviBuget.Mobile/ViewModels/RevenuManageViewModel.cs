@@ -21,6 +21,9 @@ namespace SuiviBuget.Mobile.ViewModels
     {
         [ObservableProperty]
         private ObservableCollection<RevenuManageModel> revenuItems;
+
+        [ObservableProperty]
+        private bool isBusy;
         IServices service { get; set; }
         public ICommand DetailCommand { get; }
 
@@ -89,12 +92,12 @@ namespace SuiviBuget.Mobile.ViewModels
         }
         private async Task LoadRevenuAsync(string searchText)
         {
+            IsBusy = true;
             string devise = "FCFA";
             var revenus = await service.GetRevenuItems(searchText);
             var deviseData = await service.GetDeviseActive();
             if (deviseData != null)
                 devise = deviseData.CodeDevise;
-
             RevenuItems = new ObservableCollection<RevenuManageModel>(
              revenus.Select(x => new RevenuManageModel
              {
@@ -104,6 +107,7 @@ namespace SuiviBuget.Mobile.ViewModels
                  DateDernierMisAJour = x.DateDernierMisAJour,
                  MontantAvecDevise = $"Total : {x.Montant:N0} {devise}"
              }));
+            IsBusy = false;
         }
 
     }

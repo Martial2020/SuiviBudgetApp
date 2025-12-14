@@ -19,7 +19,7 @@ namespace SuiviBuget.Mobile.Models
         public DateTime dateReception;
 
         [ObservableProperty]
-        public DateTime codeModePaiement;
+        public string codeModePaiement;
 
         [ObservableProperty]
         public decimal montant;

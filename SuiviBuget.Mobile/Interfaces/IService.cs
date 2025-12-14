@@ -32,6 +32,7 @@ namespace SuiviBudget.Mobile.Interfaces
         Task<bool> AddRevenuAsync(Revenu revenu);
         Task<bool> DeleteRevenuAsync(Revenu revenu);
         Task<List<RevenuManageModel>> GetRevenuItems(string searchText);
+        Task<RevenuManageModel> GetRevenuByCode(string codeRevenu);
         #endregion
 
         #region Revenu detail

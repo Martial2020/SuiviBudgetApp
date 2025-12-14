@@ -121,7 +121,6 @@ namespace SuiviBuget.Mobile.Services
                 return new ObservableCollection<ActivationLicence>();
             }
         }
-
         #endregion
 
         #region Revenu Detail 
@@ -130,9 +129,16 @@ namespace SuiviBuget.Mobile.Services
             try
             {
                 await _db.InsertAsync(revenu);
+                var revenuData = await _db.Table<Revenu>().FirstOrDefaultAsync(x => x.CodeRevenu == revenu.CodeRevenu);
+                if (revenuData != null)
+                {
+                    revenuData.DateDernierMisAJour = DateTime.Now;
+                    revenuData.Montant += revenu.Montant;
+                    await _db.UpdateAsync(revenuData);
+                }
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return false;
             }
@@ -142,6 +148,13 @@ namespace SuiviBuget.Mobile.Services
             try
             {
                 await _db.DeleteAsync(revenu);
+                var revenuData = await _db.Table<Revenu>().FirstOrDefaultAsync(x => x.CodeRevenu == revenu.CodeRevenu);
+                if (revenuData != null)
+                {
+                    revenuData.DateDernierMisAJour = DateTime.Now;
+                    revenuData.Montant -= revenu.Montant;
+                    await _db.UpdateAsync(revenuData);
+                }
                 return true;
             }
             catch (Exception)
@@ -167,9 +180,7 @@ namespace SuiviBuget.Mobile.Services
         {
             try
             {
-                return await _db.Table<RevenuDetail>()
-                             .FirstOrDefaultAsync(x => x.RevenuDetailID == revenuDetailID);
-
+                return await _db.Table<RevenuDetail>().FirstOrDefaultAsync(x => x.RevenuDetailID == revenuDetailID);
             }
             catch (Exception ex)
             {
@@ -179,44 +190,45 @@ namespace SuiviBuget.Mobile.Services
         }
         public async Task<RevenuDetail> GetRevenuDetailByCode(string typeRevenu)
         {
-            try
-            {
-                return await _db.Table<RevenuDetail>()
-                             .FirstOrDefaultAsync(x => x.CodeTypeRevenu == typeRevenu);
+            return null;
+            //try
+            //{
+            //    return await _db.Table<RevenuDetail>()
+            //                 .FirstOrDefaultAsync(x => x.CodeTypeRevenu == typeRevenu);
 
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erreur lors de la devise par code: {ex.Message}");
-                return null;
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    Console.WriteLine($"Erreur lors de la devise par code: {ex.Message}");
+            //    return null;
+            //}
         }
-
 
         public async Task<List<RevenuDetailManageModel>> GetSourceRevenuItems(string codeRevenu, string searchText)
         {
             try
             {
                 var isSearchEmpty = string.IsNullOrWhiteSpace(searchText?.ToLower() ?? "");
-                var type = await GetSourceRevenuItems(string.Empty);
+                //var type = await GetSourceRevenuItems(string.Empty);
                 var mode = await GetModePaiementItems(string.Empty);
                 var revenuDetails = await _db.Table<RevenuDetail>()
                     .Where(b => b.CodeRevenu == codeRevenu)
                     .ToListAsync();
 
                 var query = (from r in revenuDetails
-                             join t in type on r.CodeTypeRevenu equals t.CodeTypeRevenu
+                                 //join t in type on r.CodeTypeRevenu equals t.CodeTypeRevenu
                              join m in mode on r.CodeModePaiement equals m.CodeModePaiement
-                             where (string.IsNullOrEmpty(searchText)
-                                    || t.LibelleTypeRevenu.ToLower().Contains(searchText.ToLower()))
+                             //where (string.IsNullOrEmpty(searchText)
+                             //       || t.LibelleTypeRevenu.ToLower().Contains(searchText.ToLower()))
                              select new RevenuDetailManageModel
                              {
-                                 CodeTypeRevenu = t.CodeTypeRevenu,
-                                 LibelleTypeRevenu = t.LibelleTypeRevenu,
+                                 //CodeTypeRevenu = t.CodeTypeRevenu,
+                                 //LibelleTypeRevenu = t.LibelleTypeRevenu,
                                  DateReception = r.DateReception,
                                  Description = r.Description,
                                  Montant = r.Montant,
-                                 LibelleModePaiement = m.LibelleModePaiement
+                                 LibelleModePaiement = m.LibelleModePaiement,
+                                 RevenuDetailID = r.RevenuDetailID
                              }).ToList();
 
                 return query;
@@ -269,8 +281,6 @@ namespace SuiviBuget.Mobile.Services
                 var source = await GetSourceRevenuItems(string.Empty);
                 var revenus = await _db.Table<Revenu>().ToListAsync();
 
-
-
                 var query = (from r in revenus
                              join s in source on r.CodeTypeRevenu equals s.CodeTypeRevenu
                              where (string.IsNullOrEmpty(searchText)
@@ -282,6 +292,31 @@ namespace SuiviBuget.Mobile.Services
                                  LibelleTypeRevenu = s.LibelleTypeRevenu,
                                  Montant = r.Montant
                              }).ToList();
+
+                return query;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<RevenuManageModel> GetRevenuByCode(string codeRevenu)
+        {
+            try
+            {
+                var source = await GetSourceRevenuItems(string.Empty);
+                var revenus = await _db.Table<Revenu>().ToListAsync();
+
+                var query = (from r in revenus
+                             join s in source on r.CodeTypeRevenu equals s.CodeTypeRevenu
+                             where (r.CodeRevenu == codeRevenu)
+                             select new RevenuManageModel
+                             {
+                                 CodeRevenu = r.CodeRevenu,
+                                 LibelleTypeRevenu = s.LibelleTypeRevenu,
+                             }).FirstOrDefault();
 
                 return query;
             }

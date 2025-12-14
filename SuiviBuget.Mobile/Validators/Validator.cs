@@ -22,6 +22,39 @@ namespace SuiviBudge.Validators
         {
             adminService = new Services(dbPath);
         }
+
+        #region Source de revenu :
+        public static async Task<(bool isSuccess, string message)> ValidateSourceDetailCreate(RevenuDetailModel revenu)
+        {
+            if (revenu == null)
+                return (false, "Aucune donnée disponible pour la creation de la source de revenu");
+
+            if (string.IsNullOrEmpty(revenu.CodeModePaiement))
+                return (false, "Veuillez saisir obligatoirement le mode de paiement.");
+
+            if (revenu.Montant <= 0)
+                return (false, "Veuillez saisir obligatoirement un montant valide");
+
+            if (revenu.DateReception == DateTime.MinValue)
+                return (false, "Veuillez saisir obligatoirement une date valide");
+
+            return (true, string.Empty);
+
+        }
+
+        public static async Task<(bool isSuccess, string message)> ValidateSourceDetailDelete(RevenuDetailManageModel revenu)
+        {
+            if (revenu == null)
+                return (false, "Aucune donnée disponible pour la creation de la source de revenu");
+
+            var getTypeDetail = await adminService.GetRevenuDetailByCode(revenu.RevenuDetailID);
+            if (getTypeDetail == null)
+                return (false, "Le détail de source de  revenu à supprimer n'existe pas dans la base de donnée");
+            
+            return (true, string.Empty);
+        }
+        #endregion
+
         #region Type Revenu source
         public static async Task<(bool isSuccess, string message)> ValidateTypeSourceCreate(TypeRevenuModel type)
         {
@@ -71,6 +104,7 @@ namespace SuiviBudge.Validators
         }
 
         #endregion
+
         #region Ligne budgetaire
         public static async Task<(bool isSuccess, string message)> ValidateLigneBugetaireCreate(LigneBudgetaireModel ligneBugetaire)
         {

@@ -17,9 +17,7 @@ namespace SuiviBudget.Mobile.Constants
         public const string CodeTousLesBudgets = "BG-000";
         public const string AccessIllimite = "2411-2509-0807";
         public const string MaCleSecrete = "BleuBantyBrielle";
-        public const string AdministratorCodeActive = "Administrator Code Active";
-        
-
+        public const string AdministratorCodeActive = "Administrator Code Active";       
     }
 
     public static class StatutBudgetConst

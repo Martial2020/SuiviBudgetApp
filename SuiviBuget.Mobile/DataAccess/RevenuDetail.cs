@@ -11,7 +11,7 @@ namespace SuiviBuget.Mobile.DataAccess
     {
         [PrimaryKey]
         public Guid RevenuDetailID { get; set; }
-        public string CodeTypeRevenu { get; set; }
+        //public string CodeTypeRevenu { get; set; }
         public string CodeRevenu { get; set; }
         public string CodeModePaiement { get; set; }
         public decimal Montant { get; set; }

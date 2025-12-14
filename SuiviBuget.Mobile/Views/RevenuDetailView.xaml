@@ -30,7 +30,7 @@
         <Label FontAttributes="Bold" Text="Date:" />
         <DatePicker
             x:Name="DatePickerDebut"
-            Date="{Binding DataItem.DateExecution, Mode=TwoWay}"
+            Date="{Binding DataItem.DateReception, Mode=TwoWay}"
             Format="dd/MM/yyyy" />
 
         <!--  Nouveau champ : Description  -->

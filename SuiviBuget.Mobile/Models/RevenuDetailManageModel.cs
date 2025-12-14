@@ -9,11 +9,13 @@ namespace SuiviBuget.Mobile.Models
 {
     public partial class RevenuDetailManageModel
     {
+        public Guid RevenuDetailID { get; set; }
         public string CodeTypeRevenu { get; set; }
         public string LibelleTypeRevenu { get; set; }
         public string LibelleModePaiement { get; set; }
         public decimal Montant { get; set; }
         public DateTime DateReception { get; set; }
         public string Description { get; set; }
+        public string MontantAvecDevise { get; set; }
     }
 }
