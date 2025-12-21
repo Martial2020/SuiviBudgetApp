@@ -49,8 +49,7 @@ public partial class BudgetManageView : ContentPage
                 options.Add("🔒 Clôturer");
             }
             else
-            {
-                
+            {              
                 options.Add("📄 Détails du budget");
                 options.Add("💰 Allocation budgétaire");
                 options.Add("💸 Depenses");

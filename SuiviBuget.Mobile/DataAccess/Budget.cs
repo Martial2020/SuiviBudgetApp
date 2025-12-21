@@ -11,6 +11,7 @@ namespace SuiviBudget.Services.DataAccess
     {
         [PrimaryKey]
         public string CodeBudget { get; set; }
+        public string SourceBudget { get; set; }
         public string LibelleBudget { get; set; }
         public string DescriptionBudget { get; set; }
         public decimal MontantBudget { get; set; }

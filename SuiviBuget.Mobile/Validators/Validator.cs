@@ -35,7 +35,7 @@ namespace SuiviBudge.Validators
             if (revenu.Montant <= 0)
                 return (false, "Veuillez saisir obligatoirement un montant valide");
 
-           if (revenu.DateReception == DateTime.MinValue)
+            if (revenu.DateReception == DateTime.MinValue)
                 return (false, "Veuillez saisir obligatoirement une date valide");
 
             if (string.IsNullOrEmpty(revenu.Description))
@@ -52,7 +52,7 @@ namespace SuiviBudge.Validators
             var getTypeDetail = await adminService.GetRevenuDetailByCode(revenu.RevenuDetailID);
             if (getTypeDetail == null)
                 return (false, "Le détail de source de  revenu à supprimer n'existe pas dans la base de donnée");
-            
+
             return (true, string.Empty);
         }
         #endregion
@@ -181,6 +181,19 @@ namespace SuiviBudge.Validators
             if (DateTime.Now.Date > budget.DateFinBudget)
                 return (false, "Impossible de créer un budget déjà fermé");
 
+            if (string.IsNullOrEmpty(budget.SourceBudget))
+                return (false, "Veuillez définir la source du budget.");
+
+            if (budget.SourceBudget.Equals("Externe", StringComparison.CurrentCultureIgnoreCase))
+            {
+                if (string.IsNullOrEmpty(budget.Description))
+                    return (false, "Pour une source externe, la description de la source est obligatoire");
+            }
+            else
+            {
+                if (budget.MontantBudget > budget.TotalRevenu)
+                    return (false, "Impossible, le montant du budget saisi est superieur au montant total de vos revenus dans le système.");
+            }
             return (true, string.Empty);
         }
         public static (bool isSuccess, string message) ValidateBudgetUpdate(BudgetModel budget)
@@ -199,6 +212,12 @@ namespace SuiviBudge.Validators
             if (getBudget == null)
                 return (false, "Le budget à modifier n'existe pas dans la base de donnée");
 
+            if (string.IsNullOrEmpty(budget.SourceBudget))
+                return (false, "Veuillez définir la source du budget.");
+
+            if (budget.SourceBudget.Equals("Externe", StringComparison.CurrentCultureIgnoreCase))
+                if (string.IsNullOrEmpty(budget.Description))
+                    return (false, "Pour une source externe, la description de la source est obligatoire");
             return (true, string.Empty);
         }
         public static async Task<(bool isSuccess, string message)> ValidateBudgeteDelete(BudgetManageModel budget)

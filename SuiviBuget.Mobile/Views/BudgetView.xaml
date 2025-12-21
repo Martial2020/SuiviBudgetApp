@@ -11,6 +11,8 @@
     </ContentPage.BindingContext>
 
     <VerticalStackLayout Padding="20" Spacing="5">
+
+
         <Label FontAttributes="Bold" Text="Code :" />
         <Entry
             x:Name="CodeEntry"
@@ -18,19 +20,12 @@
             Placeholder="Code du budget"
             Text="{Binding DataItem.CodeBudget, Mode=TwoWay}" />
 
-
         <Label FontAttributes="Bold" Text="Libellé :" />
         <Entry
             x:Name="LibelleEntry"
             Placeholder="Entrez le libellé du budget"
             Text="{Binding DataItem.LibelleBudget, Mode=TwoWay}" />
 
-        <Label FontAttributes="Bold" Text="Montant :" />
-        <Entry
-            x:Name="MontantEntry"
-            Keyboard="Numeric"
-            Placeholder="Entrez le montant du budget"
-            Text="{Binding DataItem.MontantBudget, Mode=TwoWay}" />
 
         <Label FontAttributes="Bold" Text="Date début:" />
         <DatePicker
@@ -43,11 +38,59 @@
             x:Name="DatePickerFin"
             Date="{Binding DataItem.DateFinBudget, Mode=TwoWay}"
             Format="dd/MM/yyyy" />
-        <!--  Nouveau champ : Description  -->
-        <Label FontAttributes="Bold" Text="Description:" />
+
+
+        <!--  Source du budget avec badge  -->
+        <Label FontAttributes="Bold" Text="Source :" />
+        <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+
+            <!--  Groupe de RadioButton  -->
+            <HorizontalStackLayout Spacing="10">
+                <RadioButton
+                    Content="Externe"
+                    GroupName="SourceBudgetGroup"
+                    IsChecked="{Binding IsExterne, Mode=TwoWay}"
+                    IsEnabled="{Binding IsEnabled, Mode=TwoWay}" />
+
+                <RadioButton
+                    Content="Interne"
+                    GroupName="SourceBudgetGroup"
+                    IsChecked="{Binding IsInterne, Mode=TwoWay}"
+                    IsEnabled="{Binding IsEnabled, Mode=TwoWay}" />
+            </HorizontalStackLayout>
+
+            <!--  Espace flexible pour pousser le badge à droite  -->
+            <Grid HorizontalOptions="FillAndExpand">
+
+                <!--  Badge montant  -->
+                <Frame
+                    Padding="10"
+                    BackgroundColor="#FF7F50"
+                    HasShadow="True"
+                    HorizontalOptions="End"
+                    IsVisible="{Binding RevenuVisible, Mode=TwoWay}"
+                    VerticalOptions="Center">
+                    <Label Text="{Binding RevenuTotal, Mode=TwoWay}" TextColor="White" />
+                </Frame>
+            </Grid>
+        </HorizontalStackLayout>
+
+        <Label FontAttributes="Bold" Text="Montant :" />
+        <Entry
+            x:Name="MontantEntry"
+            IsReadOnly="{Binding IsReadOnly, Mode=TwoWay}"
+            Keyboard="Numeric"
+            Placeholder="Entrez le montant du budget"
+            Text="{Binding DataItem.MontantBudget, Mode=TwoWay}" />
+        <!--  Description  -->
+        <Label
+            FontAttributes="Bold"
+            IsVisible="{Binding DescriptionVisible, Mode=TwoWay}"
+            Text="Description:" />
         <Editor
             AutoSize="TextChanges"
             HeightRequest="100"
+            IsVisible="{Binding DescriptionVisible, Mode=TwoWay}"
             Placeholder="Veuillez saisir le détail en quelques lignes"
             Text="{Binding DataItem.Description}" />
 
@@ -57,6 +100,6 @@
             CornerRadius="8"
             Text="{Binding LabelButton}"
             TextColor="White" />
-
     </VerticalStackLayout>
+
 </ContentPage>

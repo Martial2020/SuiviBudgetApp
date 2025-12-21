@@ -6,7 +6,7 @@
     xmlns:viewModels="clr-namespace:SuiviBuget.Mobile.ViewModels"
     CanBeDismissedByTappingOutsideOfPopup="False"
     HorizontalOptions="Center"
-    Size="300,350"
+    Size="300,380"
     VerticalOptions="Center">
     <!--  Liaison du ViewModel  -->
 

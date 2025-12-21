@@ -6,7 +6,6 @@
     xmlns:local="clr-namespace:SuiviBudget.Mobile.Constants"
     xmlns:viewModels="clr-namespace:SuiviBuget.Mobile.ViewModels;assembly=SuiviBuget.Mobile"
     Title="Liste des budgets">
-
     <!--  Liaison du ViewModel à la page  -->
     <ContentPage.BindingContext>
         <viewModels:BudgetManageViewModel />
@@ -24,7 +23,6 @@
             Text="{Binding SearchText, Mode=TwoWay}"
             TextColor="Black"
             VerticalOptions="Start" />
-
         <!--  Boutons de filtre rectangulaires  -->
         <Grid
             Grid.Row="1"
@@ -115,7 +113,7 @@
                             CornerRadius="10"
                             HasShadow="True">
 
-                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto">
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
 
                                 <!--  Infos Budget  -->
                                 <HorizontalStackLayout
@@ -161,8 +159,17 @@
                                     <!--  Bleu foncé  -->
                                 </HorizontalStackLayout>
 
+                                <!--  Montants  -->
                                 <HorizontalStackLayout
                                     Grid.Row="3"
+                                    Grid.ColumnSpan="2"
+                                    Spacing="4">
+                                    <Label Text="{Binding SourceBudget, StringFormat='Source : {0}'}" TextColor="#F472B6" />
+                                    <!--  Bleu foncé  -->
+                                </HorizontalStackLayout>
+
+                                <HorizontalStackLayout
+                                    Grid.Row="4"
                                     Grid.ColumnSpan="2"
                                     Margin="0,5,0,0"
                                     Spacing="8"

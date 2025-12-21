@@ -43,6 +43,8 @@ namespace SuiviBudget.Mobile.Interfaces
         Task<RevenuDetail> GetRevenuDetailByCode(string typeRevenu);
         Task<List<RevenuDetailManageModel>> GetSourceRevenuItems(string typeRevenu, string searchText);
 
+        Task<List<HistoriquePrelevementModel>> GetPrelevementItems();
+
         #endregion
 
         #region Devise

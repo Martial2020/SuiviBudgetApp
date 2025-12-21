@@ -13,6 +13,7 @@ using SuiviBuget.Mobile.DataAccess;
 using SuiviBuget.Mobile.Helpers;
 using SuiviBuget.Mobile.Models;
 
+
 namespace SuiviBuget.Mobile.Services
 {
     public class Services : IServices
@@ -58,6 +59,7 @@ namespace SuiviBuget.Mobile.Services
             await _db.CreateTableAsync<Reajustement>();
             await _db.CreateTableAsync<Revenu>();
             await _db.CreateTableAsync<RevenuDetail>();
+            await _db.CreateTableAsync<SourceBudgetDetails>();
         }
 
         #endregion
@@ -229,7 +231,7 @@ namespace SuiviBuget.Mobile.Services
                                  Montant = r.Montant,
                                  LibelleModePaiement = m.LibelleModePaiement,
                                  RevenuDetailID = r.RevenuDetailID,
-                                 CodeRevenu=r.CodeRevenu
+                                 CodeRevenu = r.CodeRevenu
                              }).ToList();
 
                 return query;
@@ -241,6 +243,33 @@ namespace SuiviBuget.Mobile.Services
                 return new List<RevenuDetailManageModel>();
             }
         }
+
+        public async Task<List<HistoriquePrelevementModel>> GetPrelevementItems()
+        {
+            try
+            {
+                var budgets = await _db.Table<Budget>().ToListAsync();
+                var details = await _db.Table<SourceBudgetDetails>().ToListAsync();
+                var query = (from d in details
+                             join b in budgets on d.CodeBudget equals b.CodeBudget
+                             select new HistoriquePrelevementModel
+                             {
+                                 CodeBudget = b.CodeBudget,
+                                 LibelleBudget = b.LibelleBudget,
+                                 DateCreation = d.DateCreation,
+                                 EstAnnule = d.EstAnnule == true ? "Oui" : "Non",
+                                 Montant = d.Montant
+                             }).ToList();
+
+                return query;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
         #endregion
 
         #region Revenu 
@@ -726,6 +755,7 @@ namespace SuiviBuget.Mobile.Services
                     DescriptionBudget = budget.Description,
                     LibelleBudget = budget.LibelleBudget,
                     MontantBudget = budget.MontantBudget,
+                    SourceBudget = budget.SourceBudget,
                     MontantAlloue = 0,
                     MontantNonAlloue = budget.MontantBudget,
                     MontantRestant = 0,
@@ -737,7 +767,7 @@ namespace SuiviBuget.Mobile.Services
                 };
 
                 await _db.InsertAsync(newLigne);
-                await AddCompteurAsync(newLigne.CodeBudget); // bien await
+                await AddCompteurAsync(newLigne.CodeBudget); // bien awaits              
                 return true;
             }
             catch (Exception ex)
@@ -745,6 +775,19 @@ namespace SuiviBuget.Mobile.Services
                 Console.WriteLine($"Erreur lors de l'ajout: {ex.Message}");
                 return false;
             }
+        }
+        private async void ImputationRevenu(Budget data)
+        {
+            if (data == null || data.SourceBudget == GlobalConst.Externe)
+                return;
+            var detail = new SourceBudgetDetails
+            {
+                CodeBudget = data.CodeBudget,
+                DateCreation = DateTime.Now,
+                EstAnnule = false,
+                Montant = data.MontantBudget
+            };
+            await _db.InsertAsync(detail);
         }
         public async Task<bool> DeleteBudgetAsync(Budget budget)
         {
@@ -770,10 +813,14 @@ namespace SuiviBuget.Mobile.Services
                 getBudget.LibelleBudget = budget.LibelleBudget;
                 getBudget.MontantBudget = budget.MontantBudget;
                 getBudget.DescriptionBudget = budget.Description;
+                getBudget.SourceBudget = budget.SourceBudget;
                 //getBudget.NbreLigneBudgetaire = budget.NbreLigneBudgetaire;
                 getBudget.StatutBudget = budget.StatutBudget;
                 await _db.UpdateAsync(getBudget);
                 MisAjourBudget(getBudget.CodeBudget);
+                if (budget.StatutBudget == StatutBudgetConst.Encours)
+                    ImputationRevenu(getBudget);
+
                 return true;
             }
             catch (Exception ex)
@@ -816,6 +863,7 @@ namespace SuiviBuget.Mobile.Services
                     MontantBudget = budgetItem.MontantBudget,
                     NbreLigneBudgetaire = budgetItem.NbreLigneBudgetaire,
                     StatutBudget = budgetItem.StatutBudget,
+                    SourceBudget = budgetItem.SourceBudget
                 };
             }
             catch (Exception ex)
@@ -834,13 +882,14 @@ namespace SuiviBuget.Mobile.Services
                 if (budgetItem == null)
                     return null;
 
+                var devise = await Helper.GetDeviseActiveAsyn();
                 return new BudgetManageModel
                 {
                     CodeBudget = budgetItem.CodeBudget,
                     DateCreationBudget = budgetItem.DateCreationBudget,
                     DateDebutBudget = budgetItem.DateDebutBudget,
                     DateFinBudget = budgetItem.DateFinBudget,
-                    DescriptionBudget = budgetItem.DescriptionBudget,
+                    DescriptionBudget = budgetItem.SourceBudget == GlobalConst.Interne ? "Provient des revenus du système" : budgetItem.DescriptionBudget,
                     LibelleBudget = budgetItem.LibelleBudget,
                     MontantBudget = budgetItem.MontantBudget,
                     NbreLigneBudgetaire = budgetItem.NbreLigneBudgetaire,
@@ -850,7 +899,14 @@ namespace SuiviBuget.Mobile.Services
                     MontantReajustement = budgetItem.MontantReajustement,
                     MontantRestant = budgetItem.MontantRestant,
                     MontantUtilise = budgetItem.MontantUtilise,
-                    BackgroundColorStatut = Helper.GetBackgroundColor(budgetItem.StatutBudget)
+                    BackgroundColorStatut = Helper.GetBackgroundColor(budgetItem.StatutBudget),
+                    SourceBudget = budgetItem.SourceBudget,
+                    MontantAlloueAvecDevise = $"{budgetItem.MontantAlloue:N0} {devise}",
+                    MontantBudgetAvecDevise = $"{budgetItem.MontantBudget:N0} {devise}",
+                    MontantNonAlloueAvecDevise = $"{budgetItem.MontantNonAlloue:N0} {devise}",
+                    MontantReajustementAvecDevise = $"{budgetItem.MontantReajustement:N0} {devise}",
+                    MontantRestantAvecDevise = $"{budgetItem.MontantRestant:N0} {devise}",
+                    MontantUtiliseAvecDevise = $"{budgetItem.MontantUtilise:N0} {devise}"
                 };
             }
             catch (Exception ex)
@@ -903,7 +959,8 @@ namespace SuiviBuget.Mobile.Services
                         MontantRestant = budgetItem.MontantRestant,
                         MontantNonAlloue = budgetItem.MontantNonAlloue,
                         MontantAlloue = budgetItem.MontantAlloue,
-                        MontantReajustement = budgetItem.MontantReajustement
+                        MontantReajustement = budgetItem.MontantReajustement,
+                        SourceBudget = budgetItem.SourceBudget
 
                     })
                     .OrderByDescending(x => x.DateCreationBudget)
@@ -946,7 +1003,8 @@ namespace SuiviBuget.Mobile.Services
                         MontantRestant = budgetItem.MontantRestant,
                         MontantNonAlloue = budgetItem.MontantNonAlloue,
                         MontantAlloue = budgetItem.MontantAlloue,
-                        MontantReajustement = budgetItem.MontantReajustement
+                        MontantReajustement = budgetItem.MontantReajustement,
+                        SourceBudget = budgetItem.SourceBudget
 
                     })
                     .OrderByDescending(x => x.DateCreationBudget)

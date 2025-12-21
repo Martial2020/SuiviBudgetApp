@@ -235,17 +235,17 @@ namespace SuiviBuget.Mobile.ViewModels
                 ExecutionBugetaireDetailItems.Clear();
             });
         }
-        private async void ActualiserMontants(string codeBudget, string ligne)
+        private async void ActualiserMontants(string codeBudget, string ligne,string devise)
         {
-            var devise = await Helper.GetDeviseActiveAsyn();
+      
             var detail = await _service.GetBudgetDetailByBudgetLigne(codeBudget, ligne);
             MontantBudgetAvecDevise = $"{(detail == null ? 0 : detail.Montant):N0} {devise}";
             MontantUtiliseAvecDevise = $"{(ExecutionBugetaireDetailItems?.Sum(x => x.Montant) ?? 0):N0} {devise}";
             MontantRestantAvecDevise = $"{(MontantBudget - MontantUtilise):N0} {devise}";
 
-            //MontantBudget = detail == null ? 0 : detail.Montant;s
-            //MontantUtilise = ExecutionBugetaireDetailItems?.Sum(x => x.Montant) ?? 0;
-            //MontantRestant = MontantBudget - MontantUtilise;
+            MontantBudget = detail == null ? 0 : detail.Montant; 
+            MontantUtilise = ExecutionBugetaireDetailItems?.Sum(x => x.Montant) ?? 0;
+            MontantRestant = MontantBudget - MontantUtilise;
 
             var ratio = MontantBudget == 0 ? 0 : (double)(MontantUtilise / MontantBudget);
             ProgressValue = Math.Min(ratio, 1); // ProgressBar = 0.16 (16%)
@@ -305,7 +305,7 @@ namespace SuiviBuget.Mobile.ViewModels
                 })
             );
 
-            ActualiserMontants(codeBudget, ligne);
+            ActualiserMontants(codeBudget, ligne,devise);
             //SelectedLigneBudgetaire = LigneBudgetaireItems.FirstOrDefault(x => x.CodeLigneBudgetaire == ligne);
 
             IsBusy = false;

@@ -13,6 +13,7 @@
     <Grid RowDefinitions="Auto, Auto, *">
 
         <!--  Première ligne : barre de recherche  -->
+        <!--
         <SearchBar
             Grid.Row="0"
             Margin="10,20,10,0"
@@ -24,23 +25,72 @@
             Text="{Binding SearchText, Mode=TwoWay}"
             TextColor="Black"
             VerticalOptions="Start"
-            VerticalTextAlignment="Center" />
+            VerticalTextAlignment="Center" />-->
 
-        <!--  🔹 BADGES REVENUS (AJOUT)  -->
+        <!--  🔹 BADGES REVENUS  -->
         <Frame
             Grid.Row="1"
-            Margin="10,10,10,5"
-            Padding="10,6"
+            Margin="10"
+            Padding="12"
             BackgroundColor="#F4F9FF"
-            CornerRadius="14"
+            CornerRadius="16"
             HasShadow="False">
-            <VerticalStackLayout Spacing="4">
-                <!--  Total revenus  -->
-                <Label Text="{Binding TotalRevenu, StringFormat='💵 Total revenus : {0}'}" TextColor="#117864" />
-                <!--  Nombre de revenus  -->
-                <Label Text="{Binding NombreRevenu, StringFormat='🔢 Nombre de revenus : {0}'}" TextColor="#9C640C" />
-            </VerticalStackLayout>
 
+            <VerticalStackLayout Spacing="10">
+                <!--  Nombre de revenus  -->
+                <Grid ColumnDefinitions="Auto,*">
+                    <Label Text="🔢 Nombre de revenus" TextColor="#9C640C" />
+                    <Label
+                        Grid.Column="1"
+                        FontAttributes="Bold"
+                        HorizontalOptions="End"
+                        Text="{Binding NombreRevenu}"
+                        TextColor="#9C640C" />
+                </Grid>
+
+                <BoxView BackgroundColor="#D6EAF8" HeightRequest="1" />
+                <!--  Total revenus  -->
+                <Grid ColumnDefinitions="Auto,*">
+                    <Label Text="💵 Total revenus" TextColor="#5D6D7E" />
+                    <Label
+                        Grid.Column="1"
+                        FontAttributes="Bold"
+                        HorizontalOptions="End"
+                        Text="{Binding TotalRevenu}"
+                        TextColor="#117864" />
+                </Grid>
+
+                <!--  Total utilisé  -->
+                <Grid ColumnDefinitions="Auto,*">
+                    <Label Text="💸 Total utilisé" TextColor="#5D6D7E" />
+                    <Label
+                        Grid.Column="1"
+                        FontAttributes="Bold"
+                        HorizontalOptions="End"
+                        Text="{Binding TotalUtilise}"
+                        TextColor="#C0392B" />
+                </Grid>
+
+                <!--  Total restant  -->
+                <Grid ColumnDefinitions="Auto,*">
+                    <Label Text="💰 Total restant" TextColor="#5DADE2" />
+                    <Label
+                        Grid.Column="1"
+                        FontAttributes="Bold"
+                        HorizontalOptions="End"
+                        Text="{Binding TotalRestant}"
+                        TextColor="#1F618D" />
+                </Grid>
+
+                <BoxView BackgroundColor="#D6EAF8" HeightRequest="1" />
+                <Button
+                    BackgroundColor="#FF7F50"
+                    Command="{Binding HistoriqueCommand}"
+                    CornerRadius="8"
+                    Text="Historique des prélèvements"
+                    TextColor="White" />
+
+            </VerticalStackLayout>
         </Frame>
 
         <!--  Contenu  -->

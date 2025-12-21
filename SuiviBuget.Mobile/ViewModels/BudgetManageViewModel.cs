@@ -336,7 +336,7 @@ namespace SuiviBuget.Mobile.ViewModels
                     DateCreationBudget = x.DateCreationBudget,
                     DateDebutBudget = x.DateDebutBudget,
                     DateFinBudget = x.DateFinBudget,
-                    DescriptionBudget = x.DescriptionBudget,
+                    DescriptionBudget = x.SourceBudget == GlobalConst.Interne ? "Provient des revenus du système" : x.DescriptionBudget,
                     LibelleBudget = x.LibelleBudget,
                     MontantBudget = x.MontantBudget,
                     NbreLigneBudgetaire = x.NbreLigneBudgetaire,
@@ -347,7 +347,8 @@ namespace SuiviBuget.Mobile.ViewModels
                     MontantNonAlloue = x.MontantNonAlloue,
                     MontantBudgetAvecDevise = $"{x.MontantBudget:N0} {devise}",
                     MontantReajustement = x.MontantReajustement,
-                    BackgroundColorStatut = Helper.GetBackgroundColor(x.StatutBudget)
+                    BackgroundColorStatut = Helper.GetBackgroundColor(x.StatutBudget),
+                    SourceBudget = x.SourceBudget
                 }));
             ActualiserNombreBudget();
             IsBusy = false;

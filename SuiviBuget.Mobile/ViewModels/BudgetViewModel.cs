@@ -1,21 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SuiviBudget.Mobile.Interfaces;
 using System.Windows.Input;
-using CommunityToolkit.Mvvm.Input;
-using SuiviBudget.Mobile.Constants;
-using SuiviBuget.Mobile.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
-using SuiviBuget.Mobile.Helpers;
-using SuiviBudge.Validators;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using static SuiviBuget.Mobile.Messages.Messages;
+using SuiviBudge.Validators;
+using SuiviBudget.Mobile.Constants;
+using SuiviBudget.Mobile.Interfaces;
+using SuiviBuget.Mobile.Helpers;
 using SuiviBuget.Mobile.Interfaces;
+using SuiviBuget.Mobile.Models;
 using SuiviBuget.Mobile.Services;
 using static SQLite.SQLite3;
+using static SuiviBuget.Mobile.Messages.Messages;
 
 namespace SuiviBuget.Mobile.ViewModels
 {
@@ -31,6 +32,22 @@ namespace SuiviBuget.Mobile.ViewModels
         [ObservableProperty]
         private string labelButton = "+ Ajouter";
 
+        [ObservableProperty]
+        private bool revenuVisible = false;
+
+        [ObservableProperty]
+        private bool descriptionVisible = false;
+
+        [ObservableProperty]
+        private bool isEnabled = true;
+
+        [ObservableProperty]
+        private bool isReadOnly = false;
+
+        [ObservableProperty]
+        private string revenuTotal;
+
+
         private string _action;
         public string Action
         {
@@ -44,6 +61,41 @@ namespace SuiviBuget.Mobile.ViewModels
                 }
             }
         }
+
+
+        public bool IsInterne
+        {
+            get => DataItem?.SourceBudget == "Interne";
+            set
+            {
+                if (value)
+                {
+                    _ = GetMontantRevenu();
+                    DescriptionVisible = false;
+                    DataItem.SourceBudget = "Interne";
+                    OnPropertyChanged(nameof(IsInterne));
+                    OnPropertyChanged(nameof(IsExterne));
+                }
+            }
+        }
+
+        public bool IsExterne
+        {
+            get => DataItem?.SourceBudget == "Externe";
+            set
+            {
+                if (value)
+                {
+                    RevenuVisible = false;
+                    DescriptionVisible = true;
+                    DataItem.SourceBudget = "Externe";
+                    OnPropertyChanged(nameof(IsInterne));
+                    OnPropertyChanged(nameof(IsExterne));
+                }
+            }
+        }
+
+
 
         #endregion
 
@@ -81,6 +133,22 @@ namespace SuiviBuget.Mobile.ViewModels
             }
         }
 
+        partial void OnDataItemChanged(BudgetModel value)
+        {
+            OnPropertyChanged(nameof(IsInterne));
+            OnPropertyChanged(nameof(IsExterne));
+            DescriptionVisible = IsExterne == true;
+            RevenuVisible = IsInterne == true && Action != GlobalConst.Edit;
+        }
+
+        private async Task GetMontantRevenu()
+        {
+            var devise = await Helper.GetDeviseActiveAsyn();
+            var revenus = await adminService.GetRevenuItems(string.Empty);
+            DataItem.TotalRevenu = revenus.Sum(r => r.Montant);
+            RevenuTotal = $"Revenu:{(DataItem.TotalRevenu):N0} {devise}";
+            RevenuVisible = Action != GlobalConst.Edit;
+        }
         public async Task InitializePageAsync(string code, string action)
         {
             Action = action;
@@ -94,6 +162,8 @@ namespace SuiviBuget.Mobile.ViewModels
                 case GlobalConst.Edit:
                     Title = "Modifier un budget";
                     LabelButton = "✎ Modifier";
+                    IsEnabled = false;
+                    IsReadOnly = true;
                     var budget = await adminService.GetBudgetByCode(code);
                     if (budget == null)
                         return;
@@ -106,7 +176,8 @@ namespace SuiviBuget.Mobile.ViewModels
                         DateFinBudget = budget.DateFinBudget,
                         StatutBudget = budget.StatutBudget,
                         MontantBudget = budget.MontantBudget,
-                        Description = budget.Description
+                        Description = budget.Description,
+                        SourceBudget = budget.SourceBudget,
                     };
                     break;
                 default:
@@ -133,10 +204,12 @@ namespace SuiviBuget.Mobile.ViewModels
                     DateDebutBudget = DataItem.DateDebutBudget,
                     DateFinBudget = DataItem.DateFinBudget,
                     DateCreationBudget = DateTime.Now,
-                    Description = DataItem.Description,
+                    Description = IsExterne ? DataItem.Description : "",
                     MontantBudget = DataItem.MontantBudget,
                     NbreLigneBudgetaire = 0,
-                    StatutBudget = StatutBudgetConst.Ouvert
+                    StatutBudget = StatutBudgetConst.Ouvert,
+                    SourceBudget = DataItem.SourceBudget
+
                 };
                 var isOk = await adminService.AddBudgetAsync(dataEntity);
                 if (!isOk)
@@ -154,11 +227,8 @@ namespace SuiviBuget.Mobile.ViewModels
                 await _alertService.ShowAlertAsync("Erreur", ex.Message);
                 return;
             }
-
-
         }
 
-     
         private async void UpdateBudget()
         {
             try
@@ -176,10 +246,11 @@ namespace SuiviBuget.Mobile.ViewModels
                     DateDebutBudget = DataItem.DateDebutBudget,
                     DateFinBudget = DataItem.DateFinBudget,
                     DateCreationBudget = DataItem.DateCreationBudget,
-                    Description = DataItem.Description,
+                    Description = IsExterne ? DataItem.Description : "",
                     MontantBudget = DataItem.MontantBudget,
                     NbreLigneBudgetaire = DataItem.NbreLigneBudgetaire,
-                    StatutBudget = DataItem.StatutBudget
+                    StatutBudget = DataItem.StatutBudget,
+                    SourceBudget = DataItem.SourceBudget
                 };
                 var isOk = await adminService.UpdateBudgetAsync(dataEntity);
                 if (!isOk)

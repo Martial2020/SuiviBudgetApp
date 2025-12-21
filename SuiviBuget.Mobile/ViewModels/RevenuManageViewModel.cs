@@ -29,11 +29,17 @@ namespace SuiviBuget.Mobile.ViewModels
         private string totalRevenu;
 
         [ObservableProperty]
+        private string totalUtilise;
+
+        [ObservableProperty]
+        private string totalRestant;
+
+        [ObservableProperty]
         private int nombreRevenu;
 
         IServices service { get; set; }
         public ICommand DetailCommand { get; }
-
+        public ICommand  HistoriqueCommand { get; }
         private readonly INavigationService _navigationService;
         private readonly IAlertService _alertService;
 
@@ -61,7 +67,14 @@ namespace SuiviBuget.Mobile.ViewModels
             _ = LoadRevenuAsync(SearchText); // Charge la liste initialement
             _navigationService = new NavigationService();
             DetailCommand = new RelayCommand<RevenuManageModel>(OnDetailCommand);
+            HistoriqueCommand = new RelayCommand(OnHistoriqueCommand);
             ResetAppMessage();
+        }
+
+        private async void OnHistoriqueCommand()
+        {
+           
+            await _navigationService.NavigateToAsync("HistoriquePrelevementView");
         }
 
         private async void OnDetailCommand(RevenuManageModel? model)
@@ -111,9 +124,12 @@ namespace SuiviBuget.Mobile.ViewModels
                  DateDernierMisAJour = x.DateDernierMisAJour,
                  MontantAvecDevise = $"Total : {x.Montant:N0} {devise}"
              }));
-
+            var sourceBudget = await service.GetPrelevementItems();
             NombreRevenu = RevenuItems.Count();
             TotalRevenu = $"{(RevenuItems.Sum(r => r.Montant)):N0} {devise}";
+            TotalUtilise = $"{(sourceBudget.Sum(r => r.Montant)):N0} {devise}";
+            var restant = RevenuItems.Sum(r => r.Montant) - sourceBudget.Sum(r => r.Montant);
+            TotalRestant = $"{restant:N0} {devise}";
             IsBusy = false;
         }
 

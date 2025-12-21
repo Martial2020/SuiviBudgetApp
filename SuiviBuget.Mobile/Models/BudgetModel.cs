@@ -27,6 +27,14 @@ namespace SuiviBuget.Mobile.Models
         public string statutBudget;
         [ObservableProperty]
         public int nbreLigneBudgetaire;
+        [ObservableProperty]
+        public string sourceBudget;
 
+        [ObservableProperty]
+        public string action;
+
+        [ObservableProperty]
+        public decimal totalRevenu;
+        
     }
 }

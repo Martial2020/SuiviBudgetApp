@@ -35,7 +35,7 @@
                     <Label Text="{Binding DataItem.DateDebutBudget, StringFormat='🗓️ Du : {0:dd/MM/yyyy}'}" TextColor="Gray" />
                     <Label Text="{Binding DataItem.DateFinBudget, StringFormat='📅 Au : {0:dd/MM/yyyy}'}" TextColor="Gray" />
                     <Label Text="{Binding DataItem.DateCreationBudget, StringFormat='📅 Créé le : {0:dd MMM yyyy à HH:mm}'}" TextColor="Gray" />
-                    <Label Text="{Binding DataItem.DescriptionBudget, StringFormat='📝 Description : {0}'}" TextColor="#1E3A8A" />
+                    <!--<Label Text="{Binding DataItem.DescriptionBudget, StringFormat='📝 Description : {0}'}" TextColor="#1E3A8A" />-->
 
                 </VerticalStackLayout>
             </Frame>
@@ -57,12 +57,12 @@
                         HeightRequest="1"
                         Color="#CBD5E1" />
 
-                    <Label Text="{Binding DataItem.MontantBudget, StringFormat='💰 Montant total : {0:N0} FCFA'}" TextColor="#1E3A8A" />
-                    <Label Text="{Binding DataItem.MontantAlloue, StringFormat='🧾 Alloué : {0:N0} FCFA'}" TextColor="#2563EB" />
-                    <Label Text="{Binding DataItem.MontantNonAlloue, StringFormat='🟣 Non alloué : {0:N0} FCFA'}" TextColor="#9333EA" />
-                    <Label Text="{Binding DataItem.MontantReajustement, StringFormat='💹 Réajusté : {0:N0} FCFA'}" TextColor="#F472B6" />
-                    <Label Text="{Binding DataItem.MontantUtilise, StringFormat='🟠 Utilisé : {0:N0} FCFA'}" TextColor="#F59E0B" />
-                    <Label Text="{Binding DataItem.MontantRestant, StringFormat='🟢 Restant : {0:N0} FCFA'}" TextColor="#16A34A" />
+                    <Label Text="{Binding DataItem.MontantBudgetAvecDevise, StringFormat='💰 Montant total : {0}'}" TextColor="#1E3A8A" />
+                    <Label Text="{Binding DataItem.MontantAlloueAvecDevise, StringFormat='🧾 Alloué : {0}'}" TextColor="#2563EB" />
+                    <Label Text="{Binding DataItem.MontantNonAlloueAvecDevise, StringFormat='🟣 Non alloué : {0}'}" TextColor="#9333EA" />
+                    <Label Text="{Binding DataItem.MontantReajustementAvecDevise, StringFormat='💹 Réajusté : {0}'}" TextColor="#F472B6" />
+                    <Label Text="{Binding DataItem.MontantUtiliseAvecDevise, StringFormat='🟠 Utilisé : {0}'}" TextColor="#F59E0B" />
+                    <Label Text="{Binding DataItem.MontantRestantAvecDevise, StringFormat='🟢 Restant : {0}'}" TextColor="#16A34A" />
                 </VerticalStackLayout>
             </Frame>
 
@@ -84,9 +84,11 @@
                         Color="#FCD34D" />
 
                     <Label Text="{Binding DataItem.NbreLigneBudgetaire, StringFormat='📊 Lignes budgétaires : {0}'}" TextColor="#92400E" />
+                    <Label Text="{Binding DataItem.SourceBudget, StringFormat='📊 Source : {0}'}" TextColor="#92400E" />
+                    <Label Text="{Binding DataItem.DescriptionBudget, StringFormat='📝 Description : {0}'}" TextColor="#92400E" />
 
                     <HorizontalStackLayout Spacing="8">
-                        <Label Text="Statut :" TextColor="#92400E" />
+                        <Label Text="📌 Statut :" TextColor="#92400E" />
                         <Frame
                             Padding="6,2"
                             BackgroundColor="{Binding DataItem.BackgroundColorStatut}"
@@ -99,6 +101,7 @@
                                 TextColor="White" />
                         </Frame>
                     </HorizontalStackLayout>
+
                 </VerticalStackLayout>
             </Frame>
 
