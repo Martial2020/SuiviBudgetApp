@@ -17,9 +17,6 @@ namespace SuiviBuget.Mobile.Services
             switch (pageName)
             {
 
-                case "ActivationLicenceView1":
-                    await Shell.Current.GoToAsync($"{nameof(ActivationLicenceView1)}");
-                    break;
                 case "HistoriquePrelevementView":
                     await Shell.Current.GoToAsync($"{nameof(HistoriquePrelevementView)}");
                     break;

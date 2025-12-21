@@ -137,9 +137,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<MauiXaml Update="Views\ActivationLicenceView1.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
 		<MauiXaml Update="Views\HistoriquePrelevementView.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>

@@ -8,7 +8,6 @@ namespace SuiviBuget.Mobile
         public AppShell()
         {
             InitializeComponent();        
-            Routing.RegisterRoute(nameof(ActivationLicenceView1), typeof(ActivationLicenceView1));
             Routing.RegisterRoute(nameof(HistoriquePrelevementView), typeof(HistoriquePrelevementView));
             Routing.RegisterRoute(nameof(RevenuDetailView), typeof(RevenuDetailView));
             Routing.RegisterRoute(nameof(RevenuDetailManageView), typeof(RevenuDetailManageView));
