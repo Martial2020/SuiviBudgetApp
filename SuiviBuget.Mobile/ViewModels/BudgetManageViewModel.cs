@@ -290,7 +290,8 @@ namespace SuiviBuget.Mobile.ViewModels
                 var entity = new Budget
                 {
                     CodeBudget = budget.CodeBudget,
-                    LibelleBudget = budget.LibelleBudget
+                    LibelleBudget = budget.LibelleBudget,
+                    SourceBudget = budget.SourceBudget
                 };
                 var isOk = await service.DeleteBudgetAsync(entity);
                 if (!isOk)

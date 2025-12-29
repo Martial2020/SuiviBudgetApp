@@ -25,7 +25,6 @@ namespace SuiviBuget.Mobile.Helpers
             service = new Services.Services(dbPath);
         }
 
-
         public static async Task<string> GetDeviseActiveAsyn()
         {
             const string deviseParDefaut = "FCFA";
@@ -47,10 +46,7 @@ namespace SuiviBuget.Mobile.Helpers
             await Launcher.OpenAsync(url);
         }
 
-        private static void Notifications()
-        {
-            _ = PlanifierNotificationsQuotidiennes();
-        }
+      
         public static async Task PlanifierNotificationExpirationLicence()
         {
             try
@@ -106,68 +102,55 @@ namespace SuiviBuget.Mobile.Helpers
             }
         }
 
-        public static async Task PlanifierNotificationsQuotidiennes()
+        public static async Task PlanifierNotificationsQuotidiennesAsync()
         {
             try
             {
+                // 1️⃣ Permission
                 var status = await Permissions.RequestAsync<Permissions.PostNotifications>();
                 if (status != PermissionStatus.Granted)
-                {
-                    await Application.Current.MainPage.DisplayAlert(
-                        "Permission requise",
-                        "Les notifications sont nécessaires pour te rappeler d'enregistrer tes dépenses.",
-                        "OK");
                     return;
-                }
-                LocalNotificationCenter.Current.CancelAll();
-                var messages = new Dictionary<int, string>
+
+                // 2️⃣ Heures + messages
+                var rappels = new Dictionary<int, string>
                 {
-                    { 7,  "🌅 Bonjour ! Commence la journée en enregistrant tes revenus et dépenses du matin." },
-                    { 10, "⏰ Petit rappel : n'oublie pas d'ajouter toutes tes dépenses et revenus de la matinée." },
-                    { 12, "🍽️ Midi : prends un moment pour noter tes dépenses et revenus avant le déjeuner." },
-                    { 15, "☕ Après-midi : pense à mettre à jour tes dépenses et revenus du jour." },
-                    { 18, "🏠 Fin de journée : enregistre toutes tes dépenses et revenus pour clôturer la journée." },
-                    { 21, "🌙 Avant de dormir : assure-toi que toutes tes dépenses et revenus du jour sont enregistrés." },
-                    { 23, "🌌 Dernier rappel : vérifie et enregistre toutes tes dépenses et revenus pour aujourd'hui." }
+                    { 8,  "🌅 Bonjour ! Enregistre tes dépenses et revenus du matin." },
+                    { 10, "⏰ Petit rappel : mets à jour tes dépenses." },
+                    { 12, "🍽️ Midi : note tes dépenses avant le déjeuner." },
+                    { 15, "☕ Après-midi : pense à tes dépenses du jour." },
+                    { 18, "🏠 Fin de journée : clôture tes dépenses." },
+                    { 21, "🌙 Avant de dormir : vérifie tes dépenses." },
+                    { 23, "🌌 Dernier rappel du jour." }
                 };
 
-
-                for (int i = 0; i <= 30; i++)
+                foreach (var rappel in rappels)
                 {
-                    foreach (var heure in messages.Keys)
+                    int heure = rappel.Key;
+
+                    DateTime notifyTime = DateTime.Today.AddHours(heure);
+
+                    if (notifyTime < DateTime.Now)
+                        notifyTime = notifyTime.AddDays(1);
+
+                    var notification = new NotificationRequest
                     {
-                        DateTime notificationTime = DateTime.Today.AddDays(i).AddHours(heure);
-
-                        // Si l’heure est déjà passée, on décale à demain
-                        if (notificationTime < DateTime.Now)
-                            notificationTime = notificationTime.AddDays(1);
-
-                        // 🔔 4. Crée la notification planifiéea
-                        var notification = new NotificationRequest
+                        NotificationId = 1000 + heure, // ID UNIQUE et stable
+                        Title = "Rappel journalier 💡",
+                        Description = rappel.Value,
+                        Schedule = new NotificationRequestSchedule
                         {
-                            NotificationId = heure,
-                            Title = "Rappel journalier 💡",
-                            Description = messages[heure],
-                            Schedule = new NotificationRequestSchedule
-                            {
-                                NotifyTime = notificationTime,
-                                RepeatType = NotificationRepeat.Daily,
-                            }
-                        };
+                            NotifyTime = notifyTime,
+                            RepeatType = NotificationRepeat.Daily
+                        }
+                    };
 
-                        await LocalNotificationCenter.Current.Show(notification);
-                    }
+                    await LocalNotificationCenter.Current.Show(notification);
                 }
-
-
             }
             catch (Exception ex)
             {
-
-                throw ex;
+                System.Diagnostics.Debug.WriteLine(ex);
             }
-            // 🔐 1. Demande de permission de notification
-
         }
         public static string GetDatabaseFullPath()
         {

@@ -12,8 +12,7 @@ namespace SuiviBuget.Mobile
     public partial class App : Application
     {
         IServices _service { get; set; }
-
-        public  App()
+        public App()
         {
             InitializeComponent();
 
@@ -21,64 +20,50 @@ namespace SuiviBuget.Mobile
             string dbPath = Helper.GetDatabaseFullPath();
             _service = new Services.Services(dbPath);
 
-            // 2️⃣ Définir le thème
             UserAppTheme = AppTheme.Light;
-
-            // 3️⃣ Créer la MainPage
-            //MainPage = new AppShell(); // ou ta page principale
-
-            Task.Run(async () =>
-            {
-                await InitializeApp();
-            });
-
-
         }
-
-
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            //return new Window(new AppShell());
             var window = new Window(new AppShell());
+
+            // 🔥 POINT IDÉAL POUR INITIALISER
+            _ = InitializeAppAsync();
+
             return window;
         }
-        private async Task InitializeApp()
+
+        private async Task InitializeAppAsync()
         {
             try
             {
-                // 1️⃣ Création des tables (obligatoire avant vérification)
+                // 1️⃣ Initialisation DB
                 await _service.InitDatabaseAsync();
 
-                //Verifier si le code d'activation est dejà crée
+                // 2️⃣ Licence
                 var existing = await _service.GetLicence();
                 if (existing == null)
                 {
                     var activation = new Licence
                     {
                         Identifiant = Helper.GetCodeActivation(),
-                        CodeActivation = "",
-                        DateActivation = null,
-                        DateExpiration = null,
                         IsActive = false
                     };
+
                     await _service.CreateLicenceAsync(activation);
                 }
 
-                // 5️⃣ Lancer la planification des notifications en tâche de fond
-                _ = Helper.PlanifierNotificationsQuotidiennes();
-
-                //Charger les devises
+                // 3️⃣ Devises
                 await _service.AddOrUpdateDevise();
+
+                // 4️⃣ 🔔 PLANIFICATION DES NOTIFICATIONS (UNE FOIS)
+                await Helper.PlanifierNotificationsQuotidiennesAsync();
             }
             catch (Exception ex)
             {
-
-                throw ex;
+                System.Diagnostics.Debug.WriteLine(ex);
             }
-
         }
-
-
     }
+
 }

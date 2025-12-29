@@ -791,12 +791,13 @@ namespace SuiviBuget.Mobile.Services
         }
         public async Task<bool> DeleteBudgetAsync(Budget budget)
         {
-
             await DeleteBudgetDetailByCodeBudgetAsync(budget.CodeBudget);
             await DeleteReajustementByCodeBudgetAsync(budget.CodeBudget);
+            await DeleteSuiviPrelevement(budget.CodeBudget);
             await _db.DeleteAsync(budget);
             return true;
         }
+      
         public async Task<bool> UpdateBudgetAsync(BudgetModel budget)
         {
             try
@@ -1270,6 +1271,17 @@ namespace SuiviBuget.Mobile.Services
 
             await _db.DeleteAsync(getDetail);
         }
+
+        private async Task DeleteSuiviPrelevement(string codeBudget)
+        {
+            var detail = await _db.Table<SourceBudgetDetails>()
+                .FirstOrDefaultAsync(x => x.CodeBudget == codeBudget);
+
+            if (detail == null)
+                return; // Ligne non trouvée
+
+            await _db.DeleteAsync(detail);
+        }
         public async Task<Reajustement> GetReajustementByCode(string codeBudget, string ligne)
         {
             try
@@ -1349,7 +1361,6 @@ namespace SuiviBuget.Mobile.Services
                 return new List<ExecutionBudgetaireDetailManageModel>();
             }
         }
-
         public async Task<ExecutionBudgetaire> GetExecutionBudgetaireDetailsById(Guid id)
         {
             try
@@ -1364,7 +1375,6 @@ namespace SuiviBuget.Mobile.Services
                 return new ExecutionBudgetaire();
             }
         }
-
         public async Task<ExecutionBudgetaire> GetExecutionBudgetaireDetailsByModePaiement(string codeModePaiament)
         {
             try
@@ -1379,8 +1389,7 @@ namespace SuiviBuget.Mobile.Services
                 return new ExecutionBudgetaire();
             }
         }
-
-        public async Task<ExecutionBudgetaire> GetExecutionBudgetaireDetailsByBudgetDetail(string codeBudget, string codeLigneBudgetaire)
+       public async Task<ExecutionBudgetaire> GetExecutionBudgetaireDetailsByBudgetDetail(string codeBudget, string codeLigneBudgetaire)
         {
             try
             {
@@ -1475,7 +1484,6 @@ namespace SuiviBuget.Mobile.Services
                 }
             }
         }
-
         public async Task<ParametreCompteur> GetParametreCompteurAsync(string codeParametre)
         {
             return await _db.Table<ParametreCompteur>()
@@ -1537,7 +1545,6 @@ namespace SuiviBuget.Mobile.Services
 
             return result;
         }
-
         public async Task<List<Budget>> GetBudgetItems(DateTime dateDebut, DateTime dateFin, string codeBudget)
         {
             try
@@ -1564,7 +1571,6 @@ namespace SuiviBuget.Mobile.Services
                 return new List<Budget>();
             }
         }
-
         public async Task<List<ExecutionBudgetaireDetailManageModel>> GetDepenseItemsByPeriode(DateTime dateDebut, DateTime dateFin, List<Budget> budgets)
         {
             try
@@ -1607,7 +1613,6 @@ namespace SuiviBuget.Mobile.Services
             }
         }
 
-
         #endregion
 
         #region Licence 
@@ -1636,7 +1641,6 @@ namespace SuiviBuget.Mobile.Services
                 return false;
             }
         }
-
         public async Task<bool> UpdateLicenceAsync(Licence licence)
         {
             try
@@ -1651,7 +1655,6 @@ namespace SuiviBuget.Mobile.Services
                 return false;
             }
         }
-
         public async Task<bool> DeleteLicenceAsync(Licence licence)
         {
             try
@@ -1666,8 +1669,6 @@ namespace SuiviBuget.Mobile.Services
                 return false;
             }
         }
-
-
         #endregion
 
         #region Other Functions
