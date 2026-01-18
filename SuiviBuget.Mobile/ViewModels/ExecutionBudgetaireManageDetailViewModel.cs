@@ -223,10 +223,6 @@ namespace SuiviBuget.Mobile.ViewModels
 
         }
 
-        private void ProgressBarResult()
-        {
-
-        }
         private void ResetAppMessage()
         {
             WeakReferenceMessenger.Default.Register<ResetAppMessage>(this, (r, m) =>
@@ -241,12 +237,12 @@ namespace SuiviBuget.Mobile.ViewModels
             var detail = await _service.GetBudgetDetailByBudgetLigne(codeBudget, ligne);
             MontantBudgetAvecDevise = $"{(detail == null ? 0 : detail.Montant):N0} {devise}";
             MontantUtiliseAvecDevise = $"{(ExecutionBugetaireDetailItems?.Sum(x => x.Montant) ?? 0):N0} {devise}";
-            MontantRestantAvecDevise = $"{(MontantBudget - MontantUtilise):N0} {devise}";
 
             MontantBudget = detail == null ? 0 : detail.Montant; 
             MontantUtilise = ExecutionBugetaireDetailItems?.Sum(x => x.Montant) ?? 0;
             MontantRestant = MontantBudget - MontantUtilise;
-
+            MontantRestantAvecDevise = $"{(MontantRestant):N0} {devise}";
+            
             var ratio = MontantBudget == 0 ? 0 : (double)(MontantUtilise / MontantBudget);
             ProgressValue = Math.Min(ratio, 1); // ProgressBar = 0.16 (16%)
             //ProgressText = $"{(ratio <= 1 ? ratio : 1) * 100:0}%"; // Affiche "16%"
